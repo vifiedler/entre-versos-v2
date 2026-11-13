@@ -1,6 +1,6 @@
-# Entre Versos — Diseño 1.3 · Datos REST (1.3.1)
+# Entre Versos — Diseño 1.3.2 · Lectura continua y música
 
-Tema clásico de WordPress para una **Antología Interactiva de Poetas Latinoamericanos**. Esta versión integra **HTML/PHP y CSS responsivo** a partir del diseño visual de Stitch, utilizando Bootstrap 5.3 y Bootstrap Icons, incorporando solamente la lectura de datos JSON de WordPress, sin interacciones de carrusel, arrastre, audio ni navegación SPA.
+Tema clásico de WordPress para una **Antología Interactiva de Poetas Latinoamericanos**. Esta versión integra **HTML/PHP y CSS responsivo** a partir del diseño visual de Stitch, utilizando Bootstrap 5.3 y Bootstrap Icons, incorporando la carga REST, el modo de lectura continua y un reproductor visible de YouTube en las pantallas de autor y poema. La navegación SPA, el carrusel y el drag & drop siguen pendientes.
 
 ## Qué incluye
 
@@ -8,8 +8,8 @@ Tema clásico de WordPress para una **Antología Interactiva de Poetas Latinoame
 - Tipografías **Syne, Inter y JetBrains Mono** desde Google Fonts.
 - **jQuery** del propio WordPress y dependencias CDN registradas para Slick 1.8.1, mark.js 8.11.1, GSAP 3.15.1 (core, Draggable, Flip), Atropos 2.0.2.
 - Paleta neobrutalista y estilos **propios** en `assets/librerias/css/estilo-entre-versos.css`, separados de Bootstrap.
-- Barra superior contextual y barra inferior fija propias de **Entre Versos**, distintas de las que generó Stitch.
-- Zona de recepción de poeta **vacía** en la carga inicial; solo tendrá contenido después de que el equipo programe selección/arrastre.
+- Barra superior contextual y barra inferior compacta, conservando la identidad de **Entre Versos**.
+- Zona «Tolva // Dejar aquí» **vacía**, situada exclusivamente dentro de la portada. Se completará después al programar selección/arrastre.
 - Plantillas para portada, páginas de información, biografía, poemas, lectura continua y pantalla de cierre.
 - CPT `ant_poeta` y `ant_poema` con editor Gutenberg familiar y filtros REST de relación por ID.
 - Guía SCF actualizada en `docs/SCF-CAMPOS.md`.
@@ -19,10 +19,11 @@ Tema clásico de WordPress para una **Antología Interactiva de Poetas Latinoame
 Se han agregado dos scripts propios, `entre-versos-rest.js` (peticiones) y `entre-versos-contenido.js` (renderizado).
 La portada se rellena con poetas publicados. La página del poeta incorpora sus
 obras y la del poema rellena la **primera estrofa** y prepara los datos de
-lectura continua (sección todavía oculta). No hay Slick, mark.js inicializado,
-Atropos, drag & drop, selección, navegación SPA ni reproducción de audio. Los
-botones para dichas funciones continúan deshabilitados. La bandeja de selección
-permanece vacía. Los enlaces normales a los poemas son provisionales y
+lectura continua, que ya puede abrirse con su botón. La música se carga
+desde YouTube exclusivamente en el poeta y sus poemas, con reproductor visible
+y volumen inicial al 50%. No hay Slick, mark.js inicializado, Atropos,
+drag & drop, selección ni navegación SPA. La bandeja de selección permanece
+vacía. Los enlaces normales a los poemas son provisionales y
 recargan la página hasta construir la SPA.
 
 
@@ -43,10 +44,13 @@ assets/
   templates/
     barra-superior.php
     barra-inferior.php
+    reproductor-youtube.php
   librerias/
     css/estilo-entre-versos.css
     js/entre-versos-rest.js
     js/entre-versos-contenido.js
+    js/entre-versos-lectura.js
+    js/entre-versos-audio.js
 front-page.php
 page-*.php
 single-ant_poeta.php
@@ -60,7 +64,7 @@ docs/SCF-CAMPOS.md
 ## Instalación
 
 1. Descomprimir el ZIP directamente dentro de `wp-content/themes/`, o instalarlo desde **Apariencia > Temas > Añadir tema > Subir tema**.
-2. Activar el tema *Entre Versos — Diseño 1.3*. Se puede mantener la versión anterior como referencia.
+2. Activar el tema *Entre Versos — v1.3.2 · Lectura y audio*. Se puede mantener la versión anterior como referencia.
 3. **Ajustes > Lectura:** elegir una página estática como portada. WordPress utilizará `front-page.php`.
 4. **Ajustes > Enlaces permanentes:** guardar una vez para refrescar reglas de CPT.
 5. Instalar SCF y crear los grupos descritos en `docs/SCF-CAMPOS.md`; activar su exposición REST.
@@ -73,7 +77,7 @@ docs/SCF-CAMPOS.md
 - No se incluyó Tailwind, Material Symbols ni ninguna fuente local de Stitch.
 - No se han copiado fotografías ni música del proyecto de referencia: las imágenes se administrarán desde la Biblioteca de medios y la música desde el campo `musica_url`.
 - WordPress ya suele incluir **jQuery 3.7.1** en versiones actuales; se usa el identificador `jquery` del core para evitar una segunda copia de jQuery. **Comprobar la versión efectiva** con la instalación antes de desarrollar; si difiere de 3.7.1, resolverlo explícitamente.
-- Sin la API REST y las interacciones programadas por el equipo, los componentes dinámicos son intencionadamente demostrativos/inertes.
+- La navegación por estrofas, el carrusel y las Polaroid interactivas siguen deshabilitados hasta implementarlos con el equipo.
 - La vista SPA completa requerirá programar cambios de estado, navegación e historial, además de accesibilidad y animaciones. Las plantillas `single-*` también sirven de respaldo WordPress.
 - Las páginas de información son enlaces WordPress convencionales **por ahora**; su navegación sin recarga se construirá posteriormente.
 
@@ -97,3 +101,19 @@ las fotografías originales.
 5. Abrir la URL nativa de un poema: aparecerá la **primera estrofa** completa,
    su imagen y el total de estrofas. La navegación entre ellas se programará después.
 6. Ante errores revisar Consola del navegador y Red > peticiones REST.
+
+## Lectura continua y música (1.3.2)
+
+- El sitio no desplaza el documento en pantallas de poeta y poema; los textos largos se desplazan dentro del panel de lectura.
+- «Lectura continua» muestra todas las estrofas con desplazamiento interno y al final la imagen destacada del poema. «Volver a estrofas» restaura el visor.
+- `musica_url` debe tener una URL de video de YouTube (`youtube.com/watch?v=...` o `youtu.be/...`). El tema no almacena el audio ni descarga archivos.
+- El reproductor audiovisual de YouTube permanece visible con dimensiones mínimas de 200 × 200 px; ocultarlo para reproducir exclusivamente audio infringiría sus políticas.
+- El audio intenta comenzar al 50% cuando se carga una ficha de poeta o un poema, **nunca en Inicio**. Los navegadores pueden bloquear el autoplay con sonido: el video conserva el botón nativo para iniciarlo manualmente.
+- Cambiar de página PHP recarga el documento y reinicia la pista; la reproducción verdaderamente continua entre vistas llegará cuando se implemente la SPA.
+
+Consulta `CAMBIOS-v1.3.2.md` para el detalle técnico.
+
+
+## Cambios v1.3.3
+
+Consultar `CAMBIOS-v1.3.3.md` para las correcciones de W3C y el comportamiento de YouTube.

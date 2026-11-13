@@ -14,7 +14,7 @@ activado «Show in REST API» en el respaldo entregado.
 | `fecha_nacimiento` | Date Picker | Formato de retorno actual: **`d/m/Y`**. |
 | `fecha_fallecimiento` | Date Picker | Formato de retorno actual: **`d/m/Y`**. |
 | `cita_destacada` | Textarea | Fragmento para la Polaroid. |
-| `musica_url` | URL | URL externa, sin subida de audio. |
+| `musica_url` | URL | Enlace YouTube del poeta (`watch?v=...` o `youtu.be/...`). No se sube audio; se muestra el reproductor de YouTube en la experiencia del poeta y de sus poemas. |
 
 Campos nativos: título, extracto, contenido de Gutenberg e imagen destacada.
 No se duplican en SCF.

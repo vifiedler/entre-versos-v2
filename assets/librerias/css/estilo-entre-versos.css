@@ -86,7 +86,7 @@ button:disabled {
 .antologia {
     min-height: 100vh;
     min-height: 100svh;
-    padding-bottom: 220px;
+    padding-bottom: 0;
 }
 .contenido-principal {
     min-height: calc(100vh - var(--alto-barra-superior));
@@ -251,7 +251,8 @@ button:disabled {
     width: 100%;
 }
 .seleccion-poetas__marco {
-    min-height: 46rem;
+    min-height: 0;
+    position: relative;
 }
 .galeria-poetas {
     position: relative;
@@ -943,3 +944,198 @@ button:disabled {
         scroll-behavior: auto !important;
     }
 }
+
+/* ===== Ajustes 1.3.2: estructura a pantalla completa y lectura ===== */
+:root {
+    --alto-barra-inferior: 68px;
+}
+/* Portada: retratos como protagonistas y zona de selección en su propia pantalla. */
+body.home .antologia,
+body.single-ant_poeta .antologia,
+body.single-ant_poema .antologia {
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+body.home,
+body.single-ant_poeta,
+body.single-ant_poema {
+    overflow: hidden;
+}
+body.home .contenido-principal,
+body.single-ant_poeta .contenido-principal,
+body.single-ant_poema .contenido-principal {
+    min-width: 0;
+    min-height: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
+}
+body.home .contenido-principal--inicio {
+    padding: .5rem clamp(1rem, 3vw, 3rem) .75rem;
+}
+.seleccion-poetas,
+.seleccion-poetas > .container-fluid,
+.seleccion-poetas__marco {
+    height: 100%;
+    min-height: 0;
+}
+.galeria-poetas {
+    height: 100%;
+    min-height: 0;
+}
+.bandeja-poeta--inicio {
+    position: absolute;
+    z-index: 15;
+    right: clamp(.5rem,2vw,2rem);
+    bottom: clamp(.5rem,2vw,2rem);
+    width: min(260px,38%);
+    min-height: 105px;
+}
+/* La barra inferior ya no contiene la tolva y mantiene un perfil reducido. */
+.barra-inferior {
+    position: relative;
+    inset: auto;
+    flex: 0 0 auto;
+    z-index: 25;
+    min-height: var(--alto-barra-inferior);
+    padding: .45rem clamp(1rem,3vw,3rem);
+}
+.barra-inferior__marca {
+    font-size: clamp(1.75rem,3vw,3.15rem);
+    line-height: 1;
+    letter-spacing: -.065em;
+}
+.barra-inferior__lateral {
+    width: auto;
+}
+.reproductor-volumen__indicador { min-width: 112px; }
+/* Vista de poeta: no desplazar la página; el contenido de cada tarjeta se desplaza internamente. */
+body.single-ant_poeta .contenido-principal--poeta,
+body.single-ant_poema .contenido-principal--poema {
+    padding: .6rem clamp(.8rem,2.5vw,2rem);
+}
+.vista-poeta,
+.vista-poema {
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.vista-poeta__titulo,
+.vista-poema__titulo {
+    font-size: clamp(1.6rem,3vw,3.2rem);
+}
+.vista-poeta .pantallas-poeta {
+    flex: 1 1 auto;
+    min-height: 0;
+    margin-top: .6rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-gutter: stable;
+}
+.vista-poeta .pantallas-poeta__tarjeta {
+    min-height: 0;
+    max-height: 100%;
+    overflow-y: auto;
+}
+.vista-poema {
+    padding: .25rem 0;
+}
+.vista-poema__encabezado {
+    margin-bottom: .45rem;
+}
+.lector-estrofas,
+.lectura-continua {
+    min-height: 0;
+    flex: 1 1 auto;
+}
+.lector-estrofas {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.lector-estrofas__panel {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.lector-estrofas__cabecera {
+    flex: 0 0 auto;
+}
+.lector-estrofas__disposicion {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+}
+.lector-estrofas__versos,
+.lector-estrofas__visual {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+.lector-estrofas__versos-lista { margin: .65rem 0; }
+.lector-estrofas__verso { margin-bottom: .45rem; }
+.lector-estrofas__navegacion {
+    flex: 0 0 auto;
+    margin: .5rem 0 0;
+}
+.lector-estrofas__imagen { min-height: 190px; }
+.lectura-continua {
+    max-height: 100%;
+    margin: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+}
+.lectura-continua__estrofas { padding-top: 1rem; }
+.lectura-continua__estrofa { margin-bottom: 1.6rem; }
+.poema-cierre { margin-top: 1.5rem; padding: 1rem; }
+/* Reproductor de fondo en pantalla de poeta/poema.
+ * El audio sigue controlado desde la barra inferior; sin panel de video.
+ * Advertencia: este formato oculto no cumple los requisitos de visualización de YouTube.
+ */
+.musica-youtube--oculta {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    pointer-events: none;
+}
+.musica-youtube--oculta iframe {
+    width: 1px !important;
+    height: 1px !important;
+    border: 0;
+}
+@media (max-width: 767.98px) {
+    :root { --alto-barra-inferior: 62px; }
+    body.home .contenido-principal--inicio,
+    body.single-ant_poeta .contenido-principal--poeta,
+    body.single-ant_poema .contenido-principal--poema {
+        padding: .45rem .75rem;
+    }
+    .bandeja-poeta--inicio { width: 210px; right: .4rem; bottom: .5rem; }
+    .barra-inferior { padding: .3rem .65rem; }
+    .barra-inferior__marca { font-size: clamp(1.35rem,4vw,2rem); }
+    .reproductor-volumen__indicador { min-width: 70px; }
+    .lector-estrofas__disposicion { grid-template-columns: 1fr; overflow-y: auto; }
+    .lector-estrofas__versos, .lector-estrofas__visual { overflow: visible; }
+    .lector-estrofas__visual { min-height: 240px; }
+}
+@media (max-width: 575.98px) {
+    .barra-inferior__marca { font-size: 1.15rem; }
+    .reproductor-volumen__barras { display: none; }
+    .reproductor-volumen__controles .boton-volumen { min-width: 28px; }
+    .bandeja-poeta--inicio { bottom: .4rem; }
+}
+
+/* hidden debe prevalecer sobre los contenedores flex del visor. */
+.lector-estrofas[hidden], .lectura-continua[hidden], .poema-cierre[hidden] { display: none !important; }

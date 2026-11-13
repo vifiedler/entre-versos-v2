@@ -27,7 +27,7 @@ function entre_versos_cargar_scripts() {
     wp_enqueue_script( 'entre-versos-atropos', 'https://cdn.jsdelivr.net/npm/atropos@2.0.2/atropos.min.js', array(), '2.0.2', true );
 
     // Carga de contenido REST, organizada como en Sinapsis: cliente + presentación.
-    // Sin clics programados, drag/drop, Slick, GSAP, Atropos ni audio.
+    // Las pantallas REST se cargan aquí; lectura continua y audio tienen sus controladores propios.
     if ( is_front_page() || is_singular( 'ant_poeta' ) || is_singular( 'ant_poema' ) ) {
         $version_tema = wp_get_theme()->get( 'Version' );
 
@@ -54,6 +54,41 @@ function entre_versos_cargar_scripts() {
             get_theme_file_uri( '/assets/librerias/js/entre-versos-contenido.js' ),
             array( 'entre-versos-rest' ),
             $version_tema,
+            true
+        );
+    }
+
+    // En el poema, alternar entre la estrofa visible y la lectura continua.
+    if ( is_singular( 'ant_poema' ) ) {
+        wp_enqueue_script(
+            'entre-versos-lectura',
+            get_theme_file_uri( '/assets/librerias/js/entre-versos-lectura.js' ),
+            array( 'entre-versos-contenido' ),
+            wp_get_theme()->get( 'Version' ),
+            true
+        );
+    }
+
+    // YouTube exclusivamente en poeta y poemas relacionados; nunca en la portada.
+    if ( is_singular( array( 'ant_poeta', 'ant_poema' ) ) ) {
+        $poeta_id = is_singular( 'ant_poeta' )
+            ? get_queried_object_id()
+            : absint( get_post_meta( get_queried_object_id(), 'poeta_relacionado', true ) );
+
+        wp_enqueue_script(
+            'entre-versos-audio',
+            get_theme_file_uri( '/assets/librerias/js/entre-versos-audio.js' ),
+            array( 'entre-versos-rest' ),
+            wp_get_theme()->get( 'Version' ),
+            true
+        );
+        wp_localize_script( 'entre-versos-audio', 'entreVersosAudioConfig', array( 'poetaId' => $poeta_id ) );
+        // Cargar la API después del controlador: su callback ya estará definido.
+        wp_enqueue_script(
+            'entre-versos-youtube-api',
+            'https://www.youtube.com/iframe_api',
+            array( 'entre-versos-audio' ),
+            null,
             true
         );
     }

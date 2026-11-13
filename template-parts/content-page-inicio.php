@@ -9,16 +9,18 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 <section id="seleccion-poetas" class="seleccion-poetas" aria-labelledby="titulo-inicio">
     <div class="container-fluid p-0">
         <div class="seleccion-poetas__marco">
-            <div class="galeria-poetas fondo-cuadricula" id="galeria-poetas" aria-label="Galería de retratos de poetas">
+            <div class="galeria-poetas fondo-cuadricula" id="galeria-poetas" role="group" aria-label="Galería de retratos de poetas">
                 <p id="estado-carga-poetas" class="fuente-mono" role="status">Cargando poetas desde WordPress...</p>
             </div>
-            <div class="seleccion-poetas__metadatos" aria-label="Datos de la edición">
-                <span class="etiqueta-editorial etiqueta-editorial--oscura">Vol. 01 / Edición radical</span>
-                <span id="cantidad-poetas" class="etiqueta-editorial">Archivo poético</span>
-            </div>
-            <h1 id="titulo-inicio" class="seleccion-poetas__titulo">Antología de poetas latinoamericanos</h1>
-            <p class="seleccion-poetas__descripcion">Explora los retratos del archivo poético. La selección y el arrastre hacia <span class="seleccion-poetas__marca-accion">[DEJAR AQUÍ]</span> se incorporarán en la próxima etapa.</p>
-            <p class="seleccion-poetas__estado"><span class="texto-lima" aria-hidden="true">■</span> <span id="estado-seleccion-poeta">Selección actual: ninguna</span></p>
+            <h1 id="titulo-inicio" class="screen-reader-text">Entre Versos, antología de poetas latinoamericanos</h1>
+            <!-- La zona de selección se reserva en la portada; el arrastre se implementará después. -->
+            <aside id="bandeja-poeta" class="bandeja-poeta bandeja-poeta--inicio" aria-label="Zona de selección de poeta">
+                <div class="bandeja-poeta__etiqueta fuente-mono">
+                    <span>Tolva // Dejar aquí</span>
+                    <span class="cuadro-lima" aria-hidden="true"></span>
+                </div>
+                <div id="bandeja-poeta-contenido" class="bandeja-poeta__contenido" aria-live="polite"></div>
+            </aside>
         </div>
     </div>
 </section>

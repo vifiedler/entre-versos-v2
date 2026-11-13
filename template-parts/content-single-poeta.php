@@ -60,7 +60,7 @@ $lugar = get_post_meta( get_the_ID(), 'lugar_nacimiento', true );
                 </div>
             </section>
         </div>
-        <div class="pantallas-poeta__controles" aria-label="Navegación del carrusel de pantallas">
+        <div class="pantallas-poeta__controles" role="group" aria-label="Navegación del carrusel de pantallas">
             <span class="fuente-mono align-self-center me-2">Deslizar pantallas:</span>
             <button id="pantalla-anterior" type="button" class="boton-editorial boton-editorial--compacto" aria-label="Pantalla anterior" disabled><i class="bi bi-arrow-left" aria-hidden="true"></i></button>
             <button id="pantalla-siguiente" type="button" class="boton-editorial boton-editorial--primario boton-editorial--compacto" aria-label="Pantalla siguiente" disabled><i class="bi bi-arrow-right" aria-hidden="true"></i></button>

@@ -1,7 +1,7 @@
 /**
  * Entre Versos · Presentación del contenido
  * Rellena las plantillas HTML existentes con datos de WordPress/SCF.
- * No inicializa Slick, mark.js, GSAP, Atropos, audio ni drag & drop.
+ * No inicializa Slick, mark.js, GSAP, Atropos ni drag & drop.
  */
 ( function() {
     'use strict';

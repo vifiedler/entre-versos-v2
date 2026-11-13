@@ -27,7 +27,7 @@ $poeta_nombre = ( $poeta_id && 'ant_poeta' === get_post_type( $poeta_id ) ) ? ge
                     <span id="contador-estrofas" class="etiqueta-editorial" aria-live="polite">Estrofa — / —</span>
                     <span class="fuente-mono">Edición poética</span>
                 </div>
-                <button id="ver-lectura-continua" type="button" class="boton-editorial boton-editorial--compacto" disabled><i class="bi bi-text-paragraph" aria-hidden="true"></i> Lectura continua</button>
+                <button id="ver-lectura-continua" type="button" class="boton-editorial boton-editorial--compacto" aria-controls="lectura-continua" aria-expanded="false"><i class="bi bi-text-paragraph" aria-hidden="true"></i> Lectura continua</button>
             </div>
             <div class="lector-estrofas__disposicion">
                 <div id="estrofa-versos" class="lector-estrofas__versos">
@@ -52,13 +52,14 @@ $poeta_nombre = ( $poeta_id && 'ant_poeta' === get_post_type( $poeta_id ) ) ? ge
     </section>
 
     <section id="lectura-continua" class="lectura-continua tarjeta-editorial" aria-labelledby="titulo-lectura-continua" hidden>
-        <span class="etiqueta-editorial">Modo / Lectura continua</span>
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <span class="etiqueta-editorial">Modo / Lectura continua</span>
+            <button id="volver-a-estrofas" type="button" class="boton-editorial boton-editorial--compacto" aria-controls="lector-estrofas"><i class="bi bi-arrow-left" aria-hidden="true"></i> Volver a estrofas</button>
+        </div>
         <h2 id="titulo-lectura-continua" class="pantallas-poeta__subtitulo mt-3"><?php echo esc_html( get_the_title() ); ?></h2>
         <p class="fuente-mono"><?php echo esc_html( $poeta_nombre ); ?></p>
         <div id="lectura-continua-estrofas" class="lectura-continua__estrofas"><!-- Reunirá las mismas estrofas recibidas por REST. --></div>
-    </section>
-
-    <section id="poema-cierre" class="poema-cierre tarjeta-editorial" aria-labelledby="titulo-cierre-poema" hidden>
+        <section id="poema-cierre" class="poema-cierre tarjeta-editorial" aria-labelledby="titulo-cierre-poema" hidden>
         <span class="etiqueta-editorial">Final del poema</span>
         <h2 id="titulo-cierre-poema" class="pantallas-poeta__subtitulo mt-3"><?php echo esc_html( get_the_title() ); ?></h2>
         <p class="fuente-mono"><?php echo esc_html( $poeta_nombre ); ?></p>
@@ -69,5 +70,6 @@ $poeta_nombre = ( $poeta_id && 'ant_poeta' === get_post_type( $poeta_id ) ) ? ge
                 <div class="lector-estrofas__imagen"><i class="bi bi-image" aria-hidden="true"></i></div>
             <?php endif; ?>
         </figure>
+        </section>
     </section>
 </article>
