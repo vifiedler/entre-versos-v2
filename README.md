@@ -1,98 +1,99 @@
-# Entre Versos — Tema estructural v1.1.0
+# Entre Versos — Diseño 1.3 · Datos REST (1.3.1)
 
-Versión comparativa de la antología de poetas latinoamericanos. El nombre visible
-del tema es **Entre Versos — Estructura 1.1**, y la carpeta del ZIP es distinta de
-la original para poder conservar ambas instalaciones y compararlas.
+Tema clásico de WordPress para una **Antología Interactiva de Poetas Latinoamericanos**. Esta versión integra **HTML/PHP y CSS responsivo** a partir del diseño visual de Stitch, utilizando Bootstrap 5.3 y Bootstrap Icons, incorporando solamente la lectura de datos JSON de WordPress, sin interacciones de carrusel, arrastre, audio ni navegación SPA.
 
-## Qué se cambió frente a la base depurada 1.0
+## Qué incluye
 
-- Se respetó el patrón usado en el proyecto de referencia: los archivos
-  `page-*` y `single-*` contienen el marco WordPress, mientras que sus
-  `template-parts/content-page-*` y `content-single-*` contienen el marcado.
-- Se añadieron plantillas exactas para los CPT registrados:
-  `single-ant_poeta.php` y `single-ant_poema.php`.
-- Se mantuvo `front-page.php`, que carga `content-page-inicio.php`.
-- Se prepararon tres páginas informativas, sin contenido inventado, que se
-  activan si se crean páginas WordPress con los slugs exactos indicados abajo.
-- Se añadió una barra inferior compartida en **todas las pantallas**, con:
-  nombre ENTRE VERSOS a la izquierda; contenedor derecho **vacío** para la
-  ficha del poeta; debajo, solo tres controles de volumen deshabilitados.
-- La cabecera superior muestra `Poeta / Biografía` y `Poeta / Poema` mediante
-  PHP en las vistas individuales. La interfaz podrá actualizarse luego con REST.
-- Se dejó la disposición estructural mínima para evitar que la barra fija
-  tape el contenido. No hay paleta ni componentes visuales definitivos.
-- No se copió código, medios, CSS ni JS de Breakdown Music (era solo una
-  referencia de arquitectura).
-- Se conservaron sin cambios funcionales los CPT y el filtro REST existente.
+- **Bootstrap 5.3.9** (CSS y bundle JS) y **Bootstrap Icons 1.13.2**, desde CDN.
+- Tipografías **Syne, Inter y JetBrains Mono** desde Google Fonts.
+- **jQuery** del propio WordPress y dependencias CDN registradas para Slick 1.8.1, mark.js 8.11.1, GSAP 3.15.1 (core, Draggable, Flip), Atropos 2.0.2.
+- Paleta neobrutalista y estilos **propios** en `assets/librerias/css/estilo-entre-versos.css`, separados de Bootstrap.
+- Barra superior contextual y barra inferior fija propias de **Entre Versos**, distintas de las que generó Stitch.
+- Zona de recepción de poeta **vacía** en la carga inicial; solo tendrá contenido después de que el equipo programe selección/arrastre.
+- Plantillas para portada, páginas de información, biografía, poemas, lectura continua y pantalla de cierre.
+- CPT `ant_poeta` y `ant_poema` con editor Gutenberg familiar y filtros REST de relación por ID.
+- Guía SCF actualizada en `docs/SCF-CAMPOS.md`.
 
-## Organización y carga
+## Qué NO incluye todavía
+
+Se han agregado dos scripts propios, `entre-versos-rest.js` (peticiones) y `entre-versos-contenido.js` (renderizado).
+La portada se rellena con poetas publicados. La página del poeta incorpora sus
+obras y la del poema rellena la **primera estrofa** y prepara los datos de
+lectura continua (sección todavía oculta). No hay Slick, mark.js inicializado,
+Atropos, drag & drop, selección, navegación SPA ni reproducción de audio. Los
+botones para dichas funciones continúan deshabilitados. La bandeja de selección
+permanece vacía. Los enlaces normales a los poemas son provisionales y
+recargan la página hasta construir la SPA.
+
+
+## Organización
 
 ```text
 functions.php
-  └── assets/assets.php
-      ├── assets/includes/css-functions.php
-      └── assets/includes/modulos-functions.php
-          ├── assets/modulos/cpt-poetas.php
-          ├── assets/modulos/cpt-poemas.php
-          └── assets/modulos/rest-relaciones.php
-header.php → assets/templates/barra-superior.php
-footer.php → assets/templates/barra-inferior.php + wp_footer()
-
-front-page.php → template-parts/content-page-inicio.php
-page.php → template-parts/content-page.php
-page-sobre-el-proyecto.php → template-parts/content-page-sobre-proyecto.php
-page-nuestro-equipo.php → template-parts/content-page-equipo.php
-page-terminos-y-condiciones.php → template-parts/content-page-terminos.php
-single-ant_poeta.php → template-parts/content-single-poeta.php
-single-ant_poema.php → template-parts/content-single-poema.php
-single.php → template-parts/content-single.php
-index.php → template-parts/content.php
+assets/
+  assets.php
+  includes/
+    css-functions.php
+    js-functions.php
+    modulos-functions.php
+  modulos/
+    cpt-poetas.php
+    cpt-poemas.php
+    rest-relaciones.php
+  templates/
+    barra-superior.php
+    barra-inferior.php
+  librerias/
+    css/estilo-entre-versos.css
+    js/entre-versos-rest.js
+    js/entre-versos-contenido.js
+front-page.php
+page-*.php
+single-ant_poeta.php
+single-ant_poema.php
+template-parts/content-*.php
+docs/SCF-CAMPOS.md
 ```
 
-`404.php` es autocontenido. No se incluye barra de menú ni footer visual.
-`wp_footer()` permanece en `footer.php` porque WordPress lo necesita.
+**Convenciones:** `front-page.php` contiene la vista inicial y contenedores para la futura SPA; `single-ant_poeta.php` carga `content-single-poeta.php`; `single-ant_poema.php` carga `content-single-poema.php`; las páginas `page-*` cargan sus `content-page-*` y tienen `Template Name` para seleccionarlas desde WordPress.
 
-## Páginas informativas (WordPress)
+## Instalación
 
-Crea páginas publicadas con estos slugs si quieres habilitar los enlaces de
-la portada: `sobre-el-proyecto`, `nuestro-equipo`, `terminos-y-condiciones`.
-Mientras no existan, sus botones aparecerán deshabilitados, sin enlaces rotos.
-Las páginas usan el título y editor nativos de WordPress; no precisan SCF.
-Si el equipo decide usar modales, podrá cambiar esos enlaces sin rehacer la
-arquitectura editorial.
+1. Descomprimir el ZIP directamente dentro de `wp-content/themes/`, o instalarlo desde **Apariencia > Temas > Añadir tema > Subir tema**.
+2. Activar el tema *Entre Versos — Diseño 1.3*. Se puede mantener la versión anterior como referencia.
+3. **Ajustes > Lectura:** elegir una página estática como portada. WordPress utilizará `front-page.php`.
+4. **Ajustes > Enlaces permanentes:** guardar una vez para refrescar reglas de CPT.
+5. Instalar SCF y crear los grupos descritos en `docs/SCF-CAMPOS.md`; activar su exposición REST.
+6. Crear páginas informativas y seleccionar sus plantillas desde el administrador.
+7. Comprobar la carga de los recursos CDN en un navegador conectado a Internet.
 
-## CPT y REST
+## Criterios y limitaciones
 
-- CPT `ant_poeta`: `/wp-json/wp/v2/poetas`
-- CPT `ant_poema`: `/wp-json/wp/v2/poemas`
-- Filtro de relación: `/wp-json/wp/v2/poemas?poeta_id=123`
+- **Bootstrap 5.3** aporta `.container-fluid`, `.row`, `.col-*`, `d-flex`, espaciados, etc. Clases propias descriptivas en español se reservan para componentes de identidad y efectos.
+- No se incluyó Tailwind, Material Symbols ni ninguna fuente local de Stitch.
+- No se han copiado fotografías ni música del proyecto de referencia: las imágenes se administrarán desde la Biblioteca de medios y la música desde el campo `musica_url`.
+- WordPress ya suele incluir **jQuery 3.7.1** en versiones actuales; se usa el identificador `jquery` del core para evitar una segunda copia de jQuery. **Comprobar la versión efectiva** con la instalación antes de desarrollar; si difiere de 3.7.1, resolverlo explícitamente.
+- Sin la API REST y las interacciones programadas por el equipo, los componentes dinámicos son intencionadamente demostrativos/inertes.
+- La vista SPA completa requerirá programar cambios de estado, navegación e historial, además de accesibilidad y animaciones. Las plantillas `single-*` también sirven de respaldo WordPress.
+- Las páginas de información son enlaces WordPress convencionales **por ahora**; su navegación sin recarga se construirá posteriormente.
 
-El campo `poeta_relacionado` debe ser un **Post Object**, selección única,
-formato retorno ID. SCF debe exponer los grupos de campos en la API REST.
-Ver `docs/SCF-CAMPOS.md`.
+## Datos incluidos en los respaldos recibidos
 
-**No se cambiaron los identificadores** `ant_poeta`/`ant_poema` para preservar
-compatibilidad con la base de datos y con sus rutas REST.
+Los archivos XML y SQL proporcionados para el desarrollo identifican un poeta
+publicado («Federico García Lorca») y un poema publicado («Alba»), con seis
+estrofas y seis recursos visuales de la Biblioteca de medios. **No se incluye
+el SQL, el XML ni ninguna copia de datos personales en este tema.**
 
-## Pendiente para el equipo
+Los archivos de medios deben continuar disponibles en la instalación de
+WordPress: el XML y el SQL **no** transportan por sí solos los binarios de
+las fotografías originales.
 
-1. Completar las pantallas desde Figma y sus estilos definitivos.
-2. Consumir REST con JavaScript/jQuery y montar las tarjetas tipo Polaroid.
-3. Habilitar selección y arrastre de fotos hacia `#bandeja-poeta-contenido`,
-   incluyendo la ficha y el botón «Explorar poeta» (vacío de inicio).
-4. Crear el carrusel de biografía/poemas y la ampliación de pantallas.
-5. Implementar la lectura **estrofa por estrofa** y una imagen/animación por
-   estrofa, con palabras clave visualmente resaltadas, sin clic.
-6. Implementar la música vía URL externa SCF `musica_url`, con bajar volumen,
-   silenciar y subir volumen (sin MP3 local ni otros metadatos musicales).
-7. Habilitar interacciones y accesibilidad del carrusel y controles.
+## Cómo comprobar esta versión
 
-## Instalación y comparación
-
-El ZIP descomprime en `entre-versos-theme-v1-1/`, con el tema visible
-`Entre Versos — Estructura 1.1`; puede coexistir con `entre-versos-theme/`.
-Si ya hay CPT activos de otro tema/plugin, no habilitar ambos registros a la
-vez. Una vez activo el nuevo tema, guardar enlaces permanentes una vez.
-
-`style.css` solo contiene distribución estructural y accesibilidad; el equipo
-reemplazará ese CSS al crear la propuesta final.
+1. Con SCF activo, abrir `/wp-json/wp/v2/poetas` y comprobar que devuelve un array.
+2. Comprobar que el registro tiene `acf`, `excerpt` y `featured_media`.
+3. En la portada, observar Polaroids reales en lugar de marcadores ficticios.
+4. Abrir la URL nativa de un poeta: deben aparecer sus obras asociadas.
+5. Abrir la URL nativa de un poema: aparecerá la **primera estrofa** completa,
+   su imagen y el total de estrofas. La navegación entre ellas se programará después.
+6. Ante errores revisar Consola del navegador y Red > peticiones REST.

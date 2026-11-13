@@ -6,7 +6,7 @@
  * SCF debe tener el campo Post Object `poeta_relacionado`:
  * - tipo de contenido: ant_poeta
  * - selección múltiple: desactivada
- * - formato de retorno: ID
+ * - puede tener retorno ID u objeto (SCF almacena siempre el ID en postmeta)
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
