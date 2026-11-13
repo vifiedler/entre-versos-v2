@@ -337,8 +337,6 @@ button:disabled {
     top: 5%;
     left: 14%;
     z-index: 5;
-    outline: 5px solid var(--color-lima);
-    outline-offset: 3px;
 }
 .tarjeta-polaroid--segunda {
     --giro: 5deg;
@@ -1654,4 +1652,58 @@ body.single-ant_poema .lectura-continua__estrofas p:not(.fuente-mono) { font-siz
     body.single-ant_poeta .vista-poeta__titulo,
     body.single-ant_poema .vista-poema__titulo { font-size: 30px; }
     body.single-ant_poema .lector-estrofas__cabecera { padding: .4rem; }
+}
+
+
+/* Selección de poetas: el resaltado depende del hover o del clic, no del orden. */
+.posicion-polaroid {
+    cursor: pointer;
+}
+.posicion-polaroid .tarjeta-polaroid {
+    transition: background-color 160ms ease, box-shadow 160ms ease;
+}
+.posicion-polaroid:hover,
+.posicion-polaroid:focus-visible,
+.posicion-polaroid.esta-seleccionado {
+    z-index: 12;
+}
+.posicion-polaroid:hover .tarjeta-polaroid,
+.posicion-polaroid:focus-visible .tarjeta-polaroid,
+.posicion-polaroid.esta-seleccionado .tarjeta-polaroid {
+    background-color: var(--color-lima);
+    box-shadow: 7px 7px 0 var(--color-tinta);
+}
+.posicion-polaroid:focus-visible {
+    outline: 3px solid var(--color-tinta);
+    outline-offset: 5px;
+}
+.bandeja-poeta__contenido .ficha-poeta {
+    margin: 0;
+}
+.bandeja-poeta__contenido .ficha-poeta__imagen {
+    display: block;
+    width: 100%;
+    max-height: 65px;
+    object-fit: cover;
+    filter: grayscale(1);
+}
+.bandeja-poeta__contenido .ficha-poeta__nombre {
+    font-size: clamp(.62rem, .85vw, .8rem);
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+}
+.bandeja-poeta__contenido .ficha-poeta__descripcion {
+    font-size: .58rem;
+    line-height: 1.25;
+}
+.bandeja-poeta__contenido .ficha-poeta .boton-editorial {
+    font-size: .65rem;
+    min-height: 30px;
+    text-align: center;
+    padding: .3rem;
+}
+@media (max-width: 575.98px) {
+    .bandeja-poeta__contenido .ficha-poeta__nombre { font-size: .6rem; }
+    .bandeja-poeta__contenido .ficha-poeta__descripcion { font-size: .55rem; }
+    .bandeja-poeta__contenido .ficha-poeta .boton-editorial { font-size: .56rem; }
 }

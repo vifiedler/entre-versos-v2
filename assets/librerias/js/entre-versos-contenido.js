@@ -150,12 +150,113 @@
 
         marco.dataset.poetaId = String( entrada.id );
         marco.dataset.poetaUrl = entrada.link || '';
+        // Seleccionable con mouse y teclado, sin usar drag & drop todavía.
+        marco.setAttribute( 'role', 'button' );
+        marco.setAttribute( 'tabindex', '0' );
+        marco.setAttribute( 'aria-pressed', 'false' );
+        marco.setAttribute( 'aria-label', 'Seleccionar poeta: ' + tituloEntrada( entrada ) );
         marco.classList.add( 'tarjeta-polaroid--' + posiciones[ indice % posiciones.length ] );
         nombre.textContent = tituloEntrada( entrada );
         if ( foto ) { foto.remove(); }
         if ( imagen ) { imagen.appendChild( crearTexto( 'i', 'bi bi-person-bounding-box', '' ) ); }
         cargarFotografia( entrada, imagen );
         return fragmento;
+    }
+
+
+    // Selección de poeta: fondo lima, ficha en la caja y enlace a su entrada.
+    // El primer poeta no se selecciona automáticamente.
+    function mostrarPoetaSeleccionado( galeria, marco, poeta ) {
+        var destino = document.getElementById( 'bandeja-poeta-contenido' );
+        var plantilla = document.getElementById( 'plantilla-ficha-poeta' );
+        var fragmento;
+        var imagen;
+        var boton;
+        var enlace;
+        var nombre;
+        var descripcion;
+
+        galeria.querySelectorAll( '.posicion-polaroid' ).forEach( function( elemento ) {
+            var seleccionado = elemento === marco;
+            elemento.classList.toggle( 'esta-seleccionado', seleccionado );
+            elemento.setAttribute( 'aria-pressed', seleccionado ? 'true' : 'false' );
+        } );
+
+        if ( ! destino || ! plantilla ) {
+            return;
+        }
+
+        fragmento = plantilla.content.cloneNode( true );
+        imagen = fragmento.querySelector( '.ficha-poeta__imagen' );
+        nombre = fragmento.querySelector( '.ficha-poeta__nombre' );
+        descripcion = fragmento.querySelector( '.ficha-poeta__descripcion' );
+        boton = fragmento.querySelector( '.ficha-poeta button' );
+
+        if ( nombre ) {
+            nombre.textContent = tituloEntrada( poeta );
+        }
+        if ( descripcion ) {
+            descripcion.textContent = detallePoeta( poeta ) || resumenEntrada( poeta );
+        }
+        if ( boton ) {
+            enlace = document.createElement( 'a' );
+            enlace.className = boton.className;
+            enlace.href = poeta.link || '#';
+            enlace.textContent = 'Explorar poeta ';
+            enlace.appendChild( crearTexto( 'i', 'bi bi-arrow-right', '' ) );
+            enlace.querySelector( 'i' ).setAttribute( 'aria-hidden', 'true' );
+            boton.replaceWith( enlace );
+        }
+
+        destino.replaceChildren( fragmento );
+
+        if ( imagen ) {
+            imagenDestacada( poeta ).then( function( medio ) {
+                var ruta = urlImagen( medio );
+                if ( ruta ) {
+                    imagen.src = ruta;
+                    imagen.alt = 'Retrato de ' + tituloEntrada( poeta );
+                    imagen.loading = 'lazy';
+                } else {
+                    imagen.hidden = true;
+                }
+            } ).catch( function( error ) {
+                imagen.hidden = true;
+                console.warn( 'No se pudo cargar la fotografía seleccionada:', error );
+            } );
+        }
+    }
+
+    function activarSeleccionPoetas( galeria, poetas ) {
+        var registros = new Map();
+
+        poetas.forEach( function( poeta ) {
+            registros.set( String( poeta.id ), poeta );
+        } );
+
+        function seleccionarDesdeTarjeta( destino ) {
+            var marco = destino.closest( '.posicion-polaroid' );
+            var poeta;
+
+            if ( ! marco || ! galeria.contains( marco ) ) {
+                return;
+            }
+            poeta = registros.get( marco.dataset.poetaId );
+            if ( poeta ) {
+                mostrarPoetaSeleccionado( galeria, marco, poeta );
+            }
+        }
+
+        galeria.addEventListener( 'click', function( evento ) {
+            seleccionarDesdeTarjeta( evento.target );
+        } );
+        galeria.addEventListener( 'keydown', function( evento ) {
+            if ( ( evento.key === 'Enter' || evento.key === ' ' ) &&
+                evento.target.classList.contains( 'posicion-polaroid' ) ) {
+                evento.preventDefault();
+                seleccionarDesdeTarjeta( evento.target );
+            }
+        } );
     }
 
     function cargarGaleria() {
@@ -178,6 +279,7 @@
                 fragmento.appendChild( crearTarjetaPoeta( poeta, indice, plantilla ) );
             } );
             galeria.replaceChildren( fragmento );
+            activarSeleccionPoetas( galeria, poetas );
             if ( cantidad ) {
                 cantidad.textContent = String( total ).padStart( 2, '0' ) + ( total === 1 ? ' poeta en sala' : ' poetas en sala' );
             }
