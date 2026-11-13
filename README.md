@@ -117,3 +117,13 @@ Consulta `CAMBIOS-v1.3.2.md` para el detalle técnico.
 ## Cambios v1.3.3
 
 Consultar `CAMBIOS-v1.3.3.md` para las correcciones de W3C y el comportamiento de YouTube.
+
+
+## Ajustes v1.3.4
+
+- Barra contextual: botón «Inicio», sin «Registro».
+- Vista del poeta: titulares, tarjetas y bloque de obras reajustados para permanecer dentro de la altura disponible del viewport.
+- La barra inferior se mantiene visible; el texto largo se desplaza dentro de las tarjetas, no en la página general.
+- Hasta activar Slick, las nuevas pantallas de poema se consultan desde los enlaces del índice de obras, evitando que generen filas adicionales fuera de pantalla.
+- Responsive: en tablet y móvil los paneles se pueden recorrer horizontalmente dentro de su contenedor.
+- No se modifican CPT, SCF, REST, música ni scripts existentes.

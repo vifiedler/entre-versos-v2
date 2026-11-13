@@ -32,7 +32,7 @@ $informativos = array(
         <div class="row g-2 g-lg-3 align-items-center barra-superior__interior">
             <div class="col-auto">
                 <a class="barra-superior__inicio boton-editorial boton-editorial--compacto" href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home" aria-label="Volver al inicio de Entre Versos">
-                    <i class="bi bi-arrow-left" aria-hidden="true"></i><span>Inicio / Registro</span>
+                    <i class="bi bi-arrow-left" aria-hidden="true"></i><span>Inicio</span>
                 </a>
             </div>
             <div class="col-auto d-none d-md-block">
