@@ -13,7 +13,7 @@ $secciones = array(
         <!-- Tarjetas fotográficas tipo Polaroid: pendientes de REST API y JavaScript. -->
     </div>
 </section>
-
+ESTO ES PARA VER SI FUNCIONA O NO aaaaESTO ES PARA VER SI FUNCIONA O NO aaaa
 <nav class="enlaces-informativos" aria-label="Información del proyecto">
     <?php foreach ( $secciones as $seccion ) :
         $pagina_info = get_page_by_path( $seccion['slug'], OBJECT, 'page' );
