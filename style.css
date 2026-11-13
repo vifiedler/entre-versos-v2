@@ -1,0 +1,48 @@
+/*
+Theme Name: Entre Versos — Estructura 1.1
+Author: Equipo Entre Versos
+Description: Tema base de la Antología de Poetas Latinoamericanos. Estructura HTML/PHP y CPT, sin interacciones JavaScript ni diseño visual definitivo.
+Version: 1.1.1
+Requires at least: 6.0
+Requires PHP: 7.4
+Text Domain: entre-versos-theme
+License: GPL-2.0-or-later
+*/
+
+/* CSS exclusivamente estructural: el equipo definirá la identidad visual. */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: auto; }
+body { margin: 0; }
+img, svg { max-width: 100%; height: auto; }
+button, input { font: inherit; }
+.antologia { min-height: 100vh; min-height: 100svh; padding-bottom: 13.5rem; }
+.contenido-principal { width: 100%; padding: 1.5rem; }
+.barra-superior { display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: center; justify-content: space-between; padding: 1rem 1.5rem; border-bottom: 1px solid currentColor; }
+.barra-superior__migas { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; list-style: none; margin: 0; padding: 0; }
+.barra-superior__ruta { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+.galeria-poetas { min-height: 35vh; }
+.enlaces-informativos { display: flex; flex-wrap: wrap; gap: 1rem; }
+.barra-inferior { position: fixed; inset: auto 0 0; z-index: 20; background: #fff; border-top: 1px solid currentColor; padding: 1rem 1.5rem; }
+.barra-inferior__disposicion { display: grid; grid-template-columns: minmax(0,1fr) minmax(12rem,16rem); align-items: end; gap: 1.5rem; }
+.barra-inferior__marca { margin: 0; font-size: clamp(2rem,5vw,4rem); font-weight: 800; line-height: 1.1; }
+.barra-inferior__lateral { display: flex; flex-direction: column; gap: .75rem; }
+.bandeja-poeta { min-height: 7rem; border: 1px dashed currentColor; }
+.reproductor-volumen { display: flex; align-items: center; gap: .5rem; }
+.reproductor-volumen__controles { display: flex; gap: .5rem; }
+.reproductor-volumen button { min-width: 2.5rem; min-height: 2.5rem; }
+.pantallas-poeta__contenedor, .lector-estrofas__disposicion { display: grid; gap: 1.5rem; grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
+.lector-estrofas__navegacion { display: flex; justify-content: space-between; }
+.lector-estrofas__versos { min-height: 12rem; }
+.lector-estrofas__visual { min-height: 12rem; border: 1px dashed currentColor; margin: 0; }
+.screen-reader-text { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.screen-reader-text:focus { position: fixed; top: 1rem; left: 1rem; width: auto; height: auto; padding: .5rem; clip: auto; overflow: visible; background: #fff; color: #000; z-index: 100; }
+@media (max-width: 640px) {
+  .contenido-principal { padding: 1rem; }
+  .barra-superior { padding: .75rem 1rem; }
+  .antologia { padding-bottom: 14.5rem; }
+  .barra-inferior { padding: .75rem 1rem; }
+  .barra-inferior__disposicion { grid-template-columns: minmax(0,1fr) minmax(9rem,45%); gap: .75rem; }
+  .barra-inferior__marca { font-size: clamp(1.2rem,5vw,2rem); }
+  .bandeja-poeta { min-height: 5rem; }
+  .pantallas-poeta__contenedor, .lector-estrofas__disposicion { grid-template-columns: 1fr; }
+}
