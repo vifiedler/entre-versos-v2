@@ -202,6 +202,7 @@
             enlace = document.createElement( 'a' );
             enlace.className = boton.className;
             enlace.href = poeta.link || '#';
+            enlace.dataset.poetaId = String( poeta.id );
             enlace.textContent = 'Explorar poeta ';
             enlace.appendChild( crearTexto( 'i', 'bi bi-arrow-right', '' ) );
             enlace.querySelector( 'i' ).setAttribute( 'aria-hidden', 'true' );

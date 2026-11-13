@@ -53,9 +53,20 @@ function entre_versos_cargar_scripts() {
             'entre-versos-contenido',
             get_theme_file_uri( '/assets/librerias/js/entre-versos-contenido.js' ),
             array( 'entre-versos-rest' ),
-            $version_tema,
+            filemtime( get_theme_file_path( '/assets/librerias/js/entre-versos-contenido.js' ) ),
             true
         );
+
+        // El hub se activa exclusivamente en la portada: Slick + modal Bootstrap.
+        if ( is_front_page() ) {
+            wp_enqueue_script(
+                'entre-versos-hub',
+                get_theme_file_uri( '/assets/librerias/js/entre-versos-hub.js' ),
+                array( 'entre-versos-contenido', 'entre-versos-slick', 'entre-versos-mark', 'entre-versos-bootstrap' ),
+                filemtime( get_theme_file_path( '/assets/librerias/js/entre-versos-hub.js' ) ),
+                true
+            );
+        }
     }
 
     // En el poema, alternar entre la estrofa visible y la lectura continua.
@@ -70,16 +81,16 @@ function entre_versos_cargar_scripts() {
     }
 
     // YouTube exclusivamente en poeta y poemas relacionados; nunca en la portada.
-    if ( is_singular( array( 'ant_poeta', 'ant_poema' ) ) ) {
+    if ( is_front_page() || is_singular( array( 'ant_poeta', 'ant_poema' ) ) ) {
         $poeta_id = is_singular( 'ant_poeta' )
             ? get_queried_object_id()
-            : absint( get_post_meta( get_queried_object_id(), 'poeta_relacionado', true ) );
+            : ( is_singular( 'ant_poema' ) ? absint( get_post_meta( get_queried_object_id(), 'poeta_relacionado', true ) ) : 0 );
 
         wp_enqueue_script(
             'entre-versos-audio',
             get_theme_file_uri( '/assets/librerias/js/entre-versos-audio.js' ),
             array( 'entre-versos-rest' ),
-            wp_get_theme()->get( 'Version' ),
+            filemtime( get_theme_file_path( '/assets/librerias/js/entre-versos-audio.js' ) ),
             true
         );
         wp_localize_script( 'entre-versos-audio', 'entreVersosAudioConfig', array( 'poetaId' => $poeta_id ) );

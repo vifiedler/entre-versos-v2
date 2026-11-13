@@ -1,22 +1,26 @@
 /**
- * Entre Versos · Música del poeta mediante YouTube IFrame Player API.
- * Iframe de YouTube fuera de la vista, con controles propios de volumen.
- * El navegador puede bloquear el autoplay con sonido.
+ * Entre Versos · Música ambiental de cada poeta.
+ * YouTube IFrame API, URL obtenida desde SCF, volumen inicial 50 %.
+ * En la portada no se reproduce música; el hub la activa sin recargar la página.
  */
 ( function() {
     'use strict';
+
     var configuracion = window.entreVersosAudioConfig || {};
     var api = window.EntreVersosRest;
     var reproductor = null;
+    var listo = false;
+    var apiLista = false;
+    var idPendiente = '';
+    var idActual = '';
     var volumen = 50;
     var silencio = false;
-    var cargando = false;
-    var listo = false;
-    var caja = document.getElementById( 'musica-youtube' );
-    var aviso = document.getElementById( 'estado-musica' );
+    var controlesRegistrados = false;
 
-    function informar( texto ) {
-        if ( aviso ) { aviso.textContent = texto; }
+    function nodo( id ) { return document.getElementById( id ); }
+    function informar( mensaje ) {
+        var estado = nodo( 'estado-musica' );
+        if ( estado ) { estado.textContent = mensaje; }
     }
     function identificarVideo( url ) {
         try {
@@ -25,99 +29,140 @@
             var partes = direccion.pathname.split( '/' ).filter( Boolean );
             var codigo = '';
             if ( host === 'youtu.be' ) { codigo = partes[ 0 ] || ''; }
-            if ( host === 'youtube.com' || host === 'm.youtube.com' || host === 'music.youtube.com' || host === 'youtube-nocookie.com' ) {
+            if ( [ 'youtube.com', 'm.youtube.com', 'music.youtube.com', 'youtube-nocookie.com' ].includes( host ) ) {
                 if ( partes[ 0 ] === 'watch' ) { codigo = direccion.searchParams.get( 'v' ) || ''; }
                 if ( [ 'embed', 'shorts', 'live' ].includes( partes[ 0 ] ) ) { codigo = partes[ 1 ] || ''; }
             }
             return /^[a-zA-Z0-9_-]{11}$/.test( codigo ) ? codigo : '';
         } catch ( error ) { return ''; }
     }
-    function actualizarVolumen() {
-        var salida = document.getElementById( 'volumen-valor' );
-        var silenciar = document.getElementById( 'volumen-silenciar' );
-        if ( salida ) { salida.textContent = silencio ? 'Mute' : volumen + '%'; }
-        if ( silenciar ) {
-            silenciar.setAttribute( 'aria-label', silencio ? 'Activar sonido' : 'Silenciar música' );
-            var icono = silenciar.querySelector( 'i' );
+    function interfazVolumen() {
+        var porcentaje = nodo( 'volumen-valor' );
+        var botonSilencio = nodo( 'volumen-silenciar' );
+        if ( porcentaje ) { porcentaje.textContent = idPendiente ? ( silencio ? 'Mute' : volumen + '%' ) : '—'; }
+        if ( botonSilencio ) {
+            botonSilencio.setAttribute( 'aria-label', silencio ? 'Activar sonido' : 'Silenciar música' );
+            var icono = botonSilencio.querySelector( 'i' );
             if ( icono ) { icono.className = 'bi ' + ( silencio ? 'bi-volume-mute' : 'bi-volume-up' ); }
         }
-    }
-    function ajustar( valor ) {
-        volumen = Math.max( 0, Math.min( 100, valor ) );
-        silencio = false;
-        if ( ! reproductor || ! listo ) { return; }
-        reproductor.unMute();
-        reproductor.setVolume( volumen );
-        reproductor.playVideo();
-        actualizarVolumen();
-    }
-    function activarControles() {
         [ 'volumen-bajar', 'volumen-silenciar', 'volumen-subir' ].forEach( function( id ) {
-            var boton = document.getElementById( id );
-            if ( boton ) { boton.disabled = false; }
+            var boton = nodo( id );
+            if ( boton ) { boton.disabled = !idPendiente || !listo; }
         } );
-        document.getElementById( 'volumen-bajar' )?.addEventListener( 'click', function() { ajustar( volumen - 10 ); } );
-        document.getElementById( 'volumen-subir' )?.addEventListener( 'click', function() { ajustar( volumen + 10 ); } );
-        document.getElementById( 'volumen-silenciar' )?.addEventListener( 'click', function() {
-            silencio = ! silencio;
-            if ( silencio ) { reproductor.mute(); } else { reproductor.unMute(); }
-            reproductor.playVideo();
-            actualizarVolumen();
-        } );
-        actualizarVolumen();
     }
-    function crearReproductor( id ) {
-        if ( ! window.YT || ! window.YT.Player || ! caja || cargando ) { return; }
-        cargando = true;
+    function bajarSubir( variacion ) {
+        volumen = Math.max( 0, Math.min( 100, volumen + variacion ) );
+        silencio = false;
+        if ( listo && reproductor ) {
+            reproductor.unMute();
+            reproductor.setVolume( volumen );
+            if ( typeof reproductor.playVideo === 'function' ) { reproductor.playVideo(); }
+        }
+        interfazVolumen();
+    }
+    function registrarControles() {
+        if ( controlesRegistrados ) { return; }
+        controlesRegistrados = true;
+        nodo( 'volumen-bajar' )?.addEventListener( 'click', function() { bajarSubir( -10 ); } );
+        nodo( 'volumen-subir' )?.addEventListener( 'click', function() { bajarSubir( 10 ); } );
+        nodo( 'volumen-silenciar' )?.addEventListener( 'click', function() {
+            if ( ! listo || ! reproductor ) { return; }
+            silencio = !silencio;
+            if ( silencio ) { reproductor.mute(); }
+            else { reproductor.unMute(); }
+            reproductor.playVideo();
+            interfazVolumen();
+        } );
+        interfazVolumen();
+    }
+    function iniciarVideo() {
+        if ( !apiLista || !idPendiente || !window.YT || !window.YT.Player || !nodo( 'musica-youtube' ) ) { return; }
+        if ( reproductor && listo ) {
+            reproductor.setVolume( volumen );
+            if ( silencio ) { reproductor.mute(); } else { reproductor.unMute(); }
+            if ( idActual === idPendiente ) { reproductor.playVideo(); }
+            else {
+                idActual = idPendiente;
+                reproductor.loadPlaylist( [ idActual ] );
+                reproductor.setLoop( true );
+            }
+            informar( '' );
+            return;
+        }
+        if ( reproductor ) { return; } // Se está creando: onReady usa el último idPendiente.
         reproductor = new window.YT.Player( 'youtube-reproductor', {
             width: 1,
             height: 1,
-            videoId: id,
+            videoId: idPendiente,
             playerVars: {
-                autoplay: 1,
+                autoplay: 0,
                 controls: 0,
                 playsinline: 1,
                 loop: 1,
-                playlist: id,
+                playlist: idPendiente,
                 origin: window.location.origin
             },
             events: {
                 onReady: function( evento ) {
                     listo = true;
-                    evento.target.setVolume( 50 );
-                    evento.target.unMute();
+                    evento.target.setVolume( volumen );
+                    if ( silencio ) { evento.target.mute(); } else { evento.target.unMute(); }
                     var iframe = evento.target.getIframe();
                     if ( iframe ) { iframe.setAttribute( 'tabindex', '-1' ); }
-                    activarControles();
-                    // Intentar reproducción automática después de fijar el volumen al 50%.
-                    evento.target.playVideo();
-                    informar( '' );
+                    if ( idPendiente ) {
+                        // Puede cambiar el poeta mientras la API termina de cargarse.
+                        idActual = idPendiente;
+                        evento.target.loadPlaylist( [ idActual ] );
+                        evento.target.setLoop( true );
+                    }
+                    registrarControles();
+                    interfazVolumen();
                 },
                 onAutoplayBlocked: function() {
-                    informar( 'Tu navegador bloqueó el inicio automático. Usa los botones de volumen para intentar reproducir.' );
+                    informar( 'El navegador bloqueó la reproducción automática. Usa los controles de volumen para reintentar.' );
                 },
                 onError: function( evento ) {
-                    informar( 'Este video no se puede reproducir aquí (código ' + evento.data + ').' );
+                    informar( 'Este vídeo de YouTube no se puede reproducir aquí (' + evento.data + ').' );
                 }
             }
         } );
     }
-    window.onYouTubeIframeAPIReady = function() {
-        if ( ! api || ! Number( configuracion.poetaId ) ) { return; }
-        api.obtenerPoeta( Number( configuracion.poetaId ) ).then( function( poeta ) {
-            var url = poeta && poeta.acf ? poeta.acf.musica_url : '';
-            var videoId = identificarVideo( url );
-            if ( videoId ) { crearReproductor( videoId ); }
-            else { informar( url ? 'La URL no corresponde a un video de YouTube.' : 'Este poeta no tiene música asociada.' ); }
-        } ).catch( function( error ) {
-            console.warn( 'No se pudo cargar la música desde REST:', error );
-            informar( 'No se pudo cargar la música del poeta.' );
-        } );
-    };
-    // Al regresar al inicio, WordPress descarga la página y detiene el reproductor.
-    window.addEventListener( 'pagehide', function() {
+    function activarPoeta( poeta ) {
+        var url = poeta && poeta.acf ? poeta.acf.musica_url : '';
+        idPendiente = identificarVideo( url );
+        volumen = 50;
+        silencio = false;
+        registrarControles();
+        interfazVolumen();
+        if ( idPendiente ) { iniciarVideo(); }
+        else {
+            detener();
+            informar( url ? 'URL de YouTube no válida.' : 'Este poeta no tiene música asociada.' );
+        }
+    }
+    function detener() {
+        idPendiente = '';
         if ( listo && reproductor && typeof reproductor.stopVideo === 'function' ) {
             reproductor.stopVideo();
         }
-    } );
+        interfazVolumen();
+        informar( '' );
+    }
+
+    window.EntreVersosAudio = { activarPoeta: activarPoeta, detener: detener };
+    window.onYouTubeIframeAPIReady = function() {
+        apiLista = true;
+        if ( idPendiente ) { iniciarVideo(); }
+        var poetaId = Number( configuracion.poetaId );
+        if ( poetaId && api ) {
+            api.obtenerPoeta( poetaId ).then( activarPoeta ).catch( function( error ) {
+                console.warn( 'Error al solicitar la música:', error );
+                informar( 'No se pudo cargar la música del poeta.' );
+            } );
+        }
+    };
+    if ( document.readyState === 'loading' ) {
+        document.addEventListener( 'DOMContentLoaded', registrarControles );
+    } else { registrarControles(); }
+    window.addEventListener( 'pagehide', detener );
 }() );

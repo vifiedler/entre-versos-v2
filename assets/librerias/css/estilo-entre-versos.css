@@ -1707,3 +1707,199 @@ body.single-ant_poema .lectura-continua__estrofas p:not(.fuente-mono) { font-siz
     .bandeja-poeta__contenido .ficha-poeta__descripcion { font-size: .55rem; }
     .bandeja-poeta__contenido .ficha-poeta .boton-editorial { font-size: .56rem; }
 }
+
+/* ==========================================================================
+   Hub del poeta · selección de obras y biografía (sin recargas)
+   La portada y el hub comparten front-page.php. Se preservan ambas barras.
+   ========================================================================== */
+body.home.modo-hub .barra-superior__marca,
+body.home.modo-hub .enlaces-informativos { display: none !important; }
+body.home.modo-hub .reproductor-volumen__controles { opacity: 1; }
+body.home.modo-hub .contenido-principal--inicio { overflow: hidden; }
+body.home .vista-dinamica[hidden],
+.hub-poeta[hidden],
+.modal-hub [hidden] { display: none !important; }
+
+.hub-poeta {
+    height: 100%;
+    min-height: 0;
+    padding: clamp(.4rem, 1vw, 1rem) clamp(.4rem, 1.5vw, 1.3rem);
+    overflow: hidden;
+    border: var(--borde-editorial);
+}
+.hub-poeta__encabezado { flex: 0 0 auto; }
+.hub-poeta__titulo {
+    font-size: clamp(28px, 3.1vw, 48px);
+    line-height: 1.08;
+    margin: .5rem 0 .25rem;
+    overflow-wrap: anywhere;
+}
+.hub-poeta__escenario { flex: 1 1 auto; min-height: 0; overflow: hidden; }
+.hub-poeta__carrusel { min-width: 0; width: 100%; }
+.hub-poeta__carrusel .slick-list { overflow: visible; }
+.hub-poeta__carrusel .slick-track { display: flex; align-items: center; }
+.hub-poeta__pantalla { display: flex !important; justify-content: center; padding: 1rem .65rem 1.25rem; }
+.hub-poeta__tarjeta {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: .55rem;
+    width: min(100%, 440px);
+    min-height: 220px;
+    height: clamp(255px, 51dvh, 485px);
+    max-height: 100%;
+    padding: clamp(.65rem, 1.5vw, 1.3rem);
+    text-align: left;
+    color: var(--color-tinta);
+    background: var(--color-blanco);
+    border: 3px solid var(--color-tinta);
+    box-shadow: 8px 8px 0 var(--color-tinta);
+    cursor: pointer;
+    transition: transform .3s ease, background-color .3s ease, opacity .3s ease;
+    overflow: hidden;
+}
+.hub-poeta__carrusel .slick-slide .hub-poeta__tarjeta {
+    transform: perspective(900px) rotateY(-11deg) scale(.82) rotate(-2deg);
+    opacity: .65;
+}
+.hub-poeta__carrusel .slick-center .hub-poeta__tarjeta,
+.hub-poeta__carrusel:not(.slick-initialized) .hub-poeta__tarjeta {
+    transform: none;
+    opacity: 1;
+}
+.hub-poeta__tarjeta:hover,
+.hub-poeta__tarjeta:focus-visible,
+.hub-poeta__carrusel .slick-center .hub-poeta__tarjeta:hover {
+    background: var(--color-lima);
+    transform: translateY(-3px) scale(1.02);
+    opacity: 1;
+}
+.hub-poeta__tarjeta-imagen {
+    flex: 1 1 auto;
+    min-height: 0;
+    background: var(--color-papel-sombra);
+    border: var(--borde-editorial);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.hub-poeta__tarjeta-imagen img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.hub-poeta__tarjeta-titulo {
+    flex: 0 0 auto;
+    margin: 0;
+    font-size: clamp(20px, 2vw, 28px);
+    line-height: 1.15;
+    font-weight: 800;
+}
+.hub-poeta__tarjeta-resumen {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-clamp: 2;
+    overflow: hidden;
+    font-size: 14px;
+    margin: 0;
+}
+.hub-poeta__abrir { margin-top: auto; text-align: right; }
+.hub-poeta__navegacion { flex: 0 0 auto; padding: .35rem 1rem; }
+
+/* Bootstrap modal: fondo atenuado entre las barras, desplazamiento interno. */
+body.home.modo-hub .barra-superior,
+body.home.modo-hub .barra-inferior { position: relative; z-index: 1100; }
+body.home.modo-hub .modal-backdrop { z-index: 1050; }
+.modal-hub {
+    z-index: 1060;
+    top: var(--alto-barra-superior);
+    height: calc(100dvh - var(--alto-barra-superior) - var(--alto-barra-inferior));
+    padding: 0 !important;
+}
+.modal-hub .modal-dialog {
+    max-width: min(1120px, calc(100vw - 2rem));
+    width: 100%;
+    height: calc(100% - 1.3rem);
+    max-height: none;
+    margin: .65rem auto;
+}
+.modal-hub .modal-content {
+    border: 3px solid var(--color-tinta);
+    border-radius: 2px;
+    box-shadow: 8px 8px 0 var(--color-tinta);
+    overflow: hidden;
+}
+.modal-hub__cabecera {
+    background: var(--color-papel);
+    border-bottom: 2px solid var(--color-tinta);
+    display: flex;
+    gap: 1rem;
+    padding: .8rem clamp(.75rem, 2vw, 1.5rem);
+}
+.modal-hub__titulo {
+    font-size: clamp(24px, 3vw, 36px);
+    line-height: 1.1;
+    margin-top: .4rem;
+    overflow-wrap: anywhere;
+}
+.modal-hub__cuerpo {
+    min-height: 0;
+    padding: clamp(.75rem, 2vw, 1.7rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+.modal-hub__texto,
+.modal-hub__texto p,
+.modal-hub__verso { font-size: 16px; line-height: 1.75; }
+.modal-hub__texto h2 { font-size: 32px; }
+.modal-hub__texto h3 { font-size: 24px; }
+.modal-hub__texto h4 { font-size: 20px; }
+.modal-hub__imagen {
+    border: var(--borde-editorial);
+    background: var(--color-papel-sombra);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 185px;
+    overflow: hidden;
+}
+.modal-hub__retrato .modal-hub__imagen { aspect-ratio: 4/5; }
+.modal-hub__imagen--estrofa { aspect-ratio: 4/3; }
+.modal-hub__imagen--cierre { min-height: 180px; max-height: 440px; }
+.modal-hub__imagen img { width: 100%; height: 100%; object-fit: contain; }
+.modal-hub__retrato img { object-fit: cover; }
+.modal-hub__verso { display: flex; gap: .8rem; margin-bottom: .85rem; }
+.modal-hub__numero-verso { flex: 0 0 auto; padding-top: .22rem; }
+.modal-hub__verso mark { background: var(--color-lima); color: var(--color-tinta); padding: 0 .12rem; }
+.modal-hub__estrofa-completa { margin-bottom: 1.5rem; }
+.modal-hub__estrofa-completa > .etiqueta-editorial { margin-bottom: .7rem; }
+.modal-hub__cierre { margin-top: 2rem; border-top: 2px solid var(--color-tinta); padding-top: 1.2rem; }
+.modal-hub__cierre h3 { font-size: 24px; }
+
+@media (max-width: 767.98px) {
+    .hub-poeta { padding: .35rem .4rem; }
+    .hub-poeta__titulo { font-size: clamp(26px, 7vw, 36px); }
+    .hub-poeta__pantalla { padding: .6rem .25rem .8rem; }
+    .hub-poeta__tarjeta { height: clamp(220px, 46dvh, 380px); padding: .6rem; }
+    .hub-poeta__tarjeta-titulo { font-size: 20px; }
+    .hub-poeta__tarjeta-resumen { font-size: 12px; }
+    .modal-hub .modal-dialog { max-width: calc(100vw - .6rem); height: calc(100% - .6rem); margin: .3rem auto; }
+    .modal-hub__cabecera { padding: .5rem; }
+    .modal-hub__titulo { font-size: clamp(20px, 5vw, 28px); }
+    .modal-hub__cuerpo { padding: .7rem; }
+    .modal-hub__imagen--estrofa { max-height: 230px; }
+}
+body.admin-bar .modal-hub {
+    top: calc(var(--alto-barra-superior) + 32px);
+    height: calc(100dvh - var(--alto-barra-superior) - var(--alto-barra-inferior) - 32px);
+}
+@media (max-width: 782px) {
+    body.admin-bar .modal-hub {
+        top: calc(var(--alto-barra-superior) + 46px);
+        height: calc(100dvh - var(--alto-barra-superior) - var(--alto-barra-inferior) - 46px);
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .hub-poeta__tarjeta, .hub-poeta__carrusel .slick-slide .hub-poeta__tarjeta { transition: none; }
+}
+
+/* Evitar contenido emergente expuesto si el CDN de Bootstrap aún no carga. */
+.modal-hub:not(.show) { display: none; }

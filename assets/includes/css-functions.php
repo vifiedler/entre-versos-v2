@@ -24,7 +24,7 @@ function entre_versos_cargar_estilos() {
         'entre-versos-estilos',
         get_theme_file_uri( '/assets/librerias/css/estilo-entre-versos.css' ),
         array( 'entre-versos-theme', 'entre-versos-iconos', 'entre-versos-fuentes', 'entre-versos-slick', 'entre-versos-atropos' ),
-        $version
+        filemtime( get_theme_file_path( '/assets/librerias/css/estilo-entre-versos.css' ) )
     );
 }
 add_action( 'wp_enqueue_scripts', 'entre_versos_cargar_estilos' );
