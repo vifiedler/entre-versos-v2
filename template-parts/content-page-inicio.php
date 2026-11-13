@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
             <!-- La zona de selección se reserva en la portada; el arrastre se implementará después. -->
             <aside id="bandeja-poeta" class="bandeja-poeta bandeja-poeta--inicio" aria-label="Zona de selección de poeta">
                 <div class="bandeja-poeta__etiqueta fuente-mono">
-                    <span>Tolva // Dejar aquí</span>
+                    <span>Dejar aquí</span>
                     <span class="cuadro-lima" aria-hidden="true"></span>
                 </div>
                 <div id="bandeja-poeta-contenido" class="bandeja-poeta__contenido" aria-live="polite"></div>
@@ -30,11 +30,8 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
     <div class="posicion-polaroid" data-poeta-id="">
         <article class="atropos tarjeta-polaroid">
             <div class="atropos-scale"><div class="atropos-rotate"><div class="atropos-inner">
-                <div class="tarjeta-polaroid__cabecera"><span class="tarjeta-polaroid__identificador"></span><span>Explorar</span></div>
                 <div class="tarjeta-polaroid__foto"><img class="tarjeta-polaroid__imagen" alt="" loading="lazy"></div>
                 <h2 class="tarjeta-polaroid__nombre"></h2>
-                <p class="tarjeta-polaroid__detalle"></p>
-                <p class="tarjeta-polaroid__cita"></p>
             </div></div></div>
         </article>
     </div>

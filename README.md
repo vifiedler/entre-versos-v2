@@ -1,3 +1,17 @@
+# Entre Versos v1.3.5
+
+Versión comparativa a partir de v1.3.4. Ajustes visuales de escala, Polaroids, navegación superior, biografía completa y barra inferior visible en todas las vistas.
+
+**Archivos PHP y JavaScript siguen separados siguiendo el patrón del equipo.** Los CPT, SCF, rutas REST y la lógica YouTube de la versión anterior no se han modificado.
+
+**Audio:** los controles aparecen en todas las pantallas, pero la reproducción se intenta solo en las vistas de poeta/poema al 50 %. El autoplay puede quedar bloqueado por el navegador; el uso de un reproductor de YouTube oculto sigue fuera de sus requisitos de presentación.
+
+**Vistas:** portada y poema ajustados al viewport; biografía permite scroll en el área principal y las páginas informativas en su contenido, siempre dejando visible la barra inferior. La lectura continua mantiene scroll propio.
+
+Consulta `CAMBIOS-v1.3.5.md` para los cambios específicos.
+
+---
+
 # Entre Versos — Diseño 1.3.2 · Lectura continua y música
 
 Tema clásico de WordPress para una **Antología Interactiva de Poetas Latinoamericanos**. Esta versión integra **HTML/PHP y CSS responsivo** a partir del diseño visual de Stitch, utilizando Bootstrap 5.3 y Bootstrap Icons, incorporando la carga REST, el modo de lectura continua y un reproductor visible de YouTube en las pantallas de autor y poema. La navegación SPA, el carrusel y el drag & drop siguen pendientes.

@@ -139,32 +139,22 @@
     }
 
     // Portada: sustituye únicamente las fotografías de ejemplo por registros reales.
+    // Una Polaroid solo muestra la fotografía y el nombre del poeta.
     function crearTarjetaPoeta( entrada, indice, plantilla ) {
         var posiciones = [ 'primera', 'segunda', 'tercera', 'cuarta', 'quinta' ];
         var fragmento = plantilla.content.cloneNode( true );
         var marco = fragmento.querySelector( '.posicion-polaroid' );
         var imagen = fragmento.querySelector( '.tarjeta-polaroid__foto' );
-        var cabecera = fragmento.querySelector( '.tarjeta-polaroid__identificador' );
         var nombre = fragmento.querySelector( '.tarjeta-polaroid__nombre' );
-        var detalle = fragmento.querySelector( '.tarjeta-polaroid__detalle' );
-        var cita = fragmento.querySelector( '.tarjeta-polaroid__cita' );
         var foto = fragmento.querySelector( '.tarjeta-polaroid__imagen' );
-        var campos = metadatos( entrada );
 
         marco.dataset.poetaId = String( entrada.id );
         marco.dataset.poetaUrl = entrada.link || '';
         marco.classList.add( 'tarjeta-polaroid--' + posiciones[ indice % posiciones.length ] );
-        cabecera.textContent = 'ARCHIVO ' + String( indice + 1 ).padStart( 2, '0' );
         nombre.textContent = tituloEntrada( entrada );
-        detalle.textContent = detallePoeta( entrada );
-        cita.textContent = String( campos.cita_destacada || resumenEntrada( entrada ) || '' ).trim();
-
-        foto.remove();
-        if ( imagen ) {
-            imagen.appendChild( crearTexto( 'i', 'bi bi-person-bounding-box', '' ) );
-        }
+        if ( foto ) { foto.remove(); }
+        if ( imagen ) { imagen.appendChild( crearTexto( 'i', 'bi bi-person-bounding-box', '' ) ); }
         cargarFotografia( entrada, imagen );
-
         return fragmento;
     }
 
@@ -204,6 +194,7 @@
         }
     }
 
+    // Se muestra la biografía completa de Gutenberg desde la carga inicial.
     function actualizarPoeta( raiz, entrada ) {
         var nombre = tituloEntrada( entrada );
         var descripcion = resumenEntrada( entrada );
@@ -211,15 +202,9 @@
         var textoBiografia = raiz.querySelector( '#contenido-biografia' );
 
         actualizarTexto( '.vista-poeta__titulo', nombre, raiz );
-        actualizarTexto( '.pantallas-poeta__indice-nombre', nombre, raiz );
-        actualizarTexto( '.pantallas-poeta__biografia .pantallas-poeta__subtitulo', nombre, raiz );
         actualizarTexto( '.pantallas-poeta__contexto .pantallas-poeta__descripcion', descripcion, raiz );
-        actualizarTexto( '.pantallas-poeta__biografia .pantallas-poeta__descripcion', descripcion, raiz );
-        actualizarTexto( '.pantallas-poeta__contexto .fuente-mono.mt-auto', detalles, raiz );
-        actualizarTexto( '#titulo-biografia-ampliada', nombre + ' / Biografía', raiz );
-
+        actualizarTexto( '.pantallas-poeta__origen', detalles, raiz );
         if ( textoBiografia && entrada.content && entrada.content.rendered ) {
-            // HTML de Gutenberg ya filtrado por WordPress; únicamente contenido editorial.
             textoBiografia.innerHTML = entrada.content.rendered;
         }
         cargarFotografia( entrada, raiz.querySelector( '.pantallas-poeta__imagen' ) );
@@ -254,11 +239,9 @@
 
     function mostrarObras( raiz, poemas ) {
         var listado = raiz.querySelector( '#contenido-obras' );
-        var carrusel = raiz.querySelector( '#carrusel-poeta' );
         var fragmento = document.createDocumentFragment();
-        var tarjetas = document.createDocumentFragment();
 
-        if ( ! listado || ! carrusel ) {
+        if ( ! listado ) {
             return;
         }
         if ( ! Array.isArray( poemas ) || ! poemas.length ) {
@@ -271,11 +254,9 @@
             enlace.href = poema.link || '#';
             enlace.textContent = tituloEntrada( poema );
             fragmento.appendChild( enlace );
-            tarjetas.appendChild( crearPantallaPoema( poema, indice ) );
         } );
         listado.replaceChildren( fragmento );
-        carrusel.appendChild( tarjetas );
-        // Slick y los eventos del carrusel serán implementados después.
+        // La navegación a cada obra es mediante los botones del índice; Slick queda pendiente.
     }
 
     function cargarFichaPoeta() {

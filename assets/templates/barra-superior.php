@@ -35,9 +35,6 @@ $informativos = array(
                     <i class="bi bi-arrow-left" aria-hidden="true"></i><span>Inicio</span>
                 </a>
             </div>
-            <div class="col-auto d-none d-md-block">
-                <span class="etiqueta-editorial barra-superior__sala" id="indicador-vista"><?php echo $es_inicio ? 'Sala de selección // v.01' : 'Archivo vivo // v.01'; ?></span>
-            </div>
             <div class="col">
                 <?php if ( $nombre_pantalla ) : ?>
                     <nav id="navegacion-contextual" aria-label="Ruta de lectura">
