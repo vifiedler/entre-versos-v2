@@ -432,6 +432,7 @@
             );
 
             $(carrusel).slick({
+
                 centerMode: true,
                 centerPadding: mostrarTres ? '40px' : '23%',
                 slidesToShow: mostrarTres ? 3 : 1,
@@ -441,18 +442,16 @@
                 arrows: false,
                 dots: false,
 
-                accessibility: true,
-                focusOnSelect: false,
-
-                speed: 950,
+                speed: 6000,
                 cssEase: 'linear',
 
                 autoplay: !reducirMovimiento,
-                autoplaySpeed: 6000,
+                autoplaySpeed: 0,
 
-                pauseOnHover: true,
-                pauseOnFocus: true,
+                pauseOnHover: false,
+                pauseOnFocus: false,
                 swipe: true,
+
 
                 responsive: [
                     {
@@ -903,9 +902,9 @@
             '#modal-hub-contador-estrofas',
             total
                 ? 'Estrofa ' +
-                  String(estado.estrofa + 1).padStart(2, '0') +
-                  ' / ' +
-                  String(total).padStart(2, '0')
+                String(estado.estrofa + 1).padStart(2, '0') +
+                ' / ' +
+                String(total).padStart(2, '0')
                 : 'Sin estrofas'
         );
 
