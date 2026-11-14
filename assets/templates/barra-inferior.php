@@ -14,7 +14,7 @@ $es_lectura = is_singular( array( 'ant_poeta', 'ant_poema' ) );
             <div class="col-auto">
                 <section id="reproductor-volumen" class="reproductor-volumen" aria-label="Volumen de la música ambiental">
                     <div class="reproductor-volumen__indicador">
-                        <i class="bi bi-volume-up" aria-hidden="true"></i>
+                        <button id="musica-reproducir-pausar" class="reproductor-volumen__reproduccion" type="button" aria-label="Reproducir música" title="Reproducir" disabled><i class="bi bi-play-fill" aria-hidden="true"></i></button>
                         <span class="reproductor-volumen__barras" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
                         <span class="fuente-mono" id="volumen-valor"><?php echo $es_lectura ? '50%' : '—'; ?></span>
                     </div>

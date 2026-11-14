@@ -15,6 +15,14 @@
     var modal = null;
     var ultimoControl = null;
     var scrollEstrofasPendiente = false;
+    var navegacionHub = hub && hub.querySelector( '.hub-poeta__navegacion' );
+    var posicionNavegacion = navegacionHub ? document.createComment( 'Posición original de las flechas del hub' ) : null;
+    var animacionCarrusel = 0;
+    var ultimoIndiceEnCentro = -1;
+
+    if ( navegacionHub ) {
+        navegacionHub.parentNode.insertBefore( posicionNavegacion, navegacionHub );
+    }
     var estado = { poeta: null, poemas: [], pantallas: [], pantallaActual: 0, poema: null, estrofas: [], estrofa: 0, continua: false, solicitud: 0, visual: 0 };
 
     if ( ! api || ! hub || ! inicio || ! carrusel || ! modalElemento ) { return; }
@@ -107,6 +115,7 @@
         ponerRuta( 'Obras' );
     }
     function limpiarCarrusel() {
+        detenerSeguimientoCarrusel();
         if ( $ && $.fn.slick && $( carrusel ).hasClass( 'slick-initialized' ) ) {
             $( carrusel ).off( '.hub' ).slick( 'unslick' );
         }
@@ -240,6 +249,86 @@
         document.getElementById( 'hub-anterior' ).disabled = total <= 1;
         document.getElementById( 'hub-siguiente' ).disabled = total <= 1;
     }
+    // La activación NO depende de .slick-center: Slick asigna esa clase
+    // antes de terminar la animación, cuando la tarjeta aún está lejos.
+    // Calculamos escala e inclinación usando la posición visible real.
+    function detenerSeguimientoCarrusel() {
+        if ( animacionCarrusel ) {
+            window.cancelAnimationFrame( animacionCarrusel );
+            animacionCarrusel = 0;
+        }
+        ultimoIndiceEnCentro = -1;
+    }
+
+    function seguimientoCarrusel() {
+        if ( hub.hidden || ! $( carrusel ).hasClass( 'slick-initialized' ) ) {
+            animacionCarrusel = 0;
+            return;
+        }
+
+        var ancho = carrusel.getBoundingClientRect();
+        var centro = ancho.left + ancho.width / 2;
+        var slides = carrusel.querySelectorAll( '.slick-slide' );
+        var candidato = null;
+        var distanciaCandidata = Infinity;
+        var indiceCandidato = -1;
+
+        slides.forEach( function( slide ) {
+            var rect = slide.getBoundingClientRect();
+            if ( ! rect.width || rect.right < ancho.left || rect.left > ancho.right ) { return; }
+
+            // La zona central tiene el ancho de un slide. Una tarjeta entra
+            // en estado activo si ocupa >= 50 % de esa zona y es la más cercana.
+            var mitad = rect.width / 2;
+            var zonaIzquierda = centro - mitad;
+            var zonaDerecha = centro + mitad;
+            var solapamiento = Math.max( 0,
+                Math.min( rect.right, zonaDerecha ) - Math.max( rect.left, zonaIzquierda )
+            );
+            var distancia = Math.abs( ( rect.left + rect.right ) / 2 - centro );
+
+            var progreso = Math.max( 0, 1 - distancia / Math.max( rect.width, 1 ) );
+            var factor = ( rect.left + rect.right ) / 2 < centro ? -1 : 1;
+            var tarjeta = slide.querySelector( '.hub-poeta__tarjeta' );
+            if ( tarjeta ) {
+                // Al acercarse al centro, la tarjeta crece y se endereza.
+                // Al alejarse, se achica y se inclina hacia el lado contrario.
+                tarjeta.style.setProperty( '--hub-escala', ( .77 + .23 * progreso ).toFixed( 4 ) );
+                tarjeta.style.setProperty( '--hub-giro', ( factor * ( 1 - progreso ) * 11 ).toFixed( 3 ) + 'deg' );
+                tarjeta.style.setProperty( '--hub-rotacion', ( factor * ( 1 - progreso ) * 2.5 ).toFixed( 3 ) + 'deg' );
+                tarjeta.style.setProperty( '--hub-opacidad', ( .48 + .52 * progreso ).toFixed( 3 ) );
+            }
+
+            slide.classList.remove( 'es-central' );
+            if ( solapamiento >= rect.width / 2 && distancia < distanciaCandidata ) {
+                candidato = slide;
+                distanciaCandidata = distancia;
+                indiceCandidato = Number( slide.getAttribute( 'data-slick-index' ) );
+            }
+        } );
+
+        if ( candidato ) {
+            candidato.classList.add( 'es-central' );
+            var total = estado.pantallas.length;
+            if ( total && Number.isFinite( indiceCandidato ) ) {
+                var indiceReal = ( ( indiceCandidato % total ) + total ) % total;
+                if ( indiceReal !== ultimoIndiceEnCentro ) {
+                    ultimoIndiceEnCentro = indiceReal;
+                    actualizarIndicador( indiceReal );
+                }
+            }
+        }
+
+        animacionCarrusel = window.requestAnimationFrame( seguimientoCarrusel );
+    }
+
+    function iniciarSeguimientoCarrusel() {
+        detenerSeguimientoCarrusel();
+        if ( !window.matchMedia || !window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) {
+            animacionCarrusel = window.requestAnimationFrame( seguimientoCarrusel );
+        }
+    }
+
     function montarCarrusel( poeta, poemas, medios ) {
         var entradas = [ { tipo: 'bio', entrada: poeta } ].concat( poemas.map( function( poema ) { return { tipo: 'poema', entrada: poema }; } ) );
         var fragmento = document.createDocumentFragment();
@@ -257,7 +346,9 @@
             var mostrarTres = entradas.length > 3;
             var reducirMovimiento = window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches;
 
-            $( carrusel ).on( 'afterChange.hub', function( evento, slick, indice ) { actualizarIndicador( indice ); } );
+            $( carrusel ).on( 'afterChange.hub', function( evento, slick, indice ) {
+                if ( !animacionCarrusel ) { actualizarIndicador( indice ); }
+            } );
             $( carrusel ).slick( {
                 centerMode: true,
                 centerPadding: mostrarTres ? '40px' : '23%',
@@ -281,6 +372,7 @@
                     { breakpoint: 480, settings: { slidesToShow: 1, centerPadding: '8%' } }
                 ]
             } );
+            iniciarSeguimientoCarrusel();
         }
     }
     function abrirPoeta( id, historial ) {
@@ -317,6 +409,21 @@
         } );
     }
 
+    // Reutilizamos las flechas del hub, sin crear una segunda barra de
+    // navegación dentro del poema. Al moverlas dentro de .modal-hub,
+    // Bootstrap conserva correctamente el foco y el acceso por teclado.
+    function moverFlechasAlModal() {
+        if ( !navegacionHub ) { return; }
+        navegacionHub.classList.add( 'hub-poeta__navegacion--modal' );
+        modalElemento.appendChild( navegacionHub );
+    }
+
+    function devolverFlechasAlHub() {
+        if ( !navegacionHub || !posicionNavegacion || !posicionNavegacion.parentNode ) { return; }
+        navegacionHub.classList.remove( 'hub-poeta__navegacion--modal' );
+        posicionNavegacion.parentNode.insertBefore( navegacionHub, posicionNavegacion.nextSibling );
+    }
+
     function mostrarModal( tipo, entrada ) {
         if ( ! window.bootstrap || ! window.bootstrap.Modal ) { return; }
         if ( ! modal ) { modal = window.bootstrap.Modal.getOrCreateInstance( modalElemento ); }
@@ -332,6 +439,7 @@
         ponerRuta( tipo === 'bio' ? 'Biografía' : titulo( entrada ) );
         // Detener el movimiento mientras se lee un contenido ampliado.
         controlarAutoplay( true );
+        moverFlechasAlModal();
         modal.show();
         buscar( '.modal-hub__cuerpo' ).scrollTop = 0;
     }
@@ -417,11 +525,6 @@
         secuencia.setAttribute( 'aria-label', 'Estrofas del poema. Desplázate verticalmente para leerlas.' );
         contenedor.prepend( secuencia );
 
-        var controles = contenedor.querySelector( '#modal-hub-estrofa-anterior' );
-        if ( controles && controles.parentElement ) {
-            controles.parentElement.classList.add( 'modal-hub__controles-estrofas' );
-        }
-
         secuencia.addEventListener( 'scroll', function() {
             if ( scrollEstrofasPendiente || estado.continua ) { return; }
             scrollEstrofasPendiente = true;
@@ -435,13 +538,9 @@
 
     function actualizarControlesEstrofa() {
         var total = estado.estrofas.length;
-        var anterior = buscar( '#modal-hub-estrofa-anterior' );
-        var siguiente = buscar( '#modal-hub-estrofa-siguiente' );
         escribir( '#modal-hub-contador-estrofas', total ?
             'Estrofa ' + String( estado.estrofa + 1 ).padStart( 2, '0' ) + ' / ' + String( total ).padStart( 2, '0' ) :
             'Sin estrofas' );
-        if ( anterior ) { anterior.disabled = ! total || estado.estrofa <= 0; }
-        if ( siguiente ) { siguiente.disabled = ! total || estado.estrofa >= total - 1; }
     }
 
     // La estrofa visible se obtiene del desplazamiento natural, no de un
@@ -599,7 +698,6 @@
         var pantalla = estado.pantallas[ seleccionado ];
         estado.pantallaActual = seleccionado;
         if ( origen ) { ultimoControl = origen; }
-        actualizarNavegacionModal();
         if ( pantalla.tipo === 'bio' ) {
             // Si había una petición de poema pendiente, debe quedar invalidada.
             estado.solicitud++;
@@ -611,15 +709,6 @@
         }
     }
 
-    function actualizarNavegacionModal() {
-        var total = estado.pantallas.length;
-        var anterior = buscar( '#modal-hub-pantalla-anterior' );
-        var siguiente = buscar( '#modal-hub-pantalla-siguiente' );
-        if ( anterior ) { anterior.disabled = total < 2; }
-        if ( siguiente ) { siguiente.disabled = total < 2; }
-        escribir( '#modal-hub-indicador', String( estado.pantallaActual + 1 ).padStart( 2, '0' ) + ' / ' + String( total ).padStart( 2, '0' ) );
-    }
-
     function abrirPantalla( boton ) {
         if ( ! estado.poeta ) { return; }
         seleccionarPantalla( Number( boton.dataset.indice ) || 0, boton );
@@ -627,12 +716,28 @@
 
     function controlarAutoplay( pausar ) {
         if ( ! $ || ! $.fn.slick || ! $( carrusel ).hasClass( 'slick-initialized' ) ) { return; }
+        if ( pausar ) {
+            detenerSeguimientoCarrusel();
+            $( carrusel ).slick( 'slickPause' );
+            return;
+        }
         // Respetamos a quienes prefieren movimiento reducido.
-        if ( !pausar && window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) { return; }
-        $( carrusel ).slick( pausar ? 'slickPause' : 'slickPlay' );
+        if ( window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) { return; }
+        iniciarSeguimientoCarrusel();
+        $( carrusel ).slick( 'slickPlay' );
     }
 
     function navegarCarrusel( direccion ) {
+        if ( modalElemento.classList.contains( 'show' ) ) {
+            // La navegación existente del hub recorre también los CPT ampliados.
+            var destino = ( estado.pantallaActual + direccion + estado.pantallas.length ) % estado.pantallas.length;
+            seleccionarPantalla( destino );
+            if ( $ && $.fn.slick && $( carrusel ).hasClass( 'slick-initialized' ) ) {
+                $( carrusel ).slick( 'slickGoTo', destino, true );
+            }
+            actualizarIndicador( destino );
+            return;
+        }
         if ( $ && $.fn.slick && $( carrusel ).hasClass( 'slick-initialized' ) ) {
             $( carrusel ).slick( direccion > 0 ? 'slickNext' : 'slickPrev' );
         } else if ( estado.pantallas.length > 1 ) {
@@ -655,25 +760,19 @@
         } );
         carrusel.addEventListener( 'click', function( evento ) {
             var boton = evento.target.closest( '.hub-poeta__abrir-pantalla' );
-            if ( boton ) { abrirPantalla( boton ); }
+            if ( !boton ) { return; }
+            var slide = boton.closest( '.slick-slide' );
+            // No abrimos la tarjeta entrante antes de alcanzar el centro.
+            // En modo reducido o sin Slick se permite la selección normal.
+            if ( slide && animacionCarrusel && !slide.classList.contains( 'es-central' ) ) { return; }
+            abrirPantalla( boton );
         } );
         document.getElementById( 'hub-volver-inicio' ).addEventListener( 'click', function() { volverInicio( true ); } );
         document.getElementById( 'hub-anterior' ).addEventListener( 'click', function() { navegarCarrusel( -1 ); } );
         document.getElementById( 'hub-siguiente' ).addEventListener( 'click', function() { navegarCarrusel( 1 ); } );
-        document.getElementById( 'modal-hub-pantalla-anterior' ).addEventListener( 'click', function() {
-            seleccionarPantalla( estado.pantallaActual - 1 );
-        } );
-        document.getElementById( 'modal-hub-pantalla-siguiente' ).addEventListener( 'click', function() {
-            seleccionarPantalla( estado.pantallaActual + 1 );
-        } );
-        document.getElementById( 'modal-hub-estrofa-anterior' ).addEventListener( 'click', function() {
-            navegarEstrofa( estado.estrofa - 1 );
-        } );
-        document.getElementById( 'modal-hub-estrofa-siguiente' ).addEventListener( 'click', function() {
-            navegarEstrofa( estado.estrofa + 1 );
-        } );
         document.getElementById( 'modal-hub-alternar-lectura' ).addEventListener( 'click', function() { alternarContinua( !estado.continua ); } );
         modalElemento.addEventListener( 'hidden.bs.modal', function() {
+            devolverFlechasAlHub();
             ponerRuta( 'Obras' );
             estado.visual++;
             modalElemento.classList.remove( 'modal-hub--estrofas-scroll' );

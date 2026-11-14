@@ -16,6 +16,7 @@
     var volumen = 50;
     var silencio = false;
     var controlesRegistrados = false;
+    var reproduciendo = false;
 
     function nodo( id ) { return document.getElementById( id ); }
     function informar( mensaje ) {
@@ -45,6 +46,16 @@
             var icono = botonSilencio.querySelector( 'i' );
             if ( icono ) { icono.className = 'bi ' + ( silencio ? 'bi-volume-mute' : 'bi-volume-up' ); }
         }
+        var botonReproduccion = nodo( 'musica-reproducir-pausar' );
+        if ( botonReproduccion ) {
+            botonReproduccion.disabled = !idPendiente || !listo;
+            botonReproduccion.setAttribute( 'aria-label', reproduciendo ? 'Pausar música' : 'Reproducir música' );
+            botonReproduccion.setAttribute( 'title', reproduciendo ? 'Pausar' : 'Reproducir' );
+            var iconoReproduccion = botonReproduccion.querySelector( 'i' );
+            if ( iconoReproduccion ) {
+                iconoReproduccion.className = 'bi ' + ( reproduciendo ? 'bi-pause-fill' : 'bi-play-fill' );
+            }
+        }
         [ 'volumen-bajar', 'volumen-silenciar', 'volumen-subir' ].forEach( function( id ) {
             var boton = nodo( id );
             if ( boton ) { boton.disabled = !idPendiente || !listo; }
@@ -56,22 +67,29 @@
         if ( listo && reproductor ) {
             reproductor.unMute();
             reproductor.setVolume( volumen );
-            if ( typeof reproductor.playVideo === 'function' ) { reproductor.playVideo(); }
         }
         interfazVolumen();
     }
     function registrarControles() {
         if ( controlesRegistrados ) { return; }
         controlesRegistrados = true;
-        nodo( 'volumen-bajar' )?.addEventListener( 'click', function() { bajarSubir( -10 ); } );
-        nodo( 'volumen-subir' )?.addEventListener( 'click', function() { bajarSubir( 10 ); } );
+        nodo( 'volumen-bajar' )?.addEventListener( 'click', function() { bajarSubir( -5 ); } );
+        nodo( 'volumen-subir' )?.addEventListener( 'click', function() { bajarSubir( 5 ); } );
         nodo( 'volumen-silenciar' )?.addEventListener( 'click', function() {
             if ( ! listo || ! reproductor ) { return; }
             silencio = !silencio;
             if ( silencio ) { reproductor.mute(); }
             else { reproductor.unMute(); }
-            reproductor.playVideo();
             interfazVolumen();
+        } );
+        nodo( 'musica-reproducir-pausar' )?.addEventListener( 'click', function() {
+            if ( !listo || !reproductor || !idPendiente ) { return; }
+            if ( reproduciendo ) {
+                reproductor.pauseVideo();
+            } else {
+                reproductor.playVideo();
+            }
+            // onStateChange confirma el estado y actualiza el icono real.
         } );
         interfazVolumen();
     }
@@ -103,6 +121,13 @@
                 origin: window.location.origin
             },
             events: {
+                onStateChange: function( evento ) {
+                    var estados = window.YT && window.YT.PlayerState;
+                    if ( !estados ) { return; }
+                    if ( evento.data === estados.PLAYING ) { reproduciendo = Boolean( idPendiente ); }
+                    if ( [ estados.PAUSED, estados.ENDED, estados.CUED ].includes( evento.data ) ) { reproduciendo = false; }
+                    interfazVolumen();
+                },
                 onReady: function( evento ) {
                     listo = true;
                     evento.target.setVolume( volumen );
@@ -132,6 +157,7 @@
         idPendiente = identificarVideo( url );
         volumen = 50;
         silencio = false;
+        reproduciendo = false;
         registrarControles();
         interfazVolumen();
         if ( idPendiente ) { iniciarVideo(); }
@@ -142,6 +168,7 @@
     }
     function detener() {
         idPendiente = '';
+        reproduciendo = false;
         if ( listo && reproductor && typeof reproductor.stopVideo === 'function' ) {
             reproductor.stopVideo();
         }

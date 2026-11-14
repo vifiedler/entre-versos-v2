@@ -87,10 +87,6 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
                                 <figcaption class="fuente-mono mt-2">Imagen asociada a la estrofa</figcaption>
                             </figure>
                         </div>
-                        <div class="col-12 d-flex justify-content-between gap-2">
-                            <button id="modal-hub-estrofa-anterior" type="button" class="boton-editorial boton-editorial--compacto"><i class="bi bi-arrow-left" aria-hidden="true"></i> Anterior</button>
-                            <button id="modal-hub-estrofa-siguiente" type="button" class="boton-editorial boton-editorial--primario boton-editorial--compacto">Siguiente <i class="bi bi-arrow-right" aria-hidden="true"></i></button>
-                        </div>
                     </div>
                     <div id="modal-hub-lectura-continua" class="modal-hub__continua" hidden>
                         <div id="modal-hub-estrofas-completas"></div>
@@ -103,16 +99,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
                     </div>
                 </div>
             </div>
-            <!-- Cambia entre biografía y poemas mientras la pantalla está ampliada. -->
-            <nav class="modal-hub__navegacion d-flex align-items-center justify-content-between gap-2" aria-label="Navegación entre pantallas del poeta">
-                <button id="modal-hub-pantalla-anterior" type="button" class="boton-editorial boton-editorial--compacto" aria-label="Pantalla anterior">
-                    <i class="bi bi-arrow-left" aria-hidden="true"></i> <span class="d-none d-sm-inline">Anterior</span>
-                </button>
-                <span id="modal-hub-indicador" class="fuente-mono text-center" aria-live="polite">01 / 01</span>
-                <button id="modal-hub-pantalla-siguiente" type="button" class="boton-editorial boton-editorial--compacto" aria-label="Pantalla siguiente">
-                    <span class="d-none d-sm-inline">Siguiente</span> <i class="bi bi-arrow-right" aria-hidden="true"></i>
-                </button>
-            </nav>
+            <!-- Las flechas originales del hub se reutilizan cuando la pantalla está ampliada. -->
         </div>
     </div>
 </div>

@@ -2072,20 +2072,14 @@ body.admin-bar .modal-hub {
     flex:0 0 auto;
     width:80vw;
     max-width:80vw;
-    height:80%;
-    max-height:80%;
+    height:85%;
+    max-height:85%;
     margin:0;
-    transform:none !important;
+    transform:translateY(-2.5dvh) !important;
 }
 .modal-hub .modal-content { height:100%; display:flex; flex-direction:column; }
 .modal-hub__cabecera { flex:0 0 auto; }
 .modal-hub__cuerpo { flex:1 1 auto; min-height:0; overflow-y:auto; }
-.modal-hub__navegacion {
-    flex:0 0 auto;
-    border-top:2px solid var(--color-tinta);
-    padding:.55rem .8rem;
-    background:var(--color-papel);
-}
 body.home.modo-hub .modal-backdrop.show { opacity:.78; }
 
 /* En lectura por estrofas, solo la secuencia interna se desplaza. */
@@ -2095,7 +2089,6 @@ body.home.modo-hub .modal-backdrop.show { opacity:.78; }
 .modal-hub__secuencia-estrofas { flex:1; min-height:0; overflow-y:auto; overscroll-behavior:contain; scroll-snap-type:y proximity; scrollbar-width:thin; }
 .modal-hub__seccion-estrofa { min-height:100%; box-sizing:border-box; margin:0; padding:.8rem .6rem; scroll-snap-align:start; }
 .modal-hub__columna-texto, .modal-hub__columna-imagen { min-width:0; }
-.modal-hub__controles-estrofas { flex:0 0 auto; width:100%; padding:.55rem 0 .1rem; border-top:2px solid var(--color-tinta); }
 
 @media (max-width: 767.98px) {
     .hub-poeta__tarjeta { height:clamp(280px, 50dvh, 450px); padding:0; }
@@ -2110,7 +2103,7 @@ body.home.modo-hub .modal-backdrop.show { opacity:.78; }
     .hub-poeta__poema-versos .modal-hub__verso { font-size:.67rem; }
     .hub-poeta__vista-encabezado { padding:.5rem; }
     .hub-poeta__vista-titulo { font-size:1.15rem; }
-    .modal-hub .modal-dialog { width:95vw; max-width:95vw; height:90%; max-height:90%; }
+    .modal-hub .modal-dialog { width:95vw; max-width:95vw; height:95%; max-height:95%; }
     .modal-hub__seccion-estrofa { padding:.5rem .15rem; align-content:start; }
     .modal-hub__seccion-estrofa .modal-hub__imagen--estrofa { max-height:230px; }
 }
@@ -2145,3 +2138,87 @@ body.home.modo-hub .modal-backdrop.show { opacity:.78; }
     .modal-hub__bio-expediente-cuerpo { grid-template-columns:1fr; }
     .modal-hub__bio-expediente .modal-hub__retrato .modal-hub__imagen { max-height:250px; }
 }
+
+/* ============================================================
+   AJUSTES DEL HUB · TRANSICIÓN Y LECTURA
+   Slick conserva el movimiento lineal de 6 segundos; el tamaño
+   y la inclinación dependen de la posición REAL de cada pantalla.
+   La nueva pantalla se activa al ocupar >= 50 % de la zona central.
+   ============================================================ */
+.hub-poeta__carrusel.slick-initialized .slick-slide .hub-poeta__tarjeta,
+.hub-poeta__carrusel.slick-initialized .slick-center .hub-poeta__tarjeta,
+.hub-poeta__carrusel.slick-initialized .slick-slide .hub-poeta__tarjeta:hover,
+.hub-poeta__carrusel.slick-initialized .slick-slide .hub-poeta__tarjeta:focus-within {
+    transform: perspective(1000px)
+        rotateY(var(--hub-giro, 0deg))
+        rotate(var(--hub-rotacion, 0deg))
+        scale(var(--hub-escala, .77));
+    opacity: var(--hub-opacidad, .48);
+    transition: none;
+    transform-origin: center center;
+}
+.hub-poeta__carrusel.slick-initialized .slick-slide.es-central .hub-poeta__tarjeta {
+    border-color: var(--color-tinta);
+    box-shadow: 9px 9px 0 var(--color-tinta);
+}
+.hub-poeta__carrusel.slick-initialized .slick-slide:not(.es-central) .hub-poeta__abrir-pantalla {
+    cursor: default;
+}
+
+/* Las mismas flechas del hub se usan en la vista ampliada.
+   Se trasladan al interior del modal: no hay botones duplicados.
+   Su ubicación sigue siendo inferior y no ocupa área de lectura. */
+.modal-hub > .hub-poeta__navegacion--modal {
+    position: fixed;
+    left: clamp(.75rem, 2vw, 2.5rem);
+    right: clamp(.75rem, 2vw, 2.5rem);
+    bottom: max(40px, 4dvh);
+    z-index: 3;
+    padding: 0;
+    background: transparent;
+    pointer-events: none;
+}
+.modal-hub > .hub-poeta__navegacion--modal button {
+    pointer-events: auto;
+}
+.modal-hub > .hub-poeta__navegacion--modal #hub-indicador {
+    color: var(--color-blanco);
+    text-shadow: 1px 1px 0 var(--color-tinta);
+}
+
+/* El contador superior de estrofas es el único indicador visible.
+   El desplazamiento sigue dentro del poema y no bajo la barra inferior. */
+.modal-hub__secuencia-estrofas {
+    scroll-snap-type: y proximity;
+}
+
+/* Reproductor: icono de reproducción/pausa según YouTube. */
+.reproductor-volumen__reproduccion {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    min-width: 24px;
+    min-height: 26px;
+    border: 0;
+    background: transparent;
+    color: var(--color-tinta);
+    font-size: 1rem;
+    cursor: pointer;
+}
+.reproductor-volumen__reproduccion:disabled { cursor: default; opacity: .45; }
+.reproductor-volumen__reproduccion:focus-visible {
+    outline: 2px solid var(--color-tinta);
+    outline-offset: 1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hub-poeta__carrusel.slick-initialized .slick-slide .hub-poeta__tarjeta,
+    .hub-poeta__carrusel.slick-initialized .slick-center .hub-poeta__tarjeta {
+        transform: none;
+        opacity: 1;
+    }
+}
+
+/* Los controles del reproductor no quedan atenuados dentro del hub. */
+body.home.modo-hub .reproductor-volumen__controles { opacity: 1; }
