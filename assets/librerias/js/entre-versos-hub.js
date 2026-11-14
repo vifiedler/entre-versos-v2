@@ -359,7 +359,7 @@
                 dots: false,
                 accessibility: true,
                 focusOnSelect: false, // El clic abre el contenido ampliado.
-                speed: 6000,
+                speed: 9000,
                 cssEase: 'linear',
                 autoplay: !reducirMovimiento,
                 autoplaySpeed: 0,
