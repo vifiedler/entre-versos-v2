@@ -21,48 +21,35 @@
     --bs-body-font-family: var(--fuente-texto);
     --alto-barra-superior: 86px;
 }
-
-*,
-*::before,
-*::after {
+*, *::before, *::after {
     box-sizing: border-box;
 }
-
 html {
     scroll-behavior: auto;
 }
-
 body {
     margin: 0;
     background: var(--color-papel);
     color: var(--color-tinta);
     font-family: var(--fuente-texto);
 }
-
-img,
-svg {
+img, svg {
     max-width: 100%;
     height: auto;
 }
-
-button,
-input {
+button, input {
     font: inherit;
 }
-
 a {
     color: inherit;
 }
-
 a:hover {
     color: inherit;
 }
-
 button:disabled {
     opacity: .55;
     cursor: not-allowed;
 }
-
 .screen-reader-text {
     position: absolute;
     width: 1px;
@@ -70,11 +57,10 @@ button:disabled {
     padding: 0;
     margin: -1px;
     overflow: hidden;
-    clip: rect(0, 0, 0, 0);
+    clip: rect(0,0,0,0);
     white-space: nowrap;
     border: 0;
 }
-
 .screen-reader-text:focus {
     position: fixed;
     top: 1rem;
@@ -89,37 +75,30 @@ button:disabled {
     color: var(--color-tinta);
     border: var(--borde-editorial);
 }
-
 :focus-visible {
     outline: 3px solid var(--color-coral);
     outline-offset: 3px;
 }
-
 ::selection {
     background: var(--color-lima);
     color: var(--color-tinta);
 }
-
 .antologia {
     min-height: 100vh;
     min-height: 100svh;
     padding-bottom: 0;
 }
-
 .contenido-principal {
     min-height: calc(100vh - var(--alto-barra-superior));
     padding: 2rem clamp(1rem, 3vw, 3rem) 3rem;
 }
-
 .contenido-principal--inicio {
     padding-top: .5rem;
 }
-
 .fondo-cuadricula {
     background-image: radial-gradient(#1e212425 1px, transparent 1px);
     background-size: 20px 20px;
 }
-
 .fuente-mono {
     font-family: var(--fuente-mono);
     font-size: .75rem;
@@ -127,24 +106,19 @@ button:disabled {
     letter-spacing: .035em;
     text-transform: uppercase;
 }
-
 .fuente-titulos {
     font-family: var(--fuente-titulos);
     font-weight: 800;
 }
-
 .texto-secundario {
     color: #666;
 }
-
 .texto-lima {
     color: var(--color-lima);
 }
-
 .fondo-lima {
     background: var(--color-lima);
 }
-
 .etiqueta-editorial {
     display: inline-flex;
     align-items: center;
@@ -160,22 +134,18 @@ button:disabled {
     line-height: 1.3;
     white-space: nowrap;
 }
-
 .etiqueta-editorial--oscura {
     color: var(--color-blanco);
     background: var(--color-tinta);
 }
-
 .etiqueta-editorial--clara {
     background: var(--color-blanco);
 }
-
 .tarjeta-editorial {
     background: var(--color-blanco);
     border: 3px solid var(--color-tinta);
     box-shadow: 7px 7px 0 var(--color-tinta);
 }
-
 .boton-editorial {
     display: inline-flex;
     align-items: center;
@@ -195,68 +165,56 @@ button:disabled {
     background: var(--color-blanco);
     box-shadow: 4px 4px 0 var(--color-tinta);
 }
-
 .boton-editorial--primario {
     background: var(--color-lima);
 }
-
 .boton-editorial--compacto {
     min-height: 40px;
     padding: .35rem .65rem;
 }
-
 .boton-editorial:hover:not(:disabled) {
-    transform: translate(-1px, -1px);
+    transform: translate(-1px,-1px);
     box-shadow: 5px 5px 0 var(--color-tinta);
 }
-
 .boton-editorial:active:not(:disabled) {
-    transform: translate(2px, 2px);
+    transform: translate(2px,2px);
     box-shadow: 1px 1px 0 var(--color-tinta);
 }
-
 .boton-editorial[disabled] {
     pointer-events: none;
 }
-
 /* Cabecera contextual: se conserva en lugar del menú de Stitch. */
 .barra-superior {
     position: relative;
     z-index: 30;
     min-height: var(--alto-barra-superior);
-    padding: .75rem clamp(1rem, 3vw, 3rem);
+    padding: .75rem clamp(1rem,3vw,3rem);
     background: var(--color-blanco);
     border-bottom: 3px solid var(--color-tinta);
 }
-
 .barra-superior__interior {
     min-height: 58px;
 }
-
 .barra-superior__ruta {
     min-width: 0;
 }
-
 .barra-superior__inicio {
     flex-shrink: 0;
 }
-
 .barra-superior__sala {
     max-width: 210px;
     min-height: 48px;
 }
-
 .barra-superior__marca {
     margin: 0;
     font-family: var(--fuente-titulos);
-    font-size: clamp(.9rem, 1.7vw, 1.35rem);
+    font-size: clamp(.9rem,1.7vw,1.35rem);
     line-height: 1.1;
     text-transform: uppercase;
     font-weight: 800;
     letter-spacing: -.03em;
     text-decoration: none;
 }
-
 .barra-superior__migas {
     display: flex;
     flex-wrap: wrap;
@@ -270,55 +228,45 @@ button:disabled {
     font-weight: 600;
     text-transform: uppercase;
 }
-
 .barra-superior__migas a {
     text-decoration: none;
 }
-
 .barra-superior__migas a:hover {
     text-decoration: underline;
 }
-
 .barra-superior__migas [aria-current] {
     color: #5d5e5f;
 }
-
 .enlaces-informativos {
     display: flex;
     gap: .65rem;
     flex-wrap: wrap;
 }
-
 .enlaces-informativos__enlace {
     font-size: .69rem;
     min-height: 40px;
 }
-
 /* Portada y muro de fotografías. */
 .seleccion-poetas {
     width: 100%;
 }
-
 .seleccion-poetas__marco {
     min-height: 0;
     position: relative;
 }
-
 .galeria-poetas {
     position: relative;
     min-height: clamp(430px, 51vw, 650px);
     width: 100%;
     isolation: isolate;
 }
-
 .posicion-polaroid {
     position: absolute;
     width: min(23vw, 250px);
     min-width: 155px;
-    transform: rotate(var(--giro, 0deg));
+    transform: rotate(var(--giro,0deg));
     transform-origin: center;
 }
-
 .tarjeta-polaroid {
     position: relative;
     width: 100%;
@@ -327,13 +275,9 @@ button:disabled {
     background: var(--color-blanco);
     box-shadow: 6px 6px 0 var(--color-tinta);
 }
-
-.tarjeta-polaroid .atropos-scale,
-.tarjeta-polaroid .atropos-rotate,
-.tarjeta-polaroid .atropos-inner {
+.tarjeta-polaroid .atropos-scale, .tarjeta-polaroid .atropos-rotate, .tarjeta-polaroid .atropos-inner {
     width: 100%;
 }
-
 .tarjeta-polaroid__cabecera {
     min-height: 22px;
     padding: .18rem .25rem;
@@ -348,7 +292,6 @@ button:disabled {
     white-space: nowrap;
     overflow: hidden;
 }
-
 .tarjeta-polaroid__foto {
     aspect-ratio: 4 / 4.3;
     display: flex;
@@ -359,34 +302,29 @@ button:disabled {
     color: #777;
     overflow: hidden;
 }
-
 .tarjeta-polaroid__foto img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     filter: grayscale(1);
 }
-
 .tarjeta-polaroid__foto .bi {
-    font-size: clamp(3rem, 6vw, 6rem);
+    font-size: clamp(3rem,6vw,6rem);
 }
-
 .tarjeta-polaroid__nombre {
     font-family: var(--fuente-titulos);
-    font-size: clamp(.9rem, 1.7vw, 1.25rem);
+    font-size: clamp(.9rem,1.7vw,1.25rem);
     line-height: 1.12;
     margin: .55rem 0 .25rem;
     font-weight: 800;
     text-transform: uppercase;
     overflow-wrap: anywhere;
 }
-
 .tarjeta-polaroid__detalle {
     font-family: var(--fuente-mono);
     font-size: .62rem;
     margin-bottom: .25rem;
 }
-
 .tarjeta-polaroid__cita {
     font-family: var(--fuente-texto);
     font-size: .65rem;
@@ -394,49 +332,42 @@ button:disabled {
     font-style: italic;
     margin: 0;
 }
-
 .tarjeta-polaroid--primera {
     --giro: -5deg;
     top: 5%;
     left: 14%;
     z-index: 5;
 }
-
 .tarjeta-polaroid--segunda {
     --giro: 5deg;
     top: 10%;
     left: 37%;
     z-index: 3;
 }
-
 .tarjeta-polaroid--tercera {
     --giro: -4deg;
     top: 0;
     left: 60%;
     z-index: 4;
 }
-
 .tarjeta-polaroid--cuarta {
     --giro: -3deg;
     top: 35%;
     left: 28%;
     z-index: 2;
 }
-
 .tarjeta-polaroid--quinta {
     --giro: 3deg;
     top: 40%;
     left: 65%;
     z-index: 6;
 }
-
 .seleccion-poetas__metadatos {
     display: flex;
     gap: .5rem;
     flex-wrap: wrap;
     margin-bottom: .8rem;
 }
-
 .seleccion-poetas__titulo {
     max-width: 1100px;
     margin: 0;
@@ -445,13 +376,11 @@ button:disabled {
     letter-spacing: -.055em;
     overflow-wrap: break-word;
 }
-
 .seleccion-poetas__descripcion {
     max-width: 650px;
     margin: 1rem 0 0;
-    font-size: clamp(.9rem, 1.2vw, 1.15rem);
+    font-size: clamp(.9rem,1.2vw,1.15rem);
 }
-
 .seleccion-poetas__marca-accion {
     padding: .1rem .3rem;
     background: var(--color-lima);
@@ -459,44 +388,38 @@ button:disabled {
     font-family: var(--fuente-mono);
     font-weight: 700;
 }
-
 .seleccion-poetas__estado {
     margin: 1.25rem 0 0;
     font-family: var(--fuente-mono);
     font-size: .72rem;
     text-transform: uppercase;
 }
-
 /* Barra inferior fija, compartida por TODAS las vistas. */
 .barra-inferior {
     position: fixed;
     inset: auto 0 0;
     z-index: 25;
-    padding: .65rem clamp(1rem, 3vw, 3rem);
+    padding: .65rem clamp(1rem,3vw,3rem);
     background: #fef8f4;
     border-top: 3px solid var(--color-tinta);
 }
-
 .barra-inferior__disposicion {
     align-items: end;
 }
-
 .barra-inferior__marca {
-    font: 800 clamp(2.4rem, 6vw, 7rem)/.9 var(--fuente-titulos);
+    font: 800 clamp(2.4rem,6vw,7rem)/.9 var(--fuente-titulos);
     letter-spacing: -.075em;
     text-transform: uppercase;
     white-space: nowrap;
     margin: 0;
 }
-
 .barra-inferior__lateral {
-    width: min(100%, 310px);
+    width: min(100%,310px);
     margin-left: auto;
     display: flex;
     flex-direction: column;
     gap: .65rem;
 }
-
 .bandeja-poeta {
     min-height: 98px;
     background: var(--color-blanco);
@@ -504,7 +427,6 @@ button:disabled {
     box-shadow: 5px 5px 0 var(--color-tinta);
     padding: .4rem;
 }
-
 .bandeja-poeta__etiqueta {
     display: flex;
     justify-content: space-between;
@@ -515,26 +437,22 @@ button:disabled {
     background: var(--color-tinta);
     color: var(--color-blanco);
 }
-
 .bandeja-poeta__etiqueta .cuadro-lima {
     width: 7px;
     height: 7px;
     background: var(--color-lima);
 }
-
 .bandeja-poeta__contenido {
     min-height: 49px;
     border: 1px solid var(--color-tinta);
     margin-top: .35rem;
 }
-
 .reproductor-volumen {
     display: flex;
     align-items: center;
     gap: .45rem;
     min-width: 0;
 }
-
 .reproductor-volumen__indicador {
     display: flex;
     align-items: center;
@@ -546,36 +464,29 @@ button:disabled {
     box-shadow: 3px 3px 0 var(--color-tinta);
     min-height: 38px;
 }
-
 .reproductor-volumen__barras {
     display: flex;
     gap: 2px;
     height: 15px;
     align-items: end;
 }
-
 .reproductor-volumen__barras span {
     width: 3px;
     background: var(--color-tinta);
 }
-
 .reproductor-volumen__barras span:nth-child(1) {
     height: 6px;
 }
-
 .reproductor-volumen__barras span:nth-child(2) {
     height: 12px;
     background: #8bad00;
 }
-
 .reproductor-volumen__barras span:nth-child(3) {
     height: 9px;
 }
-
 .reproductor-volumen__barras span:nth-child(4) {
     height: 14px;
 }
-
 .reproductor-volumen__controles {
     display: flex;
     gap: 0;
@@ -583,7 +494,6 @@ button:disabled {
     border: var(--borde-editorial);
     box-shadow: 3px 3px 0 var(--color-tinta);
 }
-
 .reproductor-volumen__controles .boton-volumen {
     padding: 0 .42rem;
     min-width: 34px;
@@ -594,57 +504,46 @@ button:disabled {
     color: var(--color-tinta);
     font-weight: 700;
 }
-
 .reproductor-volumen__controles .boton-volumen:last-child {
     border-right: none;
 }
-
 /* Pantallas del poeta, con tarjetas de biografía y obra inspiradas en Stitch. */
-.vista-poeta__metadatos,
-.vista-poema__metadatos {
+.vista-poeta__metadatos, .vista-poema__metadatos {
     display: flex;
     align-items: center;
     gap: .5rem;
     flex-wrap: wrap;
 }
-
-.vista-poeta__titulo,
-.vista-poema__titulo {
+.vista-poeta__titulo, .vista-poema__titulo {
     margin: 0;
     font: 800 clamp(2.5rem, 5.4vw, 6.5rem)/.95 var(--fuente-titulos);
     letter-spacing: -.045em;
     text-transform: uppercase;
 }
-
 .pantallas-poeta {
     margin-top: 2rem;
 }
-
 .pantallas-poeta__contenedor {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.65fr);
     gap: 1.5rem;
     align-items: stretch;
 }
-
 .pantallas-poeta__tarjeta {
     min-height: 450px;
-    padding: clamp(1rem, 2.2vw, 2rem);
+    padding: clamp(1rem,2.2vw,2rem);
     display: flex;
     flex-direction: column;
 }
-
 .pantallas-poeta__subtitulo {
-    font: 700 clamp(1.5rem, 2.4vw, 2.8rem)/1.08 var(--fuente-titulos);
+    font: 700 clamp(1.5rem,2.4vw,2.8rem)/1.08 var(--fuente-titulos);
     letter-spacing: -.035em;
     margin: .75rem 0;
 }
-
 .pantallas-poeta__descripcion {
     font-size: 1rem;
     line-height: 1.65;
 }
-
 .pantallas-poeta__imagen {
     min-height: 210px;
     background: #e0dedb;
@@ -655,72 +554,59 @@ button:disabled {
     justify-content: center;
     overflow: hidden;
 }
-
 .pantallas-poeta__imagen img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     filter: grayscale(1);
 }
-
 .pantallas-poeta__imagen .bi {
     font-size: 4rem;
     color: #848484;
 }
-
 .pantallas-poeta__ficha {
     padding-bottom: 1.25rem;
     border-bottom: var(--borde-editorial);
 }
-
 .pantallas-poeta__ficha .pantallas-poeta__subtitulo {
     margin-top: .35rem;
 }
-
 .pantallas-poeta__obras {
     margin-top: auto;
     padding-top: 1rem;
 }
-
 .pantallas-poeta__controles {
     margin: 2rem 0 0;
     display: flex;
     justify-content: end;
     gap: .55rem;
 }
-
 .pantallas-poeta__indice {
     padding: 1.5rem;
     margin-top: 2rem;
 }
-
 .pantallas-poeta__indice-nombre {
-    font: 800 clamp(2.4rem, 5vw, 6rem)/.95 var(--fuente-titulos);
+    font: 800 clamp(2.4rem,5vw,6rem)/.95 var(--fuente-titulos);
     letter-spacing: -.06em;
     overflow-wrap: anywhere;
     text-transform: uppercase;
 }
-
 .pantallas-poeta__indice-listado {
     list-style: none;
     padding: 0;
     margin: 0;
 }
-
-.pantallas-poeta__indice-listado li+li {
+.pantallas-poeta__indice-listado li + li {
     margin-top: .5rem;
 }
-
 /* Lector por ESTROFAS, no por versos. */
 .contenido-principal--poema {
     background: #1e1b24;
     color: var(--color-blanco);
 }
-
 .vista-poema {
     padding: 1rem 0 2rem;
 }
-
 .vista-poema__encabezado {
     display: flex;
     align-items: center;
@@ -729,11 +615,9 @@ button:disabled {
     flex-wrap: wrap;
     margin-bottom: 1.5rem;
 }
-
 .lector-estrofas {
     position: relative;
 }
-
 .lector-estrofas__panel {
     padding: 0;
     background: #f8f8f8;
@@ -741,7 +625,6 @@ button:disabled {
     border: 3px solid var(--color-tinta);
     box-shadow: 7px 7px 0 #080808;
 }
-
 .lector-estrofas__cabecera {
     padding: .75rem 1rem;
     border-bottom: var(--borde-editorial);
@@ -751,56 +634,46 @@ button:disabled {
     justify-content: space-between;
     flex-wrap: wrap;
 }
-
 .lector-estrofas__disposicion {
     display: grid;
     grid-template-columns: 1.25fr .85fr;
-    min-height: clamp(320px, 40vw, 480px);
+    min-height: clamp(320px,40vw,480px);
 }
-
 .lector-estrofas__versos {
-    padding: clamp(1rem, 2.5vw, 2.4rem);
+    padding: clamp(1rem,2.5vw,2.4rem);
     border-right: var(--borde-editorial);
 }
-
 .lector-estrofas__versos-lista {
     margin: 1.5rem 0;
     padding: 0;
     list-style: none;
 }
-
 .lector-estrofas__verso {
     display: flex;
     align-items: baseline;
     gap: 1rem;
     margin-bottom: 1.2rem;
     font-family: var(--fuente-titulos);
-    font-size: clamp(1.05rem, 1.65vw, 1.5rem);
+    font-size: clamp(1.05rem,1.65vw,1.5rem);
     line-height: 1.6;
     font-weight: 500;
 }
-
 .lector-estrofas__verso-numero {
     font: 500 .73rem var(--fuente-mono);
     color: #787878;
 }
-
-.lector-estrofas mark,
-.lectura-continua mark,
-.palabra-destacada {
+.lector-estrofas mark, .lectura-continua mark, .palabra-destacada {
     background: var(--color-lima);
     color: var(--color-tinta);
     padding: .08rem .18rem;
 }
-
 .lector-estrofas__visual {
     display: flex;
     flex-direction: column;
     margin: 0;
-    padding: clamp(.75rem, 2.2vw, 2.4rem);
+    padding: clamp(.75rem,2.2vw,2.4rem);
     background: #f6f6f6;
 }
-
 .lector-estrofas__imagen {
     min-height: 250px;
     background: #e0dedb;
@@ -811,17 +684,14 @@ button:disabled {
     align-items: center;
     justify-content: center;
 }
-
 .lector-estrofas__imagen img {
     height: 100%;
     width: 100%;
     object-fit: cover;
 }
-
 .lector-estrofas__imagen .bi {
     font-size: 4rem;
 }
-
 .lector-estrofas__pie {
     margin-top: 1rem;
     border: var(--borde-editorial);
@@ -830,7 +700,6 @@ button:disabled {
     font-size: .72rem;
     text-transform: uppercase;
 }
-
 .lector-estrofas__navegacion {
     display: flex;
     justify-content: space-between;
@@ -838,28 +707,23 @@ button:disabled {
     align-items: center;
     margin: 1.5rem 0;
 }
-
 .lector-estrofas__leyenda {
     font: 600 .7rem var(--fuente-mono);
     text-transform: uppercase;
 }
-
 .lectura-continua {
     padding: 1.5rem;
     background: var(--color-blanco);
     color: var(--color-tinta);
     margin-top: 2rem;
 }
-
 .lectura-continua__estrofas {
     max-width: 780px;
     margin: 0 auto;
 }
-
 .lectura-continua__estrofa {
     margin: 0 0 2rem;
 }
-
 .poema-cierre {
     margin-top: 1.5rem;
     padding: 1.5rem;
@@ -867,272 +731,212 @@ button:disabled {
     background: var(--color-blanco);
     color: var(--color-tinta);
 }
-
 .poema-cierre__imagen {
     max-width: 420px;
     margin: 1.2rem auto;
 }
-
 .poema-cierre__imagen img {
     width: 100%;
 }
-
 /* Páginas de información gestionadas desde Gutenberg. */
 .pagina-informativa {
     max-width: 1120px;
     margin: 1.5rem auto 3rem;
-    padding: clamp(1.25rem, 3vw, 3rem);
+    padding: clamp(1.25rem,3vw,3rem);
     background: var(--color-blanco);
     border: 3px solid var(--color-tinta);
     box-shadow: 8px 8px 0 var(--color-tinta);
 }
-
 .pagina-informativa__titulo {
-    font: 800 clamp(2.1rem, 5vw, 5rem)/1 var(--fuente-titulos);
+    font: 800 clamp(2.1rem,5vw,5rem)/1 var(--fuente-titulos);
     text-transform: uppercase;
     letter-spacing: -.045em;
     border-bottom: 3px solid var(--color-tinta);
     padding-bottom: 1.5rem;
     margin: 0 0 2rem;
 }
-
 .pagina-informativa__contenido {
     font-size: 1.07rem;
     line-height: 1.75;
 }
-
-.pagina-informativa__contenido h2,
-.pagina-informativa__contenido h3 {
+.pagina-informativa__contenido h2, .pagina-informativa__contenido h3 {
     font-family: var(--fuente-titulos);
     font-weight: 700;
 }
-
 .pagina-informativa__contenido img {
     border: var(--borde-editorial);
 }
-
 /* La librería Slick añadirá sus propias clases cuando se inicialice. */
 .pantallas-poeta__contenedor.slick-initialized {
     display: block;
 }
-
 @media (max-width: 991.98px) {
     .barra-superior__marca {
         font-size: 1rem;
     }
-
     .enlaces-informativos__enlace {
         padding: .4rem;
         font-size: .6rem;
     }
-
     .galeria-poetas {
         min-height: 540px;
     }
-
     .posicion-polaroid {
         width: 205px;
     }
-
     .pantallas-poeta__contenedor {
         grid-template-columns: 1fr;
     }
-
     .pantallas-poeta__tarjeta {
         min-height: 300px;
     }
 }
-
 @media (max-width: 767.98px) {
     :root {
         --alto-barra-superior: 105px;
     }
-
     .antologia {
         padding-bottom: 235px;
     }
-
     .contenido-principal {
         padding: 1rem 1rem 2rem;
     }
-
     .barra-superior {
         padding: .6rem 1rem;
     }
-
     .barra-superior__sala {
         min-height: 34px;
     }
-
     .barra-superior__marca {
         font-size: .9rem;
     }
-
     .barra-inferior {
         padding: .55rem .65rem;
     }
-
     .barra-inferior__marca {
-        font-size: clamp(1.75rem, 6vw, 3rem);
+        font-size: clamp(1.75rem,6vw,3rem);
     }
-
     .barra-inferior__lateral {
-        width: min(100%, 300px);
+        width: min(100%,300px);
     }
-
     .galeria-poetas {
         min-height: 480px;
     }
-
     .posicion-polaroid {
         width: 180px;
         min-width: 140px;
     }
-
     .tarjeta-polaroid--primera {
         left: 1%;
         top: 8%;
     }
-
     .tarjeta-polaroid--segunda {
         left: 42%;
         top: 2%;
     }
-
     .tarjeta-polaroid--tercera {
         left: 7%;
         top: 35%;
     }
-
     .tarjeta-polaroid--cuarta {
         left: 43%;
         top: 35%;
     }
-
     .tarjeta-polaroid--quinta {
         left: 30%;
         top: 57%;
     }
-
     .seleccion-poetas__titulo {
-        font-size: clamp(2rem, 9vw, 4.5rem);
+        font-size: clamp(2rem,9vw,4.5rem);
     }
-
     .lector-estrofas__disposicion {
         grid-template-columns: 1fr;
     }
-
     .lector-estrofas__versos {
         border-right: 0;
         border-bottom: var(--borde-editorial);
     }
 }
-
 @media (max-width: 575.98px) {
     :root {
         --alto-barra-superior: 120px;
     }
-
     .antologia {
         padding-bottom: 235px;
     }
-
     .barra-superior__inicio {
         font-size: .65rem;
         min-height: 32px;
     }
-
     .barra-superior__migas {
         font-size: .64rem;
     }
-
     .enlaces-informativos {
         gap: .3rem;
     }
-
     .enlaces-informativos__enlace {
         font-size: .55rem;
         padding: .35rem;
         min-height: 30px;
     }
-
     .galeria-poetas {
         min-height: 460px;
     }
-
     .posicion-polaroid {
         width: 45%;
         min-width: 120px;
     }
-
     .tarjeta-polaroid {
         padding: .3rem;
     }
-
     .tarjeta-polaroid__cita {
         display: none;
     }
-
     .tarjeta-polaroid__detalle {
         font-size: .52rem;
     }
-
     .tarjeta-polaroid--primera {
         left: 2%;
         top: 8%;
     }
-
     .tarjeta-polaroid--segunda {
         left: 48%;
         top: 2%;
     }
-
     .tarjeta-polaroid--tercera {
         left: 10%;
         top: 41%;
     }
-
     .tarjeta-polaroid--cuarta {
         left: 52%;
         top: 45%;
     }
-
     .tarjeta-polaroid--quinta {
         left: 26%;
         top: 65%;
     }
-
     .barra-inferior__marca {
-        font-size: clamp(1.45rem, 7vw, 2.25rem);
+        font-size: clamp(1.45rem,7vw,2.25rem);
     }
-
     .bandeja-poeta {
         min-height: 76px;
     }
-
     .bandeja-poeta__contenido {
         min-height: 33px;
     }
-
     .reproductor-volumen__controles .boton-volumen {
         min-width: 28px;
         padding: 0 .25rem;
     }
-
     .reproductor-volumen__indicador {
         font-size: .65rem;
     }
-
     .pantallas-poeta__tarjeta {
         padding: 1rem;
     }
 }
-
 @media (prefers-reduced-motion: reduce) {
-
-    *,
-    *::before,
-    *::after {
+    *, *::before, *::after {
         animation-duration: .01ms !important;
         transition-duration: .01ms !important;
         scroll-behavior: auto !important;
@@ -1143,7 +947,6 @@ button:disabled {
 :root {
     --alto-barra-inferior: 68px;
 }
-
 /* Portada: retratos como protagonistas y zona de selección en su propia pantalla. */
 body.home .antologia,
 body.single-ant_poeta .antologia,
@@ -1155,13 +958,11 @@ body.single-ant_poema .antologia {
     flex-direction: column;
     overflow: hidden;
 }
-
 body.home,
 body.single-ant_poeta,
 body.single-ant_poema {
     overflow: hidden;
 }
-
 body.home .contenido-principal,
 body.single-ant_poeta .contenido-principal,
 body.single-ant_poema .contenido-principal {
@@ -1170,32 +971,27 @@ body.single-ant_poema .contenido-principal {
     flex: 1 1 auto;
     overflow: hidden;
 }
-
 body.home .contenido-principal--inicio {
     padding: .5rem clamp(1rem, 3vw, 3rem) .75rem;
 }
-
 .seleccion-poetas,
-.seleccion-poetas>.container-fluid,
+.seleccion-poetas > .container-fluid,
 .seleccion-poetas__marco {
     height: 100%;
     min-height: 0;
 }
-
 .galeria-poetas {
     height: 100%;
     min-height: 0;
 }
-
 .bandeja-poeta--inicio {
     position: absolute;
     z-index: 15;
-    right: clamp(.5rem, 2vw, 2rem);
-    bottom: clamp(.5rem, 2vw, 2rem);
-    width: min(260px, 38%);
+    right: clamp(.5rem,2vw,2rem);
+    bottom: clamp(.5rem,2vw,2rem);
+    width: min(260px,38%);
     min-height: 105px;
 }
-
 /* La barra inferior ya no contiene la tolva y mantiene un perfil reducido. */
 .barra-inferior {
     position: relative;
@@ -1203,29 +999,22 @@ body.home .contenido-principal--inicio {
     flex: 0 0 auto;
     z-index: 25;
     min-height: var(--alto-barra-inferior);
-    padding: .45rem clamp(1rem, 3vw, 3rem);
+    padding: .45rem clamp(1rem,3vw,3rem);
 }
-
 .barra-inferior__marca {
-    font-size: clamp(1.75rem, 3vw, 3.15rem);
+    font-size: clamp(1.75rem,3vw,3.15rem);
     line-height: 1;
     letter-spacing: -.065em;
 }
-
 .barra-inferior__lateral {
     width: auto;
 }
-
-.reproductor-volumen__indicador {
-    min-width: 112px;
-}
-
+.reproductor-volumen__indicador { min-width: 112px; }
 /* Vista de poeta: no desplazar la página; el contenido de cada tarjeta se desplaza internamente. */
 body.single-ant_poeta .contenido-principal--poeta,
 body.single-ant_poema .contenido-principal--poema {
-    padding: .6rem clamp(.8rem, 2.5vw, 2rem);
+    padding: .6rem clamp(.8rem,2.5vw,2rem);
 }
-
 .vista-poeta,
 .vista-poema {
     height: 100%;
@@ -1234,12 +1023,10 @@ body.single-ant_poema .contenido-principal--poema {
     flex-direction: column;
     overflow: hidden;
 }
-
 .vista-poeta__titulo,
 .vista-poema__titulo {
-    font-size: clamp(1.6rem, 3vw, 3.2rem);
+    font-size: clamp(1.6rem,3vw,3.2rem);
 }
-
 .vista-poeta .pantallas-poeta {
     flex: 1 1 auto;
     min-height: 0;
@@ -1248,33 +1035,27 @@ body.single-ant_poema .contenido-principal--poema {
     overflow-x: hidden;
     scrollbar-gutter: stable;
 }
-
 .vista-poeta .pantallas-poeta__tarjeta {
     min-height: 0;
     max-height: 100%;
     overflow-y: auto;
 }
-
 .vista-poema {
     padding: .25rem 0;
 }
-
 .vista-poema__encabezado {
     margin-bottom: .45rem;
 }
-
 .lector-estrofas,
 .lectura-continua {
     min-height: 0;
     flex: 1 1 auto;
 }
-
 .lector-estrofas {
     display: flex;
     flex-direction: column;
     overflow: hidden;
 }
-
 .lector-estrofas__panel {
     flex: 1 1 auto;
     min-height: 0;
@@ -1282,41 +1063,27 @@ body.single-ant_poema .contenido-principal--poema {
     flex-direction: column;
     overflow: hidden;
 }
-
 .lector-estrofas__cabecera {
     flex: 0 0 auto;
 }
-
 .lector-estrofas__disposicion {
     flex: 1 1 auto;
     min-height: 0;
     overflow: hidden;
 }
-
 .lector-estrofas__versos,
 .lector-estrofas__visual {
     min-height: 0;
     overflow-y: auto;
     overscroll-behavior: contain;
 }
-
-.lector-estrofas__versos-lista {
-    margin: .65rem 0;
-}
-
-.lector-estrofas__verso {
-    margin-bottom: .45rem;
-}
-
+.lector-estrofas__versos-lista { margin: .65rem 0; }
+.lector-estrofas__verso { margin-bottom: .45rem; }
 .lector-estrofas__navegacion {
     flex: 0 0 auto;
     margin: .5rem 0 0;
 }
-
-.lector-estrofas__imagen {
-    min-height: 190px;
-}
-
+.lector-estrofas__imagen { min-height: 190px; }
 .lectura-continua {
     max-height: 100%;
     margin: 0;
@@ -1325,20 +1092,9 @@ body.single-ant_poema .contenido-principal--poema {
     overscroll-behavior: contain;
     scrollbar-gutter: stable;
 }
-
-.lectura-continua__estrofas {
-    padding-top: 1rem;
-}
-
-.lectura-continua__estrofa {
-    margin-bottom: 1.6rem;
-}
-
-.poema-cierre {
-    margin-top: 1.5rem;
-    padding: 1rem;
-}
-
+.lectura-continua__estrofas { padding-top: 1rem; }
+.lectura-continua__estrofa { margin-bottom: 1.6rem; }
+.poema-cierre { margin-top: 1.5rem; padding: 1rem; }
 /* Reproductor de fondo en pantalla de poeta/poema.
  * El audio sigue controlado desde la barra inferior; sin panel de video.
  * Advertencia: este formato oculto no cumple los requisitos de visualización de YouTube.
@@ -1352,81 +1108,35 @@ body.single-ant_poema .contenido-principal--poema {
     overflow: hidden;
     pointer-events: none;
 }
-
 .musica-youtube--oculta iframe {
     width: 1px !important;
     height: 1px !important;
     border: 0;
 }
-
 @media (max-width: 767.98px) {
-    :root {
-        --alto-barra-inferior: 62px;
-    }
-
+    :root { --alto-barra-inferior: 62px; }
     body.home .contenido-principal--inicio,
     body.single-ant_poeta .contenido-principal--poeta,
     body.single-ant_poema .contenido-principal--poema {
         padding: .45rem .75rem;
     }
-
-    .bandeja-poeta--inicio {
-        width: 210px;
-        right: .4rem;
-        bottom: .5rem;
-    }
-
-    .barra-inferior {
-        padding: .3rem .65rem;
-    }
-
-    .barra-inferior__marca {
-        font-size: clamp(1.35rem, 4vw, 2rem);
-    }
-
-    .reproductor-volumen__indicador {
-        min-width: 70px;
-    }
-
-    .lector-estrofas__disposicion {
-        grid-template-columns: 1fr;
-        overflow-y: auto;
-    }
-
-    .lector-estrofas__versos,
-    .lector-estrofas__visual {
-        overflow: visible;
-    }
-
-    .lector-estrofas__visual {
-        min-height: 240px;
-    }
+    .bandeja-poeta--inicio { width: 210px; right: .4rem; bottom: .5rem; }
+    .barra-inferior { padding: .3rem .65rem; }
+    .barra-inferior__marca { font-size: clamp(1.35rem,4vw,2rem); }
+    .reproductor-volumen__indicador { min-width: 70px; }
+    .lector-estrofas__disposicion { grid-template-columns: 1fr; overflow-y: auto; }
+    .lector-estrofas__versos, .lector-estrofas__visual { overflow: visible; }
+    .lector-estrofas__visual { min-height: 240px; }
 }
-
 @media (max-width: 575.98px) {
-    .barra-inferior__marca {
-        font-size: 1.15rem;
-    }
-
-    .reproductor-volumen__barras {
-        display: none;
-    }
-
-    .reproductor-volumen__controles .boton-volumen {
-        min-width: 28px;
-    }
-
-    .bandeja-poeta--inicio {
-        bottom: .4rem;
-    }
+    .barra-inferior__marca { font-size: 1.15rem; }
+    .reproductor-volumen__barras { display: none; }
+    .reproductor-volumen__controles .boton-volumen { min-width: 28px; }
+    .bandeja-poeta--inicio { bottom: .4rem; }
 }
 
 /* hidden debe prevalecer sobre los contenedores flex del visor. */
-.lector-estrofas[hidden],
-.lectura-continua[hidden],
-.poema-cierre[hidden] {
-    display: none !important;
-}
+.lector-estrofas[hidden], .lectura-continua[hidden], .poema-cierre[hidden] { display: none !important; }
 
 
 /* ===== v1.3.4 — Vista del poeta contenida en el viewport =====
@@ -1437,13 +1147,11 @@ body.single-ant_poema .contenido-principal--poema {
 body.single-ant_poeta .barra-superior {
     flex: 0 0 auto;
 }
-
 body.single-ant_poeta .contenido-principal--poeta {
     flex: 1 1 0;
     min-height: 0;
     padding: clamp(.35rem, .8vh, .65rem) clamp(.75rem, 1.9vw, 2rem);
 }
-
 body.single-ant_poeta .vista-poeta {
     display: flex;
     flex-direction: column;
@@ -1452,17 +1160,14 @@ body.single-ant_poeta .vista-poeta {
     gap: clamp(.35rem, .65vh, .55rem);
     overflow: hidden;
 }
-
 body.single-ant_poeta .vista-poeta__metadatos {
     flex: 0 0 auto;
     gap: .4rem;
 }
-
 body.single-ant_poeta .vista-poeta__metadatos .etiqueta-editorial {
     padding: .18rem .45rem;
     font-size: .65rem;
 }
-
 body.single-ant_poeta .vista-poeta__titulo {
     flex: 0 0 auto;
     margin: 0 !important;
@@ -1470,7 +1175,6 @@ body.single-ant_poeta .vista-poeta__titulo {
     line-height: 1.02;
     letter-spacing: -.04em;
 }
-
 body.single-ant_poeta .pantallas-poeta {
     display: flex;
     flex-direction: column;
@@ -1479,7 +1183,6 @@ body.single-ant_poeta .pantallas-poeta {
     margin: 0;
     overflow: hidden;
 }
-
 body.single-ant_poeta .pantallas-poeta__contenedor {
     flex: 1 1 0;
     min-height: 0;
@@ -1487,7 +1190,6 @@ body.single-ant_poeta .pantallas-poeta__contenedor {
     gap: clamp(.65rem, 1.15vw, 1.15rem);
     overflow: hidden;
 }
-
 body.single-ant_poeta .pantallas-poeta__tarjeta {
     min-height: 0;
     max-height: none;
@@ -1497,64 +1199,52 @@ body.single-ant_poeta .pantallas-poeta__tarjeta {
     overscroll-behavior: contain;
     scrollbar-gutter: stable;
 }
-
 body.single-ant_poeta .pantallas-poeta__subtitulo {
     font-size: clamp(1.15rem, 1.8vw, 2rem);
     line-height: 1.1;
     margin: .5rem 0;
 }
-
 body.single-ant_poeta .pantallas-poeta__descripcion {
     font-size: clamp(.84rem, .9vw, .98rem);
     line-height: 1.45;
     margin-bottom: .5rem;
 }
-
 body.single-ant_poeta .pantallas-poeta__tarjeta .fuente-mono {
     font-size: clamp(.6rem, .67vw, .72rem);
 }
-
 body.single-ant_poeta .pantallas-poeta__ficha {
     flex: 0 1 auto;
     padding-bottom: .6rem;
 }
-
 body.single-ant_poeta .pantallas-poeta__ficha .row {
     min-height: 0;
 }
-
 body.single-ant_poeta .pantallas-poeta__imagen {
     aspect-ratio: auto;
     width: 100%;
     height: clamp(125px, 24vh, 245px);
     min-height: 0;
 }
-
 body.single-ant_poeta .pantallas-poeta__imagen img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
-
 body.single-ant_poeta .pantallas-poeta__obras {
     padding-top: .45rem;
 }
-
 body.single-ant_poeta .pantallas-poeta__controles {
     margin: .4rem 0 0;
     flex: 0 0 auto;
 }
-
 body.single-ant_poeta .pantallas-poeta__controles .boton-editorial {
     min-height: 32px;
 }
-
 /* Las pantallas adicionales se incorporarán al activar Slick; mientras tanto,
    sus poemas siguen accesibles mediante enlaces del índice inferior. */
-body.single-ant_poeta .pantallas-poeta__contenedor:not(.slick-initialized)>.pantallas-poeta__obra {
+body.single-ant_poeta .pantallas-poeta__contenedor:not(.slick-initialized) > .pantallas-poeta__obra {
     display: none;
 }
-
 body.single-ant_poeta .pantallas-poeta__indice {
     flex: 0 0 auto;
     min-height: 0;
@@ -1564,16 +1254,13 @@ body.single-ant_poeta .pantallas-poeta__indice {
     overflow-y: auto;
     scrollbar-gutter: stable;
 }
-
-body.single-ant_poeta .pantallas-poeta__indice>.row {
+body.single-ant_poeta .pantallas-poeta__indice > .row {
     --bs-gutter-y: .4rem;
     align-items: center !important;
 }
-
 body.single-ant_poeta .pantallas-poeta__indice .fuente-mono {
     font-size: .62rem;
 }
-
 body.single-ant_poeta .pantallas-poeta__indice-nombre {
     font-size: clamp(1.15rem, 1.8vw, 1.95rem);
     line-height: 1.05;
@@ -1581,29 +1268,24 @@ body.single-ant_poeta .pantallas-poeta__indice-nombre {
     letter-spacing: -.045em;
     overflow-wrap: break-word;
 }
-
 body.single-ant_poeta .pantallas-poeta__indice .boton-editorial {
     min-height: 32px;
     padding: .28rem .52rem;
     font-size: .67rem;
 }
-
 body.single-ant_poeta .barra-inferior {
     flex: 0 0 auto;
     min-height: 0;
     padding: .3rem clamp(.75rem, 1.9vw, 2rem);
 }
-
 body.single-ant_poeta .barra-inferior__marca {
     font-size: clamp(1.35rem, 2.3vw, 2.35rem);
     line-height: 1;
 }
-
 /* Biografía completa: disponible en su panel interno cuando se habilite su acceso. */
-body.single-ant_poeta .vista-poeta>.pagina-informativa[hidden] {
+body.single-ant_poeta .vista-poeta > .pagina-informativa[hidden] {
     display: none !important;
 }
-
 @media (max-width: 991.98px) {
     body.single-ant_poeta .pantallas-poeta__contenedor:not(.slick-initialized) {
         display: flex;
@@ -1613,60 +1295,48 @@ body.single-ant_poeta .vista-poeta>.pagina-informativa[hidden] {
         scroll-snap-type: x mandatory;
         scrollbar-gutter: stable;
     }
-
-    body.single-ant_poeta .pantallas-poeta__contenedor:not(.slick-initialized)>.pantallas-poeta__tarjeta:not(.pantallas-poeta__obra) {
+    body.single-ant_poeta .pantallas-poeta__contenedor:not(.slick-initialized) > .pantallas-poeta__tarjeta:not(.pantallas-poeta__obra) {
         flex: 0 0 min(80vw, 580px);
         min-width: 0;
         scroll-snap-align: start;
     }
-
     body.single-ant_poeta .pantallas-poeta__imagen {
         height: clamp(120px, 22vh, 210px);
     }
 }
-
 @media (max-width: 575.98px) {
     body.single-ant_poeta .vista-poeta__titulo {
         font-size: clamp(1.3rem, 6vw, 2rem);
     }
-
-    body.single-ant_poeta .pantallas-poeta__contenedor:not(.slick-initialized)>.pantallas-poeta__tarjeta:not(.pantallas-poeta__obra) {
+    body.single-ant_poeta .pantallas-poeta__contenedor:not(.slick-initialized) > .pantallas-poeta__tarjeta:not(.pantallas-poeta__obra) {
         flex-basis: 92%;
     }
-
     body.single-ant_poeta .pantallas-poeta__indice {
         max-height: clamp(90px, 17vh, 138px);
     }
-
     body.single-ant_poeta .pantallas-poeta__indice-nombre {
         font-size: 1.15rem;
     }
-
-    body.single-ant_poeta .pantallas-poeta__indice .row>div {
+    body.single-ant_poeta .pantallas-poeta__indice .row > div {
         width: auto;
         flex: 1 1 auto;
     }
-
     body.single-ant_poeta .barra-inferior__marca {
         font-size: 1.15rem;
     }
 }
-
 @media (max-height: 670px) and (min-width: 768px) {
     body.single-ant_poeta .pantallas-poeta__indice {
         max-height: 90px;
         padding: .4rem .75rem;
     }
-
     body.single-ant_poeta .pantallas-poeta__imagen {
         height: clamp(105px, 19vh, 175px);
     }
-
     body.single-ant_poeta .pantallas-poeta__controles {
         margin-top: .25rem;
     }
 }
-
 /* Los media queries heredados reservaban 235px para una bandeja que ya no está
    en la barra inferior. Evita el espacio vacío bajo el footer en móviles. */
 body.home .antologia,
@@ -1690,56 +1360,16 @@ body.single-ant_poema .antologia {
     --tamano-h4: 20px;
     --tamano-parrafo: 16px;
 }
-
-body {
-    font-size: var(--tamano-parrafo);
-    line-height: 1.5;
-}
-
-p {
-    font-size: var(--tamano-parrafo);
-    line-height: 1.6;
-}
-
-h1,
-h2,
-h3,
-h4 {
-    font-family: var(--fuente-titulos);
-}
-
-h1 {
-    font-size: var(--tamano-h1);
-    font-weight: 800;
-    line-height: 1.08;
-}
-
-h2 {
-    font-size: var(--tamano-h2);
-    font-weight: 700;
-    line-height: 1.17;
-}
-
-h3 {
-    font-size: var(--tamano-h3);
-    font-weight: 700;
-    line-height: 1.22;
-}
-
-h4 {
-    font-size: var(--tamano-h4);
-    font-weight: 600;
-    line-height: 1.3;
-}
-
+body { font-size: var(--tamano-parrafo); line-height: 1.5; }
+p { font-size: var(--tamano-parrafo); line-height: 1.6; }
+h1, h2, h3, h4 { font-family: var(--fuente-titulos); }
+h1 { font-size: var(--tamano-h1); font-weight: 800; line-height: 1.08; }
+h2 { font-size: var(--tamano-h2); font-weight: 700; line-height: 1.17; }
+h3 { font-size: var(--tamano-h3); font-weight: 700; line-height: 1.22; }
+h4 { font-size: var(--tamano-h4); font-weight: 600; line-height: 1.3; }
 /* Metadatos editoriales son etiquetas, no párrafos de lectura. */
-p.fuente-mono {
-    font-size: 12px;
-}
-
-.fuente-mono {
-    font-size: 12px;
-}
+p.fuente-mono { font-size: 12px; }
+.fuente-mono { font-size: 12px; }
 
 /* Alto disponible: la barra de WordPress reduce el espacio de la aplicación. */
 body.home .antologia,
@@ -1750,13 +1380,11 @@ body.single-ant_poema .antologia {
     padding: 0;
     min-height: 0;
 }
-
 body.admin-bar.home .antologia,
 body.admin-bar.single-ant_poeta .antologia,
 body.admin-bar.single-ant_poema .antologia {
     height: calc(100dvh - 32px);
 }
-
 body:not(.home):not(.single-ant_poeta):not(.single-ant_poema) .antologia {
     display: flex;
     flex-direction: column;
@@ -1764,47 +1392,29 @@ body:not(.home):not(.single-ant_poeta):not(.single-ant_poema) .antologia {
     min-height: 0;
     overflow: hidden;
 }
-
 body:not(.home):not(.single-ant_poeta):not(.single-ant_poema) .contenido-principal {
     flex: 1 1 auto;
     min-height: 0;
     overflow-y: auto;
     overflow-x: hidden;
 }
-
 body.admin-bar:not(.home):not(.single-ant_poeta):not(.single-ant_poema) .antologia {
     height: calc(100dvh - 32px);
 }
-
-.contenido-principal {
-    min-width: 0;
-}
-
+.contenido-principal { min-width: 0; }
 .barra-superior {
     min-height: 0;
     flex: 0 0 auto;
     padding: .4rem clamp(.65rem, 1.75vw, 1.6rem);
 }
-
-.barra-superior__interior {
-    min-height: 45px;
-}
-
-.barra-superior__marca {
-    font-size: clamp(.9rem, 1.25vw, 1.15rem);
-}
-
-.barra-superior__migas {
-    font-size: clamp(.62rem, .75vw, .78rem);
-}
-
-.enlaces-informativos__enlace,
-.barra-superior__inicio {
+.barra-superior__interior { min-height: 45px; }
+.barra-superior__marca { font-size: clamp(.9rem, 1.25vw, 1.15rem); }
+.barra-superior__migas { font-size: clamp(.62rem, .75vw, .78rem); }
+.enlaces-informativos__enlace, .barra-superior__inicio {
     min-height: 36px;
     font-size: 11px;
     padding: .35rem .55rem;
 }
-
 .barra-inferior {
     flex: 0 0 auto;
     min-height: 0;
@@ -1812,96 +1422,44 @@ body.admin-bar:not(.home):not(.single-ant_poeta):not(.single-ant_poema) .antolog
     position: relative;
     inset: auto;
 }
-
 .barra-inferior__marca {
     font-size: clamp(1.25rem, 2.2vw, 2rem);
     line-height: 1;
     letter-spacing: -.065em;
 }
-
-.barra-inferior__disposicion {
-    align-items: center;
-    flex-wrap: nowrap;
-}
-
-.reproductor-volumen__indicador {
-    min-width: 90px;
-    min-height: 34px;
-}
-
-.reproductor-volumen__controles .boton-volumen {
-    min-height: 32px;
-    min-width: 32px;
-}
-
+.barra-inferior__disposicion { align-items: center; flex-wrap: nowrap; }
+.reproductor-volumen__indicador { min-width: 90px; min-height: 34px; }
+.reproductor-volumen__controles .boton-volumen { min-height: 32px; min-width: 32px; }
 /* El sonido no se inicia en portada; se muestra el mismo módulo deshabilitado. */
 body.home .reproductor-volumen__controles,
-body.page .reproductor-volumen__controles {
-    opacity: .65;
-}
+body.page .reproductor-volumen__controles { opacity: .65; }
 
 /* Portada: Polaroids compactas; fotografía y nombre exclusivamente. */
 body.home .contenido-principal--inicio {
     padding: .35rem clamp(.65rem, 1.75vw, 1.6rem) .5rem;
 }
-
-.seleccion-poetas,
-.seleccion-poetas>.container-fluid,
-.seleccion-poetas__marco {
+.seleccion-poetas, .seleccion-poetas > .container-fluid, .seleccion-poetas__marco {
     min-height: 0;
     height: 100%;
 }
-
-.galeria-poetas {
-    height: 100%;
-    min-height: 0;
-}
-
+.galeria-poetas { height: 100%; min-height: 0; }
 .posicion-polaroid {
     width: clamp(105px, 11vw, 174px);
     min-width: 0;
 }
-
-.tarjeta-polaroid {
-    padding: .35rem .35rem .65rem;
-}
-
-.tarjeta-polaroid__foto {
-    aspect-ratio: 4/4.25;
-}
-
+.tarjeta-polaroid { padding: .35rem .35rem .65rem; }
+.tarjeta-polaroid__foto { aspect-ratio: 4/4.25; }
 .tarjeta-polaroid__nombre {
     font-size: clamp(.72rem, 1.05vw, 1rem);
     line-height: 1.15;
     margin: .45rem 0 0;
     overflow-wrap: break-word;
 }
-
-.tarjeta-polaroid--primera {
-    left: 14%;
-    top: 12%;
-}
-
-.tarjeta-polaroid--segunda {
-    left: 34%;
-    top: 23%;
-}
-
-.tarjeta-polaroid--tercera {
-    left: 54%;
-    top: 10%;
-}
-
-.tarjeta-polaroid--cuarta {
-    left: 20%;
-    top: 57%;
-}
-
-.tarjeta-polaroid--quinta {
-    left: 48%;
-    top: 58%;
-}
-
+.tarjeta-polaroid--primera { left: 14%; top: 12%; }
+.tarjeta-polaroid--segunda { left: 34%; top: 23%; }
+.tarjeta-polaroid--tercera { left: 54%; top: 10%; }
+.tarjeta-polaroid--cuarta { left: 20%; top: 57%; }
+.tarjeta-polaroid--quinta { left: 48%; top: 58%; }
 .bandeja-poeta--inicio {
     right: clamp(.55rem, 1.7vw, 1.5rem);
     bottom: clamp(.55rem, 1.5vw, 1.5rem);
@@ -1910,25 +1468,20 @@ body.home .contenido-principal--inicio {
     display: flex;
     flex-direction: column;
 }
-
 .bandeja-poeta__etiqueta {
     flex: 0 0 auto;
     font-size: 12px;
     min-height: 30px;
     padding: .3rem .5rem;
 }
-
 .bandeja-poeta__contenido {
     flex: 1;
     min-height: 155px;
     background: var(--color-blanco);
     margin-top: .4rem;
 }
-
 /* La foto puede quedar por detrás de la caja, sin ocultar el área de depósito. */
-.bandeja-poeta--inicio {
-    z-index: 15;
-}
+.bandeja-poeta--inicio { z-index: 15; }
 
 /* Biografía siempre disponible; la vista principal puede desplazarse sin mover footer. */
 body.single-ant_poeta .contenido-principal--poeta {
@@ -1939,28 +1492,24 @@ body.single-ant_poeta .contenido-principal--poeta {
     overscroll-behavior-y: contain;
     padding: .5rem clamp(.75rem, 1.8vw, 1.8rem) 1rem;
 }
-
 body.single-ant_poeta .vista-poeta {
     height: auto;
     min-height: 100%;
     overflow: visible;
     gap: .55rem;
 }
-
 body.single-ant_poeta .vista-poeta__titulo {
     font-size: var(--tamano-h1);
     line-height: 1.08;
     margin: 0;
     overflow-wrap: break-word;
 }
-
 body.single-ant_poeta .pantallas-poeta {
     display: block;
     flex: initial;
     overflow: visible;
     margin: 0;
 }
-
 body.single-ant_poeta .pantallas-poeta__contenedor,
 body.single-ant_poeta .pantallas-poeta__contenedor:not(.slick-initialized) {
     display: grid;
@@ -1971,7 +1520,6 @@ body.single-ant_poeta .pantallas-poeta__contenedor:not(.slick-initialized) {
     height: auto;
     overflow: visible;
 }
-
 body.single-ant_poeta .pantallas-poeta__tarjeta {
     min-height: 0;
     max-height: none;
@@ -1979,13 +1527,11 @@ body.single-ant_poeta .pantallas-poeta__tarjeta {
     overflow: visible;
     padding: clamp(.8rem, 1.5vw, 1.4rem);
 }
-
 body.single-ant_poeta .pantallas-poeta__subtitulo {
     font-size: var(--tamano-h2);
     line-height: 1.18;
     margin: .5rem 0;
 }
-
 body.single-ant_poeta .pantallas-poeta__descripcion,
 body.single-ant_poeta .pantallas-poeta__biografia-completa,
 body.single-ant_poeta .pantallas-poeta__biografia-completa p {
@@ -1993,39 +1539,18 @@ body.single-ant_poeta .pantallas-poeta__biografia-completa p {
     font-size: 16px;
     line-height: 1.65;
 }
-
-body.single-ant_poeta .pantallas-poeta__biografia-completa>*:last-child {
-    margin-bottom: 0;
-}
-
-body.single-ant_poeta .pantallas-poeta__biografia-completa h2 {
-    font-size: 32px;
-}
-
-body.single-ant_poeta .pantallas-poeta__biografia-completa h3 {
-    font-size: 24px;
-}
-
-body.single-ant_poeta .pantallas-poeta__biografia-completa h4 {
-    font-size: 20px;
-}
-
-body.single-ant_poeta .pantallas-poeta__ficha {
-    border: 0;
-    padding: 0;
-}
-
+body.single-ant_poeta .pantallas-poeta__biografia-completa > *:last-child { margin-bottom: 0; }
+body.single-ant_poeta .pantallas-poeta__biografia-completa h2 { font-size: 32px; }
+body.single-ant_poeta .pantallas-poeta__biografia-completa h3 { font-size: 24px; }
+body.single-ant_poeta .pantallas-poeta__biografia-completa h4 { font-size: 20px; }
+body.single-ant_poeta .pantallas-poeta__ficha { border: 0; padding: 0; }
 body.single-ant_poeta .pantallas-poeta__imagen {
     width: 100%;
     height: auto;
     aspect-ratio: 4/4;
     min-height: 0;
 }
-
-body.single-ant_poeta .pantallas-poeta__imagen img {
-    object-fit: cover;
-}
-
+body.single-ant_poeta .pantallas-poeta__imagen img { object-fit: cover; }
 body.single-ant_poeta .pantallas-poeta__indice {
     display: block;
     flex: 0 0 auto;
@@ -2035,17 +1560,12 @@ body.single-ant_poeta .pantallas-poeta__indice {
     margin-top: .65rem;
     padding: .7rem;
 }
-
 body.single-ant_poeta .pantallas-poeta__indice .boton-editorial {
     font-size: 13px;
     min-height: 38px;
     padding: .4rem .8rem;
 }
-
-body.single-ant_poeta .pantallas-poeta__indice .fuente-mono {
-    font-size: 12px;
-}
-
+body.single-ant_poeta .pantallas-poeta__indice .fuente-mono { font-size: 12px; }
 /* Se eliminaron el botón de ampliar y el panel duplicado: ningún contenido oculto. */
 
 /* Poemas: una sola estrofa encuadrada, lectura continua con scroll interior. */
@@ -2055,64 +1575,22 @@ body.single-ant_poema .contenido-principal--poema {
     overflow: hidden;
     padding: .35rem clamp(.6rem, 1.65vw, 1.4rem) .45rem;
 }
-
-body.single-ant_poema .vista-poema {
-    min-height: 0;
-    height: 100%;
-    padding: 0;
-    overflow: hidden;
-}
-
+body.single-ant_poema .vista-poema { min-height: 0; height: 100%; padding: 0; overflow: hidden; }
 body.single-ant_poema .vista-poema__titulo {
     font-size: var(--tamano-h1);
     line-height: 1.08;
 }
-
-body.single-ant_poema .vista-poema__encabezado {
-    margin-bottom: .35rem;
-}
-
-body.single-ant_poema .lector-estrofas__panel {
-    min-height: 0;
-}
-
-body.single-ant_poema .lector-estrofas__disposicion {
-    min-height: 0;
-    overflow: hidden;
-}
-
+body.single-ant_poema .vista-poema__encabezado { margin-bottom: .35rem; }
+body.single-ant_poema .lector-estrofas__panel { min-height: 0; }
+body.single-ant_poema .lector-estrofas__disposicion { min-height: 0; overflow: hidden; }
 body.single-ant_poema .lector-estrofas__versos,
-body.single-ant_poema .lector-estrofas__visual {
-    min-height: 0;
-    padding: clamp(.65rem, 1.5vw, 1.3rem);
-}
-
-body.single-ant_poema .lector-estrofas__verso {
-    font-size: clamp(16px, 1.25vw, 20px);
-}
-
-body.single-ant_poema .lector-estrofas__imagen {
-    min-height: 115px;
-    overflow: hidden;
-}
-
-body.single-ant_poema .lector-estrofas__pie {
-    margin-top: .55rem;
-}
-
-body.single-ant_poema .lector-estrofas__navegacion {
-    margin: .35rem 0 0;
-}
-
-body.single-ant_poema .lectura-continua {
-    overflow-y: auto;
-    min-height: 0;
-    margin-top: 0;
-}
-
-body.single-ant_poema .lectura-continua__estrofas p:not(.fuente-mono) {
-    font-size: 16px;
-}
+body.single-ant_poema .lector-estrofas__visual { min-height: 0; padding: clamp(.65rem, 1.5vw, 1.3rem); }
+body.single-ant_poema .lector-estrofas__verso { font-size: clamp(16px, 1.25vw, 20px); }
+body.single-ant_poema .lector-estrofas__imagen { min-height: 115px; overflow: hidden; }
+body.single-ant_poema .lector-estrofas__pie { margin-top: .55rem; }
+body.single-ant_poema .lector-estrofas__navegacion { margin: .35rem 0 0; }
+body.single-ant_poema .lectura-continua { overflow-y: auto; min-height: 0; margin-top: 0; }
+body.single-ant_poema .lectura-continua__estrofas p:not(.fuente-mono) { font-size: 16px; }
 
 @media (max-width: 991.98px) {
     body.single-ant_poeta .pantallas-poeta__contenedor:not(.slick-initialized) {
@@ -2121,195 +1599,59 @@ body.single-ant_poema .lectura-continua__estrofas p:not(.fuente-mono) {
         overflow: visible;
         scroll-snap-type: none;
     }
-
-    body.single-ant_poeta .pantallas-poeta__contenedor:not(.slick-initialized)>.pantallas-poeta__tarjeta:not(.pantallas-poeta__obra) {
+    body.single-ant_poeta .pantallas-poeta__contenedor:not(.slick-initialized) > .pantallas-poeta__tarjeta:not(.pantallas-poeta__obra) {
         flex: initial;
         scroll-snap-align: none;
     }
-
-    .posicion-polaroid {
-        width: clamp(108px, 18vw, 155px);
-    }
-
-    .bandeja-poeta--inicio {
-        width: clamp(160px, 28vw, 215px);
-        min-height: 185px;
-    }
+    .posicion-polaroid { width: clamp(108px, 18vw, 155px); }
+    .bandeja-poeta--inicio { width: clamp(160px, 28vw, 215px); min-height: 185px; }
 }
-
 @media (max-width: 767.98px) {
-    :root {
-        --alto-barra-superior: 86px;
-    }
-
+    :root { --alto-barra-superior: 86px; }
     body.admin-bar.home .antologia,
     body.admin-bar.single-ant_poeta .antologia,
-    body.admin-bar.single-ant_poema .antologia {
-        height: calc(100dvh - 46px);
-    }
-
-    body.admin-bar:not(.home):not(.single-ant_poeta):not(.single-ant_poema) .antologia {
-        height: calc(100dvh - 46px);
-    }
-
-    .barra-superior {
-        padding: .35rem .6rem;
-    }
-
-    .barra-superior__marca {
-        font-size: 13px;
-    }
-
-    .barra-superior__migas {
-        gap: .35rem;
-    }
-
-    .enlaces-informativos {
-        gap: .3rem;
-    }
-
-    .enlaces-informativos__enlace {
-        min-height: 30px;
-        font-size: 10px;
-        padding: .25rem .38rem;
-    }
-
-    .barra-inferior {
-        padding: .35rem .5rem;
-    }
-
-    .barra-inferior__marca {
-        font-size: clamp(1.1rem, 3.5vw, 1.5rem);
-    }
-
-    .reproductor-volumen__indicador {
-        min-width: 60px;
-    }
-
-    .reproductor-volumen__barras {
-        display: none;
-    }
-
-    .reproductor-volumen__controles .boton-volumen {
-        min-width: 27px;
-        padding: 0 .18rem;
-    }
-
-    .posicion-polaroid {
-        width: clamp(100px, 26vw, 135px);
-    }
-
-    .tarjeta-polaroid__nombre {
-        font-size: 12px;
-    }
-
-    .bandeja-poeta--inicio {
-        width: min(42%, 185px);
-        min-height: 170px;
-        right: .4rem;
-        bottom: .5rem;
-    }
-
-    .bandeja-poeta__contenido {
-        min-height: 120px;
-    }
-
+    body.admin-bar.single-ant_poema .antologia { height: calc(100dvh - 46px); }
+    body.admin-bar:not(.home):not(.single-ant_poeta):not(.single-ant_poema) .antologia { height: calc(100dvh - 46px); }
+    .barra-superior { padding: .35rem .6rem; }
+    .barra-superior__marca { font-size: 13px; }
+    .barra-superior__migas { gap: .35rem; }
+    .enlaces-informativos { gap: .3rem; }
+    .enlaces-informativos__enlace { min-height: 30px; font-size: 10px; padding: .25rem .38rem; }
+    .barra-inferior { padding: .35rem .5rem; }
+    .barra-inferior__marca { font-size: clamp(1.1rem, 3.5vw, 1.5rem); }
+    .reproductor-volumen__indicador { min-width: 60px; }
+    .reproductor-volumen__barras { display: none; }
+    .reproductor-volumen__controles .boton-volumen { min-width: 27px; padding: 0 .18rem; }
+    .posicion-polaroid { width: clamp(100px, 26vw, 135px); }
+    .tarjeta-polaroid__nombre { font-size: 12px; }
+    .bandeja-poeta--inicio { width: min(42%, 185px); min-height: 170px; right: .4rem; bottom: .5rem; }
+    .bandeja-poeta__contenido { min-height: 120px; }
     body.single-ant_poeta .vista-poeta__titulo,
-    body.single-ant_poema .vista-poema__titulo {
-        font-size: clamp(30px, 6vw, 48px);
-    }
-
-    body.single-ant_poeta .pantallas-poeta__subtitulo {
-        font-size: 28px;
-    }
-
-    body.single-ant_poeta .pantallas-poeta__tarjeta {
-        padding: .8rem;
-    }
-
-    body.single-ant_poema .lector-estrofas__disposicion {
-        grid-template-columns: 1fr;
-        overflow-y: auto;
-    }
-
+    body.single-ant_poema .vista-poema__titulo { font-size: clamp(30px, 6vw, 48px); }
+    body.single-ant_poeta .pantallas-poeta__subtitulo { font-size: 28px; }
+    body.single-ant_poeta .pantallas-poeta__tarjeta { padding: .8rem; }
+    body.single-ant_poema .lector-estrofas__disposicion { grid-template-columns: 1fr; overflow-y: auto; }
     body.single-ant_poema .lector-estrofas__versos,
-    body.single-ant_poema .lector-estrofas__visual {
-        overflow: visible;
-    }
-
-    body.single-ant_poema .lector-estrofas__visual {
-        min-height: 185px;
-    }
+    body.single-ant_poema .lector-estrofas__visual { overflow: visible; }
+    body.single-ant_poema .lector-estrofas__visual { min-height: 185px; }
 }
-
 @media (max-width: 420px) {
-    .barra-superior__inicio {
-        min-height: 31px;
-    }
-
-    .barra-inferior__marca {
-        font-size: 1.15rem;
-    }
-
-    .reproductor-volumen {
-        gap: .2rem;
-    }
-
-    .reproductor-volumen__indicador {
-        min-width: 43px;
-        padding: .2rem;
-    }
-
-    .reproductor-volumen__controles .boton-volumen {
-        min-width: 25px;
-    }
-
-    .galeria-poetas .posicion-polaroid {
-        width: clamp(95px, 30vw, 120px);
-    }
-
-    .tarjeta-polaroid--primera {
-        left: 6%;
-        top: 11%;
-    }
-
-    .tarjeta-polaroid--segunda {
-        left: 40%;
-        top: 6%;
-    }
-
-    .tarjeta-polaroid--tercera {
-        left: 2%;
-        top: 46%;
-    }
-
-    .tarjeta-polaroid--cuarta {
-        left: 40%;
-        top: 42%;
-    }
-
-    .tarjeta-polaroid--quinta {
-        left: 14%;
-        top: 65%;
-    }
-
-    .bandeja-poeta--inicio {
-        width: 38%;
-        min-height: 152px;
-    }
-
-    .bandeja-poeta__contenido {
-        min-height: 103px;
-    }
-
+    .barra-superior__inicio { min-height: 31px; }
+    .barra-inferior__marca { font-size: 1.15rem; }
+    .reproductor-volumen { gap: .2rem; }
+    .reproductor-volumen__indicador { min-width: 43px; padding: .2rem; }
+    .reproductor-volumen__controles .boton-volumen { min-width: 25px; }
+    .galeria-poetas .posicion-polaroid { width: clamp(95px, 30vw, 120px); }
+    .tarjeta-polaroid--primera { left: 6%; top: 11%; }
+    .tarjeta-polaroid--segunda { left: 40%; top: 6%; }
+    .tarjeta-polaroid--tercera { left: 2%; top: 46%; }
+    .tarjeta-polaroid--cuarta { left: 40%; top: 42%; }
+    .tarjeta-polaroid--quinta { left: 14%; top: 65%; }
+    .bandeja-poeta--inicio { width: 38%; min-height: 152px; }
+    .bandeja-poeta__contenido { min-height: 103px; }
     body.single-ant_poeta .vista-poeta__titulo,
-    body.single-ant_poema .vista-poema__titulo {
-        font-size: 30px;
-    }
-
-    body.single-ant_poema .lector-estrofas__cabecera {
-        padding: .4rem;
-    }
+    body.single-ant_poema .vista-poema__titulo { font-size: 30px; }
+    body.single-ant_poema .lector-estrofas__cabecera { padding: .4rem; }
 }
 
 
@@ -2317,33 +1659,27 @@ body.single-ant_poema .lectura-continua__estrofas p:not(.fuente-mono) {
 .posicion-polaroid {
     cursor: pointer;
 }
-
 .posicion-polaroid .tarjeta-polaroid {
     transition: background-color 160ms ease, box-shadow 160ms ease;
 }
-
 .posicion-polaroid:hover,
 .posicion-polaroid:focus-visible,
 .posicion-polaroid.esta-seleccionado {
     z-index: 12;
 }
-
 .posicion-polaroid:hover .tarjeta-polaroid,
 .posicion-polaroid:focus-visible .tarjeta-polaroid,
 .posicion-polaroid.esta-seleccionado .tarjeta-polaroid {
     background-color: var(--color-lima);
     box-shadow: 7px 7px 0 var(--color-tinta);
 }
-
 .posicion-polaroid:focus-visible {
     outline: 3px solid var(--color-tinta);
     outline-offset: 5px;
 }
-
 .bandeja-poeta__contenido .ficha-poeta {
     margin: 0;
 }
-
 .bandeja-poeta__contenido .ficha-poeta__imagen {
     display: block;
     width: 100%;
@@ -2351,37 +1687,25 @@ body.single-ant_poema .lectura-continua__estrofas p:not(.fuente-mono) {
     object-fit: cover;
     filter: grayscale(1);
 }
-
 .bandeja-poeta__contenido .ficha-poeta__nombre {
     font-size: clamp(.62rem, .85vw, .8rem);
     line-height: 1.15;
     overflow-wrap: anywhere;
 }
-
 .bandeja-poeta__contenido .ficha-poeta__descripcion {
     font-size: .58rem;
     line-height: 1.25;
 }
-
 .bandeja-poeta__contenido .ficha-poeta .boton-editorial {
     font-size: .65rem;
     min-height: 30px;
     text-align: center;
     padding: .3rem;
 }
-
 @media (max-width: 575.98px) {
-    .bandeja-poeta__contenido .ficha-poeta__nombre {
-        font-size: .6rem;
-    }
-
-    .bandeja-poeta__contenido .ficha-poeta__descripcion {
-        font-size: .55rem;
-    }
-
-    .bandeja-poeta__contenido .ficha-poeta .boton-editorial {
-        font-size: .56rem;
-    }
+    .bandeja-poeta__contenido .ficha-poeta__nombre { font-size: .6rem; }
+    .bandeja-poeta__contenido .ficha-poeta__descripcion { font-size: .55rem; }
+    .bandeja-poeta__contenido .ficha-poeta .boton-editorial { font-size: .56rem; }
 }
 
 /* ==========================================================================
@@ -2389,23 +1713,12 @@ body.single-ant_poema .lectura-continua__estrofas p:not(.fuente-mono) {
    La portada y el hub comparten front-page.php. Se preservan ambas barras.
    ========================================================================== */
 body.home.modo-hub .barra-superior__marca,
-body.home.modo-hub .enlaces-informativos {
-    display: none !important;
-}
-
-body.home.modo-hub .reproductor-volumen__controles {
-    opacity: 1;
-}
-
-body.home.modo-hub .contenido-principal--inicio {
-    overflow: hidden;
-}
-
+body.home.modo-hub .enlaces-informativos { display: none !important; }
+body.home.modo-hub .reproductor-volumen__controles { opacity: 1; }
+body.home.modo-hub .contenido-principal--inicio { overflow: hidden; }
 body.home .vista-dinamica[hidden],
 .hub-poeta[hidden],
-.modal-hub [hidden] {
-    display: none !important;
-}
+.modal-hub [hidden] { display: none !important; }
 
 .hub-poeta {
     height: 100%;
@@ -2414,44 +1727,18 @@ body.home .vista-dinamica[hidden],
     overflow: hidden;
     border: var(--borde-editorial);
 }
-
-.hub-poeta__encabezado {
-    flex: 0 0 auto;
-}
-
+.hub-poeta__encabezado { flex: 0 0 auto; }
 .hub-poeta__titulo {
     font-size: clamp(28px, 3.1vw, 48px);
     line-height: 1.08;
     margin: .5rem 0 .25rem;
     overflow-wrap: anywhere;
 }
-
-.hub-poeta__escenario {
-    flex: 1 1 auto;
-    min-height: 0;
-    overflow: hidden;
-}
-
-.hub-poeta__carrusel {
-    min-width: 0;
-    width: 100%;
-}
-
-.hub-poeta__carrusel .slick-list {
-    overflow: visible;
-}
-
-.hub-poeta__carrusel .slick-track {
-    display: flex;
-    align-items: center;
-}
-
-.hub-poeta__pantalla {
-    display: flex !important;
-    justify-content: center;
-    padding: 1rem .65rem 1.25rem;
-}
-
+.hub-poeta__escenario { flex: 1 1 auto; min-height: 0; overflow: hidden; }
+.hub-poeta__carrusel { min-width: 0; width: 100%; }
+.hub-poeta__carrusel .slick-list { overflow: visible; }
+.hub-poeta__carrusel .slick-track { display: flex; align-items: center; }
+.hub-poeta__pantalla { display: flex !important; justify-content: center; padding: 1rem .65rem 1.25rem; }
 .hub-poeta__tarjeta {
     display: flex;
     flex-direction: column;
@@ -2471,18 +1758,15 @@ body.home .vista-dinamica[hidden],
     transition: transform .3s ease, background-color .3s ease, opacity .3s ease;
     overflow: hidden;
 }
-
 .hub-poeta__carrusel .slick-slide .hub-poeta__tarjeta {
     transform: perspective(900px) rotateY(-11deg) scale(.82) rotate(-2deg);
     opacity: .65;
 }
-
 .hub-poeta__carrusel .slick-center .hub-poeta__tarjeta,
 .hub-poeta__carrusel:not(.slick-initialized) .hub-poeta__tarjeta {
     transform: none;
     opacity: 1;
 }
-
 .hub-poeta__tarjeta:hover,
 .hub-poeta__tarjeta:focus-visible,
 .hub-poeta__carrusel .slick-center .hub-poeta__tarjeta:hover {
@@ -2490,7 +1774,6 @@ body.home .vista-dinamica[hidden],
     transform: translateY(-3px) scale(1.02);
     opacity: 1;
 }
-
 .hub-poeta__tarjeta-imagen {
     flex: 1 1 auto;
     min-height: 0;
@@ -2501,14 +1784,7 @@ body.home .vista-dinamica[hidden],
     align-items: center;
     justify-content: center;
 }
-
-.hub-poeta__tarjeta-imagen img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
+.hub-poeta__tarjeta-imagen img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .hub-poeta__tarjeta-titulo {
     flex: 0 0 auto;
     margin: 0;
@@ -2516,7 +1792,6 @@ body.home .vista-dinamica[hidden],
     line-height: 1.15;
     font-weight: 800;
 }
-
 .hub-poeta__tarjeta-resumen {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -2526,35 +1801,19 @@ body.home .vista-dinamica[hidden],
     font-size: 14px;
     margin: 0;
 }
-
-.hub-poeta__abrir {
-    margin-top: auto;
-    text-align: right;
-}
-
-.hub-poeta__navegacion {
-    flex: 0 0 auto;
-    padding: .35rem 1rem;
-}
+.hub-poeta__abrir { margin-top: auto; text-align: right; }
+.hub-poeta__navegacion { flex: 0 0 auto; padding: .35rem 1rem; }
 
 /* Bootstrap modal: fondo atenuado entre las barras, desplazamiento interno. */
 body.home.modo-hub .barra-superior,
-body.home.modo-hub .barra-inferior {
-    position: relative;
-    z-index: 1100;
-}
-
-body.home.modo-hub .modal-backdrop {
-    z-index: 1050;
-}
-
+body.home.modo-hub .barra-inferior { position: relative; z-index: 1100; }
+body.home.modo-hub .modal-backdrop { z-index: 1050; }
 .modal-hub {
     z-index: 1060;
     top: var(--alto-barra-superior);
     height: calc(100dvh - var(--alto-barra-superior) - var(--alto-barra-inferior));
     padding: 0 !important;
 }
-
 .modal-hub .modal-dialog {
     max-width: min(1120px, calc(100vw - 2rem));
     width: 100%;
@@ -2562,14 +1821,12 @@ body.home.modo-hub .modal-backdrop {
     max-height: none;
     margin: .65rem auto;
 }
-
 .modal-hub .modal-content {
     border: 3px solid var(--color-tinta);
     border-radius: 2px;
     box-shadow: 8px 8px 0 var(--color-tinta);
     overflow: hidden;
 }
-
 .modal-hub__cabecera {
     background: var(--color-papel);
     border-bottom: 2px solid var(--color-tinta);
@@ -2577,40 +1834,24 @@ body.home.modo-hub .modal-backdrop {
     gap: 1rem;
     padding: .8rem clamp(.75rem, 2vw, 1.5rem);
 }
-
 .modal-hub__titulo {
     font-size: clamp(24px, 3vw, 36px);
     line-height: 1.1;
     margin-top: .4rem;
     overflow-wrap: anywhere;
 }
-
 .modal-hub__cuerpo {
     min-height: 0;
     padding: clamp(.75rem, 2vw, 1.7rem);
     overflow-y: auto;
     overscroll-behavior: contain;
 }
-
 .modal-hub__texto,
 .modal-hub__texto p,
-.modal-hub__verso {
-    font-size: 16px;
-    line-height: 1.75;
-}
-
-.modal-hub__texto h2 {
-    font-size: 32px;
-}
-
-.modal-hub__texto h3 {
-    font-size: 24px;
-}
-
-.modal-hub__texto h4 {
-    font-size: 20px;
-}
-
+.modal-hub__verso { font-size: 16px; line-height: 1.75; }
+.modal-hub__texto h2 { font-size: 32px; }
+.modal-hub__texto h3 { font-size: 24px; }
+.modal-hub__texto h4 { font-size: 20px; }
 .modal-hub__imagen {
     border: var(--borde-editorial);
     background: var(--color-papel-sombra);
@@ -2620,203 +1861,287 @@ body.home.modo-hub .modal-backdrop {
     min-height: 185px;
     overflow: hidden;
 }
-
-.modal-hub__retrato .modal-hub__imagen {
-    aspect-ratio: 4/5;
-}
-
-.modal-hub__imagen--estrofa {
-    aspect-ratio: 4/3;
-}
-
-.modal-hub__imagen--cierre {
-    min-height: 180px;
-    max-height: 440px;
-}
-
-.modal-hub__imagen img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
-.modal-hub__retrato img {
-    object-fit: cover;
-}
-
-.modal-hub__verso {
-    display: flex;
-    gap: .8rem;
-    margin-bottom: .85rem;
-}
-
-.modal-hub__numero-verso {
-    flex: 0 0 auto;
-    padding-top: .22rem;
-}
-
-.modal-hub__verso mark {
-    background: var(--color-lima);
-    color: var(--color-tinta);
-    padding: 0 .12rem;
-}
-
-.modal-hub__estrofa-completa {
-    margin-bottom: 1.5rem;
-}
-
-.modal-hub__estrofa-completa>.etiqueta-editorial {
-    margin-bottom: .7rem;
-}
-
-.modal-hub__cierre {
-    margin-top: 2rem;
-    border-top: 2px solid var(--color-tinta);
-    padding-top: 1.2rem;
-}
-
-.modal-hub__cierre h3 {
-    font-size: 24px;
-}
+.modal-hub__retrato .modal-hub__imagen { aspect-ratio: 4/5; }
+.modal-hub__imagen--estrofa { aspect-ratio: 4/3; }
+.modal-hub__imagen--cierre { min-height: 180px; max-height: 440px; }
+.modal-hub__imagen img { width: 100%; height: 100%; object-fit: contain; }
+.modal-hub__retrato img { object-fit: cover; }
+.modal-hub__verso { display: flex; gap: .8rem; margin-bottom: .85rem; }
+.modal-hub__numero-verso { flex: 0 0 auto; padding-top: .22rem; }
+.modal-hub__verso mark { background: var(--color-lima); color: var(--color-tinta); padding: 0 .12rem; }
+.modal-hub__estrofa-completa { margin-bottom: 1.5rem; }
+.modal-hub__estrofa-completa > .etiqueta-editorial { margin-bottom: .7rem; }
+.modal-hub__cierre { margin-top: 2rem; border-top: 2px solid var(--color-tinta); padding-top: 1.2rem; }
+.modal-hub__cierre h3 { font-size: 24px; }
 
 @media (max-width: 767.98px) {
-    .hub-poeta {
-        padding: .35rem .4rem;
-    }
-
-    .hub-poeta__titulo {
-        font-size: clamp(26px, 7vw, 36px);
-    }
-
-    .hub-poeta__pantalla {
-        padding: .6rem .25rem .8rem;
-    }
-
-    .hub-poeta__tarjeta {
-        height: clamp(220px, 46dvh, 380px);
-        padding: .6rem;
-    }
-
-    .hub-poeta__tarjeta-titulo {
-        font-size: 20px;
-    }
-
-    .hub-poeta__tarjeta-resumen {
-        font-size: 12px;
-    }
-
-    .modal-hub .modal-dialog {
-        max-width: calc(100vw - .6rem);
-        height: calc(100% - .6rem);
-        margin: .3rem auto;
-    }
-
-    .modal-hub__cabecera {
-        padding: .5rem;
-    }
-
-    .modal-hub__titulo {
-        font-size: clamp(20px, 5vw, 28px);
-    }
-
-    .modal-hub__cuerpo {
-        padding: .7rem;
-    }
-
-    .modal-hub__imagen--estrofa {
-        max-height: 230px;
-    }
+    .hub-poeta { padding: .35rem .4rem; }
+    .hub-poeta__titulo { font-size: clamp(26px, 7vw, 36px); }
+    .hub-poeta__pantalla { padding: .6rem .25rem .8rem; }
+    .hub-poeta__tarjeta { height: clamp(220px, 46dvh, 380px); padding: .6rem; }
+    .hub-poeta__tarjeta-titulo { font-size: 20px; }
+    .hub-poeta__tarjeta-resumen { font-size: 12px; }
+    .modal-hub .modal-dialog { max-width: calc(100vw - .6rem); height: calc(100% - .6rem); margin: .3rem auto; }
+    .modal-hub__cabecera { padding: .5rem; }
+    .modal-hub__titulo { font-size: clamp(20px, 5vw, 28px); }
+    .modal-hub__cuerpo { padding: .7rem; }
+    .modal-hub__imagen--estrofa { max-height: 230px; }
 }
-
 body.admin-bar .modal-hub {
     top: calc(var(--alto-barra-superior) + 32px);
     height: calc(100dvh - var(--alto-barra-superior) - var(--alto-barra-inferior) - 32px);
 }
-
 @media (max-width: 782px) {
     body.admin-bar .modal-hub {
         top: calc(var(--alto-barra-superior) + 46px);
         height: calc(100dvh - var(--alto-barra-superior) - var(--alto-barra-inferior) - 46px);
     }
 }
-
 @media (prefers-reduced-motion: reduce) {
-
-    .hub-poeta__tarjeta,
-    .hub-poeta__carrusel .slick-slide .hub-poeta__tarjeta {
-        transition: none;
-    }
+    .hub-poeta__tarjeta, .hub-poeta__carrusel .slick-slide .hub-poeta__tarjeta { transition: none; }
 }
 
 /* Evitar contenido emergente expuesto si el CDN de Bootstrap aún no carga. */
-.modal-hub:not(.show) {
-    display: none;
+.modal-hub:not(.show) { display: none; }
+
+/* ============================================================
+   HUB: PREVISUALIZACIONES DEL CPT (biografía y poema completos)
+   La vista previa reproduce la diagramación de cada pantalla.
+   El contenido legible y desplazable se abre en el modal.
+   ============================================================ */
+
+.hub-poeta__escenario { justify-content: center; }
+.hub-poeta__carrusel { max-height: 100%; }
+.hub-poeta__carrusel .slick-track { align-items: center; }
+.hub-poeta__pantalla { min-width: 0; align-items: center; }
+
+.hub-poeta__tarjeta {
+    position: relative;
+    width: 100%;
+    max-width: none;
+    height: clamp(300px, 57dvh, 640px);
+    min-height: 260px;
+    padding: 0;
+    gap: 0;
+    text-align: left;
+    background: var(--color-blanco);
+    overflow: hidden;
+    cursor: default;
 }
 
-/* Lectura de estrofas mediante desplazamiento vertical */
-
-.modal-hub--estrofas-scroll .modal-hub__cuerpo {
+.hub-poeta__vista {
     display: flex;
     flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    background: var(--color-papel);
+    pointer-events: none;
+}
+.hub-poeta__vista-encabezado {
+    flex: 0 0 auto;
+    padding: .75rem 1rem .55rem;
+    border-bottom: 2px solid var(--color-tinta);
+}
+.hub-poeta__vista-titulo {
+    font-family: var(--fuente-titulos);
+    font-size: clamp(1.25rem, 2.1vw, 2.4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin: .35rem 0 0;
+    overflow-wrap: anywhere;
+}
+.hub-poeta__bio-columnas {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.7fr);
+    gap: .65rem;
+    padding: .75rem;
+}
+.hub-poeta__bio-contexto,
+.hub-poeta__bio-dossier {
+    background: var(--color-blanco);
+    border: var(--borde-editorial);
+    padding: .7rem;
+    min-width: 0;
+    min-height: 0;
     overflow: hidden;
 }
-
-.modal-hub--estrofas-scroll .modal-hub__poema {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-height: 0;
+.hub-poeta__bio-contexto { display:flex; flex-direction:column; gap:.75rem; }
+.hub-poeta__bio-contexto small { margin-top: auto; }
+.hub-poeta__bio-extracto { font-size: .85rem; line-height: 1.5; margin:0; }
+.hub-poeta__bio-detalle {
+    display:grid;
+    grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+    gap: .7rem;
+    margin-top: .5rem;
+    height: calc(100% - 2rem);
+    min-height:0;
 }
+.hub-poeta__bio-retrato { margin:0; min-height:0; overflow:hidden; }
+.hub-poeta__bio-foto { height: calc(100% - 1.5rem); min-height:0; overflow:hidden; background:var(--color-papel-sombra); border:1px solid var(--color-tinta); }
+.hub-poeta__bio-foto img { display:block; width:100%; height:100%; object-fit:cover; }
+.hub-poeta__bio-retrato figcaption { text-align:center; font-size:.6rem; padding-top:.2rem; }
+.hub-poeta__bio-texto { min-height:0; overflow:hidden; font-size:.82rem; line-height:1.5; }
+.hub-poeta__bio-texto p { font-size:inherit; line-height:inherit; margin:0 0 .6rem; }
+.hub-poeta__bio-texto h2,
+.hub-poeta__bio-texto h3 { font-size:1rem; }
 
-.modal-hub__lectura-por-estrofas {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-height: 0;
+.hub-poeta__vista--poema { background:#201c25; color:var(--color-blanco); }
+.hub-poeta__vista--poema .hub-poeta__vista-encabezado { border-color:var(--color-blanco); }
+.hub-poeta__poema-documento {
+    flex:1;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    margin:.7rem;
+    color:var(--color-tinta);
+    background:var(--color-blanco);
+    border:2px solid var(--color-tinta);
 }
+.hub-poeta__poema-cinta {
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    gap:.65rem;
+    padding:.45rem .65rem;
+    border-bottom:2px solid var(--color-tinta);
+    font-size:.68rem;
+}
+.hub-poeta__poema-secuencia { flex:1; min-height:0; overflow:hidden; }
+.hub-poeta__poema-estrofa {
+    display:grid;
+    grid-template-columns:minmax(0, 1.35fr) minmax(0, 1fr);
+    min-height:100%;
+}
+.hub-poeta__poema-estrofa--invertida { grid-template-columns:minmax(0, 1fr) minmax(0, 1.35fr); }
+.hub-poeta__poema-estrofa--invertida .hub-poeta__poema-imagen { order:-1; border-right:1px solid var(--color-tinta); border-left:0; }
+.hub-poeta__poema-versos { padding:1rem; overflow:hidden; min-width:0; }
+.hub-poeta__poema-versos-contenido { margin-top:1rem; }
+.hub-poeta__poema-versos .modal-hub__verso { font-size:.9rem; line-height:1.5; margin-bottom:.75rem; }
+.hub-poeta__poema-imagen {
+    background:var(--color-papel-sombra);
+    border-left:1px solid var(--color-tinta);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+}
+.hub-poeta__poema-imagen img { display:block; width:100%; height:100%; object-fit:cover; }
 
-.modal-hub__secuencia-estrofas {
-    flex: 1;
-    min-height: 0;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    scroll-snap-type: y proximity;
-    scrollbar-width: thin;
+/* Botón transparente sobre la pantalla: no anidar botones en el HTML de Gutenberg. */
+.hub-poeta__abrir-pantalla {
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:2;
+    background:transparent;
+    border:0;
+    padding:.7rem;
+    display:flex;
+    align-items:flex-end;
+    justify-content:flex-end;
+    cursor:zoom-in;
+    color:var(--color-tinta);
 }
+.hub-poeta__abrir {
+    display:inline-flex;
+    align-items:center;
+    padding:.3rem .5rem;
+    background:var(--color-lima);
+    border:2px solid var(--color-tinta);
+    box-shadow:3px 3px 0 var(--color-tinta);
+    font-size:.7rem;
+    font-weight:700;
+    text-transform:uppercase;
+}
+.hub-poeta__carrusel .slick-center .hub-poeta__tarjeta:hover,
+.hub-poeta__tarjeta:focus-within {
+    background:var(--color-blanco);
+    transform:translateY(-2px) scale(1.005);
+    opacity:1;
+}
+.hub-poeta__abrir-pantalla:focus-visible { outline:4px solid var(--color-lima); outline-offset:-6px; }
 
-.modal-hub__seccion-estrofa {
-    min-height: 100%;
-    box-sizing: border-box;
-    margin: 0;
-    padding: 1rem .75rem;
-    scroll-snap-align: start;
+/* Modal al 80 % del espacio disponible entre las barras del sitio. */
+.modal-hub.show { display:flex !important; align-items:center; justify-content:center; }
+.modal-hub .modal-dialog {
+    flex:0 0 auto;
+    width:80vw;
+    max-width:80vw;
+    height:80%;
+    max-height:80%;
+    margin:0;
+    transform:none !important;
 }
+.modal-hub .modal-content { height:100%; display:flex; flex-direction:column; }
+.modal-hub__cabecera { flex:0 0 auto; }
+.modal-hub__cuerpo { flex:1 1 auto; min-height:0; overflow-y:auto; }
+.modal-hub__navegacion {
+    flex:0 0 auto;
+    border-top:2px solid var(--color-tinta);
+    padding:.55rem .8rem;
+    background:var(--color-papel);
+}
+body.home.modo-hub .modal-backdrop.show { opacity:.78; }
 
-.modal-hub__columna-texto,
-.modal-hub__columna-imagen {
-    min-width: 0;
-}
-
-.modal-hub__controles-estrofas {
-    flex: 0 0 auto;
-    width: 100%;
-    border-top: 2px solid var(--color-tinta);
-    padding: .65rem 0 .2rem;
-}
+/* En lectura por estrofas, solo la secuencia interna se desplaza. */
+.modal-hub--estrofas-scroll .modal-hub__cuerpo { display:flex; flex-direction:column; overflow:hidden; }
+.modal-hub--estrofas-scroll .modal-hub__poema { display:flex; flex-direction:column; flex:1; min-height:0; }
+.modal-hub__lectura-por-estrofas { display:flex; flex-direction:column; flex:1; min-height:0; }
+.modal-hub__secuencia-estrofas { flex:1; min-height:0; overflow-y:auto; overscroll-behavior:contain; scroll-snap-type:y proximity; scrollbar-width:thin; }
+.modal-hub__seccion-estrofa { min-height:100%; box-sizing:border-box; margin:0; padding:.8rem .6rem; scroll-snap-align:start; }
+.modal-hub__columna-texto, .modal-hub__columna-imagen { min-width:0; }
+.modal-hub__controles-estrofas { flex:0 0 auto; width:100%; padding:.55rem 0 .1rem; border-top:2px solid var(--color-tinta); }
 
 @media (max-width: 767.98px) {
-    .modal-hub__seccion-estrofa {
-        padding: .75rem .25rem;
-        align-content: start;
-    }
-
-    .modal-hub__seccion-estrofa .modal-hub__imagen--estrofa {
-        max-height: 230px;
-    }
+    .hub-poeta__tarjeta { height:clamp(280px, 50dvh, 450px); padding:0; }
+    .hub-poeta__pantalla { padding:.5rem .2rem; }
+    .hub-poeta__bio-columnas { display:flex; flex-direction:column; }
+    .hub-poeta__bio-contexto { flex:0 0 25%; }
+    .hub-poeta__bio-dossier { flex:1; }
+    .hub-poeta__bio-detalle { grid-template-columns:40% 1fr; }
+    .hub-poeta__bio-extracto { font-size:.68rem; }
+    .hub-poeta__bio-texto { font-size:.65rem; }
+    .hub-poeta__poema-versos { padding:.6rem; }
+    .hub-poeta__poema-versos .modal-hub__verso { font-size:.67rem; }
+    .hub-poeta__vista-encabezado { padding:.5rem; }
+    .hub-poeta__vista-titulo { font-size:1.15rem; }
+    .modal-hub .modal-dialog { width:95vw; max-width:95vw; height:90%; max-height:90%; }
+    .modal-hub__seccion-estrofa { padding:.5rem .15rem; align-content:start; }
+    .modal-hub__seccion-estrofa .modal-hub__imagen--estrofa { max-height:230px; }
+}
+@media (prefers-reduced-motion:reduce) {
+    .hub-poeta__abrir-pantalla { transition:none; }
+    .modal-hub__secuencia-estrofas { scroll-behavior:auto; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-    .modal-hub__secuencia-estrofas {
-        scroll-behavior: auto;
-    }
+/* Vista ampliada de la biografía: conserva el mismo esquema del slide. */
+.modal-hub__bio-paneles {
+    display:grid;
+    grid-template-columns:minmax(0, .8fr) minmax(0, 1.7fr);
+    gap:1rem;
+    align-items:stretch;
+    min-height:100%;
+}
+.modal-hub__bio-contexto,
+.modal-hub__bio-expediente { padding:clamp(.75rem, 1.4vw, 1.5rem); min-width:0; }
+.modal-hub__bio-contexto { display:flex; flex-direction:column; gap:.85rem; }
+.modal-hub__bio-contexto h3 { font-size:clamp(1.3rem, 2.2vw, 2rem); margin:0; }
+.modal-hub__bio-expediente-cuerpo {
+    display:grid;
+    grid-template-columns:minmax(0, .85fr) minmax(0, 1.35fr);
+    gap:1rem;
+    margin-top:1rem;
+}
+.modal-hub__bio-expediente .modal-hub__retrato .modal-hub__imagen { max-height:440px; }
+@media (max-width:991.98px) {
+    .modal-hub__bio-paneles { grid-template-columns:1fr; }
+}
+@media (max-width:575.98px) {
+    .modal-hub__bio-expediente-cuerpo { grid-template-columns:1fr; }
+    .modal-hub__bio-expediente .modal-hub__retrato .modal-hub__imagen { max-height:250px; }
 }

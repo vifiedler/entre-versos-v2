@@ -50,17 +50,26 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
             </div>
             <div class="modal-body modal-hub__cuerpo">
                 <div id="modal-hub-biografia" class="modal-hub__biografia" hidden>
-                    <div class="row g-3 g-lg-4">
-                        <div class="col-12 col-lg-4">
-                            <figure class="modal-hub__retrato mb-0">
-                                <div id="modal-hub-foto-biografia" class="modal-hub__imagen"></div>
-                                <figcaption id="modal-hub-pie-biografia" class="fuente-mono mt-2"></figcaption>
-                            </figure>
-                        </div>
-                        <div class="col-12 col-lg-8">
-                            <p id="modal-hub-datos-biografia" class="fuente-mono"></p>
-                            <div id="modal-hub-texto-biografia" class="modal-hub__texto"></div>
-                        </div>
+                    <div class="modal-hub__bio-paneles">
+                        <section class="modal-hub__bio-contexto tarjeta-editorial" aria-labelledby="modal-hub-vida-titulo">
+                            <span class="etiqueta-editorial">Antecedentes</span>
+                            <h3 id="modal-hub-vida-titulo">Vida y contexto</h3>
+                            <p id="modal-hub-resumen-biografia" class="modal-hub__texto"></p>
+                            <p id="modal-hub-detalle-biografia" class="fuente-mono mt-auto"></p>
+                        </section>
+                        <section class="modal-hub__bio-expediente tarjeta-editorial" aria-labelledby="modal-hub-expediente-titulo">
+                            <span id="modal-hub-expediente-titulo" class="etiqueta-editorial">Expediente biográfico</span>
+                            <div class="modal-hub__bio-expediente-cuerpo">
+                                <figure class="modal-hub__retrato mb-0">
+                                    <div id="modal-hub-foto-biografia" class="modal-hub__imagen"></div>
+                                    <figcaption id="modal-hub-pie-biografia" class="fuente-mono mt-2"></figcaption>
+                                </figure>
+                                <div>
+                                    <p id="modal-hub-datos-biografia" class="fuente-mono"></p>
+                                    <div id="modal-hub-texto-biografia" class="modal-hub__texto"></div>
+                                </div>
+                            </div>
+                        </section>
                     </div>
                 </div>
                 <div id="modal-hub-poema" class="modal-hub__poema" hidden>
@@ -94,6 +103,16 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
                     </div>
                 </div>
             </div>
+            <!-- Cambia entre biografía y poemas mientras la pantalla está ampliada. -->
+            <nav class="modal-hub__navegacion d-flex align-items-center justify-content-between gap-2" aria-label="Navegación entre pantallas del poeta">
+                <button id="modal-hub-pantalla-anterior" type="button" class="boton-editorial boton-editorial--compacto" aria-label="Pantalla anterior">
+                    <i class="bi bi-arrow-left" aria-hidden="true"></i> <span class="d-none d-sm-inline">Anterior</span>
+                </button>
+                <span id="modal-hub-indicador" class="fuente-mono text-center" aria-live="polite">01 / 01</span>
+                <button id="modal-hub-pantalla-siguiente" type="button" class="boton-editorial boton-editorial--compacto" aria-label="Pantalla siguiente">
+                    <span class="d-none d-sm-inline">Siguiente</span> <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                </button>
+            </nav>
         </div>
     </div>
 </div>
