@@ -609,7 +609,6 @@
                 visual.classList.add( 'order-2', 'order-lg-2' );
             }
 
-            texto.appendChild( elementoTexto( 'span', 'etiqueta-editorial', 'Estrofa ' + String( indice + 1 ).padStart( 2, '0' ) ) );
             var versos = document.createElement( 'div' );
             versos.className = 'modal-hub__versos mt-3';
             versosEn( versos, estrofa, true );
