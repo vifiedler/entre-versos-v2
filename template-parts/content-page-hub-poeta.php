@@ -44,9 +44,12 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
                     <span id="modal-hub-categoria" class="etiqueta-editorial">Archivo</span>
                     <h2 id="modal-hub-titulo" class="modal-hub__titulo mb-0"></h2>
                 </div>
-                <button type="button" class="boton-editorial boton-editorial--compacto" data-bs-dismiss="modal" aria-label="Volver al hub">
-                    <i class="bi bi-x-lg" aria-hidden="true"></i><span class="d-none d-sm-inline"> Volver al poeta</span>
-                </button>
+                <div class="modal-hub__acciones">
+                    <button id="modal-hub-alternar-lectura" type="button" class="boton-editorial boton-editorial--compacto" aria-pressed="false" hidden>Lectura continua</button>
+                    <button type="button" class="boton-editorial boton-editorial--compacto" data-bs-dismiss="modal" aria-label="Volver al hub">
+                        <i class="bi bi-x-lg" aria-hidden="true"></i><span class="d-none d-sm-inline"> Volver al poeta</span>
+                    </button>
+                </div>
             </div>
             <div class="modal-body modal-hub__cuerpo">
                 <div id="modal-hub-biografia" class="modal-hub__biografia" hidden>
@@ -73,10 +76,6 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
                     </div>
                 </div>
                 <div id="modal-hub-poema" class="modal-hub__poema" hidden>
-                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-                        <span id="modal-hub-contador-estrofas" class="etiqueta-editorial">Estrofa 01 / 01</span>
-                        <button id="modal-hub-alternar-lectura" type="button" class="boton-editorial boton-editorial--compacto" aria-pressed="false">Lectura continua</button>
-                    </div>
                     <div id="modal-hub-lectura-estrofa" class="row g-3 g-lg-4 align-items-start">
                         <div class="col-12 col-lg-6">
                             <div id="modal-hub-versos" class="modal-hub__versos"></div>

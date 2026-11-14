@@ -359,7 +359,7 @@
                 dots: false,
                 accessibility: true,
                 focusOnSelect: false, // El clic abre el contenido ampliado.
-                speed: 20000,
+                speed: 6000,
                 cssEase: 'linear',
                 autoplay: !reducirMovimiento,
                 autoplaySpeed: 0,
@@ -434,6 +434,7 @@
         }
         buscar( '#modal-hub-biografia' ).hidden = tipo !== 'bio';
         buscar( '#modal-hub-poema' ).hidden = tipo !== 'poema';
+        buscar( '#modal-hub-alternar-lectura' ).hidden = tipo !== 'poema';
         escribir( '#modal-hub-titulo', tipo === 'bio' ? titulo( estado.poeta ) : titulo( entrada ) );
         escribir( '#modal-hub-categoria', tipo === 'bio' ? 'Biografía' : 'Lectura poética' );
         ponerRuta( tipo === 'bio' ? 'Biografía' : titulo( entrada ) );
@@ -536,12 +537,6 @@
         return secuencia;
     }
 
-    function actualizarControlesEstrofa() {
-        var total = estado.estrofas.length;
-        escribir( '#modal-hub-contador-estrofas', total ?
-            'Estrofa ' + String( estado.estrofa + 1 ).padStart( 2, '0' ) + ' / ' + String( total ).padStart( 2, '0' ) :
-            'Sin estrofas' );
-    }
 
     // La estrofa visible se obtiene del desplazamiento natural, no de un
     // contador independiente. Así funcionan la rueda, el touch y las flechas.
@@ -561,7 +556,6 @@
         } );
         if ( secciones.length ) {
             estado.estrofa = indiceCercano;
-            actualizarControlesEstrofa();
         }
     }
 
@@ -572,7 +566,6 @@
         var seccion = secuencia.querySelectorAll( '.modal-hub__seccion-estrofa' )[ nuevo ];
         if ( ! seccion ) { return; }
         estado.estrofa = nuevo;
-        actualizarControlesEstrofa();
         var movimientoReducido = window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches;
         var destino = seccion.getBoundingClientRect().top - secuencia.getBoundingClientRect().top + secuencia.scrollTop;
         secuencia.scrollTo( { top: destino, behavior: movimientoReducido ? 'instant' : 'smooth' } );
@@ -590,14 +583,14 @@
 
         estado.estrofas.forEach( function( estrofa, indice ) {
             var seccion = document.createElement( 'section' );
-            seccion.className = 'modal-hub__seccion-estrofa row g-3 g-lg-4 align-items-center';
+            seccion.className = 'modal-hub__seccion-estrofa';
             seccion.dataset.estrofa = String( indice );
             seccion.setAttribute( 'aria-label', 'Estrofa ' + ( indice + 1 ) + ' de ' + estado.estrofas.length );
 
             var texto = document.createElement( 'div' );
-            texto.className = 'col-12 col-lg-6 modal-hub__columna-texto';
+            texto.className = 'modal-hub__columna-texto';
             var visual = document.createElement( 'div' );
-            visual.className = 'col-12 col-lg-6 modal-hub__columna-imagen';
+            visual.className = 'modal-hub__columna-imagen';
 
             // Estrofas pares: versos a la izquierda; impares: imagen a la izquierda.
             // En móvil se mantiene el mismo orden de lectura alternado.
@@ -610,7 +603,7 @@
             }
 
             var versos = document.createElement( 'div' );
-            versos.className = 'modal-hub__versos mt-3';
+            versos.className = 'modal-hub__versos';
             versosEn( versos, estrofa, true );
             texto.appendChild( versos );
 
@@ -620,7 +613,6 @@
             imagen.className = 'modal-hub__imagen modal-hub__imagen--estrofa';
             imagen.appendChild( elementoTexto( 'span', 'fuente-mono', 'Cargando imagen…' ) );
             figura.appendChild( imagen );
-            figura.appendChild( elementoTexto( 'figcaption', 'fuente-mono mt-2', 'Imagen asociada a la estrofa ' + ( indice + 1 ) ) );
             visual.appendChild( figura );
             seccion.append( texto, visual );
             fragmento.appendChild( seccion );
@@ -634,7 +626,6 @@
         secuencia.replaceChildren( fragmento );
         secuencia.scrollTop = 0;
         estado.estrofa = 0;
-        actualizarControlesEstrofa();
     }
 
     function construirLecturaCompleta( poema ) {
@@ -680,7 +671,6 @@
                 construirEstrofasDesplazables( poema );
                 construirLecturaCompleta( poema );
             } else {
-                escribir( '#modal-hub-contador-estrofas', 'Sin estrofas' );
                 construirEstrofasDesplazables( poema );
                 construirLecturaCompleta( poema );
             }

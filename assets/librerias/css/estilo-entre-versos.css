@@ -2222,3 +2222,133 @@ body.home.modo-hub .modal-backdrop.show { opacity:.78; }
 
 /* Los controles del reproductor no quedan atenuados dentro del hub. */
 body.home.modo-hub .reproductor-volumen__controles { opacity: 1; }
+
+
+/* ============================================================
+   LECTURA AMPLIADA · DISTRIBUCIÓN A PANTALLA COMPLETA
+   Solo afecta la lectura por estrofas en el hub.
+   ============================================================ */
+
+/* Un único encabezado: título y modos de lectura al mismo nivel. */
+.modal-hub__cabecera {
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    column-gap: 1.25rem;
+    row-gap: .65rem;
+    padding: .65rem clamp(.85rem, 1.6vw, 1.5rem);
+}
+.modal-hub__titulo {
+    margin-top: .2rem;
+}
+.modal-hub__acciones {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: .65rem;
+    margin-left: auto;
+}
+.modal-hub__acciones [hidden] {
+    display: none !important;
+}
+
+/* La estrofa ocupa por completo el área del modal que queda bajo el título. */
+.modal-hub--estrofas-scroll .modal-hub__cuerpo {
+    padding: 0;
+}
+.modal-hub__secuencia-estrofas {
+    scroll-snap-type: y proximity;
+}
+.modal-hub__seccion-estrofa {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    height: 100%;
+    scroll-snap-align: start;
+}
+.modal-hub__columna-texto,
+.modal-hub__columna-imagen {
+    min-width: 0;
+    min-height: 0;
+    width: 100%;
+}
+.modal-hub__columna-texto {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(1rem, 2.7vw, 3.5rem);
+    overflow-wrap: anywhere;
+}
+.modal-hub__versos {
+    width: 100%;
+}
+.modal-hub__seccion-estrofa .modal-hub__verso {
+    font-size: clamp(19px, 1.55vw, 27px);
+    line-height: 1.5;
+    margin: 0 0 clamp(.65rem, 1.8vh, 1.3rem);
+    align-items: baseline;
+}
+.modal-hub__seccion-estrofa .modal-hub__verso:last-child {
+    margin-bottom: 0;
+}
+.modal-hub__seccion-estrofa .modal-hub__numero-verso {
+    padding-top: 0;
+    font-size: .65em;
+}
+.modal-hub__columna-imagen {
+    overflow: hidden;
+}
+.modal-hub__columna-imagen figure {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+.modal-hub__seccion-estrofa .modal-hub__imagen--estrofa {
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    max-height: none;
+    aspect-ratio: auto;
+    border: 0;
+    background: transparent;
+}
+.modal-hub__seccion-estrofa .modal-hub__imagen--estrofa img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: center;
+}
+
+@media (max-width: 767.98px) {
+    .modal-hub__cabecera {
+        padding: .65rem;
+    }
+    .modal-hub__acciones {
+        gap: .4rem;
+    }
+    .modal-hub__seccion-estrofa {
+        grid-template-columns: minmax(0, 1fr);
+        height: auto;
+        min-height: 100%;
+    }
+    .modal-hub__columna-texto {
+        min-height: 180px;
+        padding: 1.25rem 1rem;
+    }
+    .modal-hub__seccion-estrofa .modal-hub__verso {
+        font-size: clamp(18px, 4vw, 22px);
+    }
+    .modal-hub__columna-imagen {
+        height: clamp(210px, 36dvh, 360px);
+        flex: none;
+    }
+    .modal-hub__seccion-estrofa .modal-hub__imagen--estrofa {
+        max-height: none;
+    }
+}
