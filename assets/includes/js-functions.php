@@ -20,6 +20,24 @@ function entre_versos_cargar_scripts() {
     wp_enqueue_script( 'entre-versos-slick', 'https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js', array( 'jquery' ), '1.8.1', true );
     wp_enqueue_script( 'entre-versos-mark', 'https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/jquery.mark.min.js', array( 'jquery' ), '8.11.1', true );
 
+    // Distribución adaptativa de Polaroids (solo portada).
+    if ( is_front_page() ) {
+        wp_enqueue_script(
+            'entre-versos-muuri',
+            'https://cdn.jsdelivr.net/npm/muuri@0.9.5/dist/muuri.min.js',
+            array(),
+            '0.9.5',
+            true
+        );
+        wp_enqueue_script(
+            'entre-versos-galeria',
+            get_theme_file_uri( '/assets/librerias/js/entre-versos-galeria.js' ),
+            array( 'entre-versos-muuri' ),
+            filemtime( get_theme_file_path( '/assets/librerias/js/entre-versos-galeria.js' ) ),
+            true
+        );
+    }
+
     // Animación, arrastre, transiciones de layout y efecto 3D.
     wp_enqueue_script( 'entre-versos-gsap', 'https://cdn.jsdelivr.net/npm/gsap@3.15.1/dist/gsap.min.js', array(), '3.15.1', true );
     wp_enqueue_script( 'entre-versos-gsap-draggable', 'https://cdn.jsdelivr.net/npm/gsap@3.15.1/dist/Draggable.min.js', array( 'entre-versos-gsap' ), '3.15.1', true );
@@ -52,7 +70,7 @@ function entre_versos_cargar_scripts() {
         wp_enqueue_script(
             'entre-versos-contenido',
             get_theme_file_uri( '/assets/librerias/js/entre-versos-contenido.js' ),
-            array( 'entre-versos-rest' ),
+            is_front_page() ? array( 'entre-versos-rest', 'entre-versos-galeria' ) : array( 'entre-versos-rest' ),
             filemtime( get_theme_file_path( '/assets/librerias/js/entre-versos-contenido.js' ) ),
             true
         );

@@ -1,7 +1,7 @@
 /**
  * Entre Versos · Presentación del contenido
  * Rellena las plantillas HTML existentes con datos de WordPress/SCF.
- * No inicializa Slick, mark.js, GSAP, Atropos ni drag & drop.
+ * La distribución espacial de las Polaroid la delega en entre-versos-galeria.js.
  */
 ( function() {
     'use strict';
@@ -141,7 +141,6 @@
     // Portada: sustituye únicamente las fotografías de ejemplo por registros reales.
     // Una Polaroid solo muestra la fotografía y el nombre del poeta.
     function crearTarjetaPoeta( entrada, indice, plantilla ) {
-        var posiciones = [ 'primera', 'segunda', 'tercera', 'cuarta', 'quinta' ];
         var fragmento = plantilla.content.cloneNode( true );
         var marco = fragmento.querySelector( '.posicion-polaroid' );
         var imagen = fragmento.querySelector( '.tarjeta-polaroid__foto' );
@@ -155,7 +154,6 @@
         marco.setAttribute( 'tabindex', '0' );
         marco.setAttribute( 'aria-pressed', 'false' );
         marco.setAttribute( 'aria-label', 'Seleccionar poeta: ' + tituloEntrada( entrada ) );
-        marco.classList.add( 'tarjeta-polaroid--' + posiciones[ indice % posiciones.length ] );
         nombre.textContent = tituloEntrada( entrada );
         if ( foto ) { foto.remove(); }
         if ( imagen ) { imagen.appendChild( crearTexto( 'i', 'bi bi-person-bounding-box', '' ) ); }
@@ -202,7 +200,6 @@
             enlace = document.createElement( 'a' );
             enlace.className = boton.className;
             enlace.href = poeta.link || '#';
-            enlace.dataset.poetaId = String( poeta.id );
             enlace.textContent = 'Explorar poeta ';
             enlace.appendChild( crearTexto( 'i', 'bi bi-arrow-right', '' ) );
             enlace.querySelector( 'i' ).setAttribute( 'aria-hidden', 'true' );
@@ -280,6 +277,11 @@
                 fragmento.appendChild( crearTarjetaPoeta( poeta, indice, plantilla ) );
             } );
             galeria.replaceChildren( fragmento );
+            if ( window.EntreVersosGaleria ) {
+                window.EntreVersosGaleria.inicializar( galeria );
+            } else {
+                galeria.classList.add( 'galeria-poetas--respaldo' );
+            }
             activarSeleccionPoetas( galeria, poetas );
             if ( cantidad ) {
                 cantidad.textContent = String( total ).padStart( 2, '0' ) + ( total === 1 ? ' poeta en sala' : ' poetas en sala' );
