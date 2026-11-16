@@ -749,41 +749,35 @@
             : 'bi bi-pause-fill';
     }
 
+
     function saltoManual(indice) {
-
-        function saltoManual(indice) {
-            if (!$ || !$.fn.slick ||
-                !$(carrusel).hasClass('slick-initialized')) {
-                return;
-            }
-
-            var slider = $(carrusel);
-            var instancia = slider.slick('getSlick');
-
-            // Guardar configuración original.
-            var velocidadOriginal = instancia.options.speed;
-            var esperaOriginal = instancia.options.waitForAnimate;
-
-            // Detener el movimiento automático.
-            slider.slick('slickPause');
-
-            // Interrumpir la transición actual.
-            instancia.disableTransition();
-
-            // Permitir el salto inmediato.
-            slider.slick('slickSetOption', 'speed', 0, false);
-            slider.slick('slickSetOption', 'waitForAnimate', false, false);
-
-            slider.slick('slickGoTo', indice, true);
-
-            // Restaurar la configuración para el autoplay.
-            slider.slick('slickSetOption', 'speed', velocidadOriginal, false);
-            slider.slick('slickSetOption', 'waitForAnimate', esperaOriginal, false);
-
-            actualizarIndicador(indice);
+        if (!$ || !$.fn.slick ||
+            !$(carrusel).hasClass('slick-initialized')) {
+            return;
         }
 
+        var slider = $(carrusel);
+        var instancia = slider.slick('getSlick');
+        var esperaOriginal = instancia.options.waitForAnimate;
+
+        // Detener el autoplay.
+        slider.slick('slickPause');
+
+        // Permitir interrumpir una transición en curso.
+        slider.slick('slickSetOption', 'waitForAnimate', false, false);
+
+        // Cancelar la transición CSS actual.
+        instancia.disableTransition();
+
+        // Saltar directamente a la pantalla solicitada.
+        slider.slick('slickGoTo', indice, true);
+
+        // Restaurar el comportamiento habitual de Slick.
+        slider.slick('slickSetOption', 'waitForAnimate', esperaOriginal, false);
+
+        actualizarIndicador(indice);
     }
+
 
     function alternarPausaCarrusel() {
         pausaManual = !pausaManual;
