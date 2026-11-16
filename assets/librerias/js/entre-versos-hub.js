@@ -307,7 +307,7 @@
             }
 
             slide.classList.remove('es-central');
-            if (solapamiento >= rect.width / 2 && distancia < distanciaCandidata) {
+            if ( solapamiento >= rect.width * 0.25 && distancia < distanciaCandidata ) {
                 candidato = slide;
                 distanciaCandidata = distancia;
                 indiceCandidato = Number(slide.getAttribute('data-slick-index'));
@@ -366,7 +366,7 @@
                 dots: false,
                 accessibility: true,
                 focusOnSelect: false, // El clic abre el contenido ampliado.
-                speed: 15000,
+                speed: 10000,
                 cssEase: 'linear',
                 autoplay: !reducirMovimiento,
                 autoplaySpeed: 0,
