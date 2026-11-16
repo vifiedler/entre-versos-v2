@@ -750,24 +750,39 @@
     }
 
     function saltoManual(indice) {
-        if (!$ || !$.fn.slick ||
-            !$(carrusel).hasClass('slick-initialized')) {
-            return;
+
+        function saltoManual(indice) {
+            if (!$ || !$.fn.slick ||
+                !$(carrusel).hasClass('slick-initialized')) {
+                return;
+            }
+
+            var slider = $(carrusel);
+            var instancia = slider.slick('getSlick');
+
+            // Guardar configuración original.
+            var velocidadOriginal = instancia.options.speed;
+            var esperaOriginal = instancia.options.waitForAnimate;
+
+            // Detener el movimiento automático.
+            slider.slick('slickPause');
+
+            // Interrumpir la transición actual.
+            instancia.disableTransition();
+
+            // Permitir el salto inmediato.
+            slider.slick('slickSetOption', 'speed', 0, false);
+            slider.slick('slickSetOption', 'waitForAnimate', false, false);
+
+            slider.slick('slickGoTo', indice, true);
+
+            // Restaurar la configuración para el autoplay.
+            slider.slick('slickSetOption', 'speed', velocidadOriginal, false);
+            slider.slick('slickSetOption', 'waitForAnimate', esperaOriginal, false);
+
+            actualizarIndicador(indice);
         }
 
-        var slider = $(carrusel);
-
-        slider.slick('slickPause');
-
-        // Se permite interrumpir la transición solo
-        // durante este salto manual.
-        slider.slick('slickSetOption', 'waitForAnimate', false, false);
-
-        slider.slick('slickGoTo', indice, true);
-
-        slider.slick('slickSetOption', 'waitForAnimate', true, false);
-
-        actualizarIndicador(indice);
     }
 
     function alternarPausaCarrusel() {
@@ -789,7 +804,7 @@
             var destino = (estado.pantallaActual + direccion + estado.pantallas.length) % estado.pantallas.length;
             seleccionarPantalla(destino);
             if ($ && $.fn.slick && $(carrusel).hasClass('slick-initialized')) {
-                $(carrusel).slick('slickGoTo', destino, true);
+                saltoManual(destino);
             }
             actualizarIndicador(destino);
             return;
