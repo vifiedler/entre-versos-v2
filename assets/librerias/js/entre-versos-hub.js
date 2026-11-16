@@ -19,6 +19,8 @@
     var posicionNavegacion = navegacionHub ? document.createComment('Posición original de las flechas del hub') : null;
     var animacionCarrusel = 0;
     var ultimoIndiceEnCentro = -1;
+    var pausaManual = false;
+    var indiceVisible = 0;
 
     if (navegacionHub) {
         navegacionHub.parentNode.insertBefore(posicionNavegacion, navegacionHub);
@@ -244,6 +246,7 @@
     }
 
     function actualizarIndicador(indice) {
+        indiceVisible = indice;
         var total = estado.pantallas.length;
         escribir('#hub-indicador', String(indice + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0'));
         document.getElementById('hub-anterior').disabled = total <= 1;
@@ -307,7 +310,7 @@
             }
 
             slide.classList.remove('es-central');
-            if ( solapamiento >= rect.width * 0.25 && distancia < distanciaCandidata ) {
+            if (solapamiento >= rect.width * 0.25 && distancia < distanciaCandidata) {
                 candidato = slide;
                 distanciaCandidata = distancia;
                 indiceCandidato = Number(slide.getAttribute('data-slick-index'));
@@ -346,6 +349,8 @@
         });
         carrusel.appendChild(fragmento);
         actualizarIndicador(0);
+        pausaManual = false;
+        actualizarBotonPausa();
         escribir('#estado-hub-poeta', '');
         if ($ && $.fn.slick && entradas.length > 1) {
             // Si hay pocas pantallas, conservar una central y adelantos
@@ -717,10 +722,65 @@
             $(carrusel).slick('slickPause');
             return;
         }
+        if (pausaManual) {
+            iniciarSeguimientoCarrusel();
+            return;
+        }
         // Respetamos a quienes prefieren movimiento reducido.
         if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { return; }
         iniciarSeguimientoCarrusel();
         $(carrusel).slick('slickPlay');
+    }
+
+    function actualizarBotonPausa() {
+        var boton = document.getElementById('hub-pausa');
+
+        if (!boton) return;
+
+        boton.setAttribute('aria-pressed', String(pausaManual));
+
+        boton.setAttribute(
+            'aria-label',
+            pausaManual ? 'Reanudar carrusel' : 'Pausar carrusel'
+        );
+
+        boton.querySelector('i').className = pausaManual
+            ? 'bi bi-play-fill'
+            : 'bi bi-pause-fill';
+    }
+
+    function saltoManual(indice) {
+        if (!$ || !$.fn.slick ||
+            !$(carrusel).hasClass('slick-initialized')) {
+            return;
+        }
+
+        var slider = $(carrusel);
+
+        slider.slick('slickPause');
+
+        // Se permite interrumpir la transición solo
+        // durante este salto manual.
+        slider.slick('slickSetOption', 'waitForAnimate', false, false);
+
+        slider.slick('slickGoTo', indice, true);
+
+        slider.slick('slickSetOption', 'waitForAnimate', true, false);
+
+        actualizarIndicador(indice);
+    }
+
+    function alternarPausaCarrusel() {
+        pausaManual = !pausaManual;
+
+        if (pausaManual) {
+            // Detenerse en la pantalla central más cercana.
+            saltoManual(indiceVisible);
+        } else {
+            controlarAutoplay(false);
+        }
+
+        actualizarBotonPausa();
     }
 
     function navegarCarrusel(direccion) {
@@ -734,8 +794,23 @@
             actualizarIndicador(destino);
             return;
         }
-        if ($ && $.fn.slick && $(carrusel).hasClass('slick-initialized')) {
-            $(carrusel).slick(direccion > 0 ? 'slickNext' : 'slickPrev');
+
+        if ($ && $.fn.slick &&
+            $(carrusel).hasClass('slick-initialized')) {
+
+            // Al navegar manualmente, pausamos el movimiento.
+            pausaManual = true;
+
+            var total = estado.pantallas.length;
+
+            var destino = (
+                indiceVisible + direccion + total
+            ) % total;
+
+            saltoManual(destino);
+            actualizarBotonPausa();
+
+
         } else if (estado.pantallas.length > 1) {
             var activos = Array.from(carrusel.querySelectorAll('.hub-poeta__pantalla'));
             var index = (Number(carrusel.dataset.indice || 0) + direccion + activos.length) % activos.length;
@@ -745,6 +820,10 @@
         }
     }
     function iniciar() {
+        document.getElementById('hub-pausa').addEventListener(
+            'click',
+            alternarPausaCarrusel
+        );
         document.addEventListener('click', function (evento) {
             var explorar = evento.target.closest('#bandeja-poeta-contenido a');
             if (!explorar) { return; }
