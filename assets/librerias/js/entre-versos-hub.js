@@ -21,6 +21,9 @@
     var ultimoIndiceEnCentro = -1;
     var pausaManual = false;
     var indiceVisible = 0;
+    var transicionManual = false;
+    var DURACION_AUTOMATICA = 10000;
+    var DURACION_MANUAL = 3000;
 
     if ( navegacionHub ) {
         navegacionHub.parentNode.insertBefore( posicionNavegacion, navegacionHub );
@@ -125,6 +128,7 @@
     }
     function limpiarCarrusel() {
         detenerSeguimientoCarrusel();
+        transicionManual = false;
         if ( $ && $.fn.slick && $( carrusel ).hasClass( 'slick-initialized' ) ) {
             $( carrusel ).off( '.hub' ).slick( 'unslick' );
         }
@@ -342,7 +346,7 @@
 
     // El autoplay es deliberadamente lento. Los saltos manuales usan
     // otra ruta para no depender de transiciones de 10 segundos.
-    function opcionesCarrusel( total, inicial, reproducir ) {
+    function opcionesCarrusel( total, inicial, reproducir, animacionManual ) {
         var mostrarTres = total > 3;
         return {
             centerMode: true,
@@ -355,8 +359,8 @@
             dots: false,
             accessibility: true,
             focusOnSelect: false,
-            speed: 10000,
-            cssEase: 'linear',
+            speed: animacionManual ? ( reducirMovimiento() ? 0 : DURACION_MANUAL ) : DURACION_AUTOMATICA,
+            cssEase: animacionManual ? 'ease-in' : 'linear',
             autoplay: !!reproducir,
             autoplaySpeed: 0,
             pauseOnHover: false,
@@ -730,28 +734,83 @@
             if ( pausar ) { detenerSeguimientoCarrusel(); }
             return;
         }
+        // La animación de las flechas termina antes de reactivar el autoplay.
+        if ( transicionManual ) { return; }
         slider.slick( 'slickPlay' );
         iniciarSeguimientoCarrusel();
     }
 
-    // Una transición de Slick de 10 segundos ya iniciada no termina al
-    // ejecutar slickPause(). Por eso no usamos slickNext/slickPrev aquí.
-    // Reconstruir desde initialSlide descarta la animación anterior y
-    // coloca el destino de inmediato, sin depender de waitForAnimate.
-    function saltoManual( indice ) {
+    // Congela el carrusel de inmediato en un bloque concreto.
+    // Se utiliza al pulsar Pausa, al salir del modal o al cambiar de CPT.
+    function fijarCarrusel( indice ) {
         if ( !$ || !$.fn.slick || !$( carrusel ).hasClass( 'slick-initialized' ) ) { return; }
         var total = estado.pantallas.length;
         if ( !total ) { return; }
         var destino = normalizarIndice( indice, total );
         var slider = $( carrusel );
+        transicionManual = false;
+        slider.off( 'afterChange.hubManual' );
         detenerSeguimientoCarrusel();
         slider.slick( 'unslick' );
-        slider.slick( opcionesCarrusel( total, destino, false ) );
+        slider.slick( opcionesCarrusel( total, destino, false, false ) );
         slider.slick( 'slickPause' );
         actualizarIndicador( destino );
         ultimoIndiceEnCentro = destino;
         if ( !modalElemento.classList.contains( 'show' ) ) {
             iniciarSeguimientoCarrusel();
+        }
+    }
+
+    // En las flechas: cancelar el avance lineal vigente y ejecutar una
+    // transición propia de 3 s con ease-in, tanto en pausa como en autoplay.
+    // Reconstruir primero evita que waitForAnimate bloquee el clic cuando
+    // Slick ya lleva varios segundos desplazándose automáticamente.
+    function desplazarConFlecha( direccion ) {
+        if ( !$ || !$.fn.slick || !$( carrusel ).hasClass( 'slick-initialized' ) ) { return; }
+        var total = estado.pantallas.length;
+        if ( total <= 1 ) { return; }
+
+        var origen = normalizarIndice( indiceVisible, total );
+        var destino = normalizarIndice( origen + direccion, total );
+        var slider = $( carrusel );
+
+        transicionManual = false;
+        slider.off( 'afterChange.hubManual' );
+        detenerSeguimientoCarrusel();
+        slider.slick( 'slickPause' );
+        slider.slick( 'unslick' );
+        slider.slick( opcionesCarrusel( total, origen, false, true ) );
+        slider.slick( 'slickPause' );
+
+        estado.pantallaActual = destino;
+        transicionManual = !reducirMovimiento();
+
+        // El contador y la escala siguen la posición visual durante la transición.
+        iniciarSeguimientoCarrusel();
+
+        slider.one( 'afterChange.hubManual', function( evento, slick, indice ) {
+            transicionManual = false;
+            slider.slick( 'slickSetOption', 'speed', DURACION_AUTOMATICA, false );
+            slider.slick( 'slickSetOption', 'cssEase', 'linear', false );
+            ultimoIndiceEnCentro = normalizarIndice( indice, total );
+            actualizarIndicador( ultimoIndiceEnCentro );
+
+            if ( !pausaManual && !modalElemento.classList.contains( 'show' ) ) {
+                controlarAutoplay( false );
+            }
+        } );
+
+        // No usar dontAnimate=true: necesitamos recorrer el siguiente
+        // bloque con la transición ease-in configurada arriba.
+        slider.slick( direccion > 0 ? 'slickNext' : 'slickPrev' );
+
+        // Fallback para usuarios con movimiento reducido: no se esperan 3 s.
+        if ( reducirMovimiento() ) {
+            slider.off( 'afterChange.hubManual' );
+            transicionManual = false;
+            slider.slick( 'slickSetOption', 'speed', DURACION_AUTOMATICA, false );
+            slider.slick( 'slickSetOption', 'cssEase', 'linear', false );
+            actualizarIndicador( destino );
         }
     }
 
@@ -761,7 +820,7 @@
         if ( pausaManual ) {
             // Congelar en el bloque que ocupa el centro, sin esperar
             // a que termine el movimiento automático.
-            saltoManual( indiceVisible );
+            fijarCarrusel( indiceVisible );
         } else {
             controlarAutoplay( false );
         }
@@ -776,15 +835,13 @@
             // Las mismas flechas cambian biografía/poemas dentro del modal.
             var destinoModal = normalizarIndice( estado.pantallaActual + direccion, total );
             seleccionarPantalla( destinoModal );
-            saltoManual( destinoModal );
+            fijarCarrusel( destinoModal );
             return;
         }
 
         if ( $ && $.fn.slick && $( carrusel ).hasClass( 'slick-initialized' ) ) {
             pausaManual = true;
-            var destino = normalizarIndice( indiceVisible + direccion, total );
-            estado.pantallaActual = destino;
-            saltoManual( destino );
+            desplazarConFlecha( direccion );
             actualizarBotonPausa();
         } else {
             // Respaldo cuando Slick no está disponible.
@@ -826,7 +883,7 @@
             estado.visual++;
             modalElemento.classList.remove( 'modal-hub--estrofas-scroll' );
             if ( !hub.hidden && $ && $.fn.slick && $( carrusel ).hasClass( 'slick-initialized' ) ) {
-                saltoManual( estado.pantallaActual );
+                fijarCarrusel( estado.pantallaActual );
                 controlarAutoplay( false );
             }
             actualizarBotonPausa();
