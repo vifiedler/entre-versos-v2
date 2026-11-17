@@ -16,7 +16,8 @@
     var ultimoControl = null;
     var scrollEstrofasPendiente = false;
     var navegacionHub = hub && hub.querySelector( '.hub-poeta__navegacion' );
-    var posicionNavegacion = navegacionHub ? document.createComment( 'Posición original de las flechas del hub' ) : null;
+    // Reserva el lugar original para alinear las flechas incluso dentro del modal.
+    var posicionNavegacion = navegacionHub ? document.createElement( 'div' ) : null;
     var animacionCarrusel = 0;
     var ultimoIndiceEnCentro = -1;
     var pausaManual = false;
@@ -26,6 +27,9 @@
     var DURACION_MANUAL = 3000;
 
     if ( navegacionHub ) {
+        posicionNavegacion.className = 'hub-poeta__reserva-navegacion';
+        posicionNavegacion.hidden = true;
+        posicionNavegacion.setAttribute( 'aria-hidden', 'true' );
         navegacionHub.parentNode.insertBefore( posicionNavegacion, navegacionHub );
     }
     var estado = { poeta: null, poemas: [], pantallas: [], pantallaActual: 0, poema: null, estrofas: [], estrofa: 0, continua: false, solicitud: 0, visual: 0 };
@@ -447,19 +451,48 @@
         } );
     }
 
-    // Reutilizamos las flechas del hub, sin crear una segunda barra de
-    // navegación dentro del poema. Al moverlas dentro de .modal-hub,
-    // Bootstrap conserva correctamente el foco y el acceso por teclado.
+    // Mantiene las flechas y el contador en las mismas coordenadas que en el hub.
+    // La reserva conserva la altura del carrusel mientras el modal está abierto.
+    function actualizarPosicionNavegacionModal() {
+        if ( !navegacionHub || !posicionNavegacion || posicionNavegacion.hidden ) { return; }
+        if ( navegacionHub.parentNode !== modalElemento ) { return; }
+
+        // Mientras el modal aún está oculto, su navegación mide 0 px.
+        // En ese caso conservar la altura capturada antes de mover las flechas.
+        var alturaVisible = navegacionHub.getBoundingClientRect().height;
+        if ( alturaVisible > 0 ) {
+            posicionNavegacion.style.height = alturaVisible + 'px';
+        }
+        var posicion = posicionNavegacion.getBoundingClientRect();
+        navegacionHub.style.setProperty( '--hub-nav-modal-top', posicion.top + 'px' );
+        navegacionHub.style.setProperty( '--hub-nav-modal-left', posicion.left + 'px' );
+        navegacionHub.style.setProperty( '--hub-nav-modal-width', posicion.width + 'px' );
+    }
+
     function moverFlechasAlModal() {
-        if ( !navegacionHub ) { return; }
+        if ( !navegacionHub || !posicionNavegacion ) { return; }
+        if ( navegacionHub.parentNode === modalElemento ) {
+            actualizarPosicionNavegacionModal();
+            return;
+        }
+
+        // Medir antes de mover para evitar un salto en la composición original.
+        posicionNavegacion.style.height = navegacionHub.getBoundingClientRect().height + 'px';
+        posicionNavegacion.hidden = false;
         navegacionHub.classList.add( 'hub-poeta__navegacion--modal' );
         modalElemento.appendChild( navegacionHub );
+        actualizarPosicionNavegacionModal();
     }
 
     function devolverFlechasAlHub() {
         if ( !navegacionHub || !posicionNavegacion || !posicionNavegacion.parentNode ) { return; }
         navegacionHub.classList.remove( 'hub-poeta__navegacion--modal' );
         posicionNavegacion.parentNode.insertBefore( navegacionHub, posicionNavegacion.nextSibling );
+        posicionNavegacion.hidden = true;
+        posicionNavegacion.style.height = '';
+        [ '--hub-nav-modal-top', '--hub-nav-modal-left', '--hub-nav-modal-width' ].forEach( function( propiedad ) {
+            navegacionHub.style.removeProperty( propiedad );
+        } );
     }
 
     function mostrarModal( tipo, entrada ) {
@@ -853,6 +886,7 @@
         }
     }
     function iniciar() {
+        window.addEventListener( 'resize', actualizarPosicionNavegacionModal, { passive: true } );
         var botonPausa = document.getElementById( 'hub-pausa' );
         if ( botonPausa ) { botonPausa.addEventListener( 'click', alternarPausaCarrusel ); }
         document.addEventListener( 'click', function( evento ) {

@@ -2165,21 +2165,32 @@ body.home.modo-hub .modal-backdrop.show { opacity:.78; }
     cursor: default;
 }
 
-/* Las mismas flechas del hub se usan en la vista ampliada.
-   Se trasladan al interior del modal: no hay botones duplicados.
-   Su ubicación sigue siendo inferior y no ocupa área de lectura. */
+/* La barra se mueve al modal, pero conserva su altura y alineación en el hub.
+   La reserva mantiene el espacio original y JS calcula sus coordenadas. */
+.hub-poeta__reserva-navegacion {
+    flex: 0 0 auto;
+    width: 100%;
+}
+.hub-poeta__reserva-navegacion[hidden] { display: none !important; }
 .modal-hub > .hub-poeta__navegacion--modal {
     position: fixed;
-    left: clamp(.75rem, 2vw, 2.5rem);
-    right: clamp(.75rem, 2vw, 2.5rem);
-    bottom: max(40px, 4dvh);
+    top: var(--hub-nav-modal-top, auto);
+    left: var(--hub-nav-modal-left, 0);
+    width: var(--hub-nav-modal-width, 100%);
+    right: auto;
+    bottom: auto;
+    box-sizing: border-box;
     z-index: 3;
-    padding: 0;
+    padding: .35rem 1rem;
     background: transparent;
     pointer-events: none;
 }
 .modal-hub > .hub-poeta__navegacion--modal button {
     pointer-events: auto;
+}
+/* Pausa/Reanudar solo pertenece al carrusel, nunca a la vista ampliada. */
+.modal-hub > .hub-poeta__navegacion--modal #hub-pausa {
+    display: none !important;
 }
 .modal-hub > .hub-poeta__navegacion--modal #hub-indicador {
     color: var(--color-blanco);
