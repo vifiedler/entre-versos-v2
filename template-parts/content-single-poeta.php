@@ -54,7 +54,7 @@ $formatear_fecha = static function ( $fecha ) {
         $objeto = DateTimeImmutable::createFromFormat( $formato, $fecha );
         $errores = DateTimeImmutable::getLastErrors();
         if ( $objeto && ( false === $errores || ( 0 === $errores['warning_count'] && 0 === $errores['error_count'] ) ) ) {
-            return $objeto->format( 'm/d/y' );
+            return $objeto->format( 'd/m/Y' );
         }
     }
     return $fecha;

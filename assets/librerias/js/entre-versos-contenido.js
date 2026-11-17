@@ -60,8 +60,8 @@
         var dia = Number( partes[1] );
         var anio = Number( partes[2] );
         if ( mes < 1 || mes > 12 || dia < 1 || dia > 31 || !anio ) { return valor; }
-        return String( mes ).padStart( 2, '0' ) + '/' +
-            String( dia ).padStart( 2, '0' ) + '/' +
+        return String( dia ).padStart( 2, '0' ) + '/' +
+            String( mes ).padStart( 2, '0' ) + '/' +
             String( partes[2] ).slice( -2 );
     }
 
