@@ -3,184 +3,184 @@
  * Rellena las plantillas HTML existentes con datos de WordPress/SCF.
  * La distribución espacial de las Polaroid la delega en entre-versos-galeria.js.
  */
-( function() {
+(function () {
     'use strict';
 
     var api = window.EntreVersosRest;
 
-    if ( ! api ) {
+    if (!api) {
         return;
     }
 
-    function crearTexto( etiqueta, clase, contenido ) {
-        var elemento = document.createElement( etiqueta );
-        if ( clase ) {
+    function crearTexto(etiqueta, clase, contenido) {
+        var elemento = document.createElement(etiqueta);
+        if (clase) {
             elemento.className = clase;
         }
-        elemento.textContent = contenido == null ? '' : String( contenido );
+        elemento.textContent = contenido == null ? '' : String(contenido);
         return elemento;
     }
 
-    function textoPlano( html ) {
-        var contenedor = document.createElement( 'div' );
-        contenedor.innerHTML = String( html || '' );
-        return ( contenedor.textContent || '' ).trim();
+    function textoPlano(html) {
+        var contenedor = document.createElement('div');
+        contenedor.innerHTML = String(html || '');
+        return (contenedor.textContent || '').trim();
     }
 
-    function tituloEntrada( entrada ) {
-        return textoPlano( entrada && entrada.title && entrada.title.rendered );
+    function tituloEntrada(entrada) {
+        return textoPlano(entrada && entrada.title && entrada.title.rendered);
     }
 
-    function resumenEntrada( entrada ) {
-        return textoPlano( entrada && entrada.excerpt && entrada.excerpt.rendered );
+    function resumenEntrada(entrada) {
+        return textoPlano(entrada && entrada.excerpt && entrada.excerpt.rendered);
     }
 
-    function metadatos( entrada ) {
+    function metadatos(entrada) {
         return entrada && entrada.acf && typeof entrada.acf === 'object' ? entrada.acf : {};
     }
 
     // SCF devuelve d/m/Y; WordPress también puede guardar Ymd o Y-m-d.
     // Mostrar siempre MM/DD/AA, sin confiar en Date.parse (dependiente de locale).
-    function formatearFecha( fecha ) {
-        var valor = String( fecha || '' ).trim();
+    function formatearFecha(fecha) {
+        var valor = String(fecha || '').trim();
         var partes;
-        if ( /^\d{8}$/.test( valor ) ) {
-            partes = [ valor.slice( 4, 6 ), valor.slice( 6, 8 ), valor.slice( 0, 4 ) ];
-        } else if ( /^\d{4}[-/]\d{1,2}[-/]\d{1,2}$/.test( valor ) ) {
-            var orden = valor.split( /[-/]/ );
-            partes = [ orden[1], orden[2], orden[0] ];
-        } else if ( /^\d{1,2}[-/]\d{1,2}[-/]\d{2,4}$/.test( valor ) ) {
+        if (/^\d{8}$/.test(valor)) {
+            partes = [valor.slice(4, 6), valor.slice(6, 8), valor.slice(0, 4)];
+        } else if (/^\d{4}[-/]\d{1,2}[-/]\d{1,2}$/.test(valor)) {
+            var orden = valor.split(/[-/]/);
+            partes = [orden[1], orden[2], orden[0]];
+        } else if (/^\d{1,2}[-/]\d{1,2}[-/]\d{2,4}$/.test(valor)) {
             // Return format del campo SCF: día/mes/año.
-            var componentes = valor.split( /[-/]/ );
-            partes = [ componentes[1], componentes[0], componentes[2] ];
+            var componentes = valor.split(/[-/]/);
+            partes = [componentes[1], componentes[0], componentes[2]];
         } else {
             return valor; // No inventamos fechas si la entrada no es válida.
         }
-        var mes = Number( partes[0] );
-        var dia = Number( partes[1] );
-        var anio = Number( partes[2] );
-        if ( mes < 1 || mes > 12 || dia < 1 || dia > 31 || !anio ) { return valor; }
-        return String( dia ).padStart( 2, '0' ) + '/' +
-            String( mes ).padStart( 2, '0' ) + '/' +
-            String( partes[2] ).slice( -2 );
+        var mes = Number(partes[0]);
+        var dia = Number(partes[1]);
+        var anio = Number(partes[2]);
+        if (mes < 1 || mes > 12 || dia < 1 || dia > 31 || !anio) { return valor; }
+        return String(dia).padStart(2, '0') + '/' +
+            String(mes).padStart(2, '0') + '/' +
+            String(partes[2]);
     }
 
-    function detallePoeta( entrada ) {
-        var datos = metadatos( entrada );
-        var origen = [ datos.lugar_nacimiento, datos.pais_origen ].filter( Boolean ).join( ', ' );
-        var nacido = formatearFecha( datos.fecha_nacimiento );
-        var fallecido = formatearFecha( datos.fecha_fallecimiento );
-        var fechas = [ nacido, fallecido ].filter( Boolean ).join( ' – ' );
-        return [ origen, fechas ].filter( Boolean ).join( ' · ' );
+    function detallePoeta(entrada) {
+        var datos = metadatos(entrada);
+        var origen = [datos.lugar_nacimiento, datos.pais_origen].filter(Boolean).join(', ');
+        var nacido = formatearFecha(datos.fecha_nacimiento);
+        var fallecido = formatearFecha(datos.fecha_fallecimiento);
+        var fechas = [nacido, fallecido].filter(Boolean).join(' – ');
+        return [origen, fechas].filter(Boolean).join(' · ');
     }
 
-    function urlImagen( medio ) {
-        if ( ! medio ) {
+    function urlImagen(medio) {
+        if (!medio) {
             return '';
         }
-        if ( typeof medio === 'string' ) {
-            return /^https?:\/\//.test( medio ) ? medio : '';
+        if (typeof medio === 'string') {
+            return /^https?:\/\//.test(medio) ? medio : '';
         }
-        if ( medio.media_details && medio.media_details.sizes ) {
+        if (medio.media_details && medio.media_details.sizes) {
             var tamanios = medio.media_details.sizes;
-            if ( tamanios.large && tamanios.large.source_url ) {
+            if (tamanios.large && tamanios.large.source_url) {
                 return tamanios.large.source_url;
             }
-            if ( tamanios.medium_large && tamanios.medium_large.source_url ) {
+            if (tamanios.medium_large && tamanios.medium_large.source_url) {
                 return tamanios.medium_large.source_url;
             }
-            if ( tamanios.medium && tamanios.medium.source_url ) {
+            if (tamanios.medium && tamanios.medium.source_url) {
                 return tamanios.medium.source_url;
             }
         }
-        if ( medio.sizes ) {
+        if (medio.sizes) {
             var tamanosScf = medio.sizes;
-            if ( tamanosScf.large ) {
+            if (tamanosScf.large) {
                 return typeof tamanosScf.large === 'string' ? tamanosScf.large : tamanosScf.large.url || '';
             }
-            if ( tamanosScf.medium_large ) {
+            if (tamanosScf.medium_large) {
                 return typeof tamanosScf.medium_large === 'string' ? tamanosScf.medium_large : tamanosScf.medium_large.url || '';
             }
         }
         return medio.source_url || medio.url || '';
     }
 
-    function recursoImagen( imagen ) {
-        if ( ! imagen ) {
-            return Promise.resolve( null );
+    function recursoImagen(imagen) {
+        if (!imagen) {
+            return Promise.resolve(null);
         }
-        if ( typeof imagen === 'object' ) {
-            return Promise.resolve( imagen );
+        if (typeof imagen === 'object') {
+            return Promise.resolve(imagen);
         }
-        if ( typeof imagen === 'string' && /^https?:\/\//.test( imagen ) ) {
-            return Promise.resolve( { url: imagen } );
+        if (typeof imagen === 'string' && /^https?:\/\//.test(imagen)) {
+            return Promise.resolve({ url: imagen });
         }
-        return api.obtenerMedio( imagen );
+        return api.obtenerMedio(imagen);
     }
 
-    function imagenDestacada( entrada ) {
-        var incrustados = entrada && entrada._embedded && entrada._embedded[ 'wp:featuredmedia' ];
+    function imagenDestacada(entrada) {
+        var incrustados = entrada && entrada._embedded && entrada._embedded['wp:featuredmedia'];
 
-        if ( Array.isArray( incrustados ) && incrustados.length ) {
-            return Promise.resolve( incrustados[ 0 ] );
+        if (Array.isArray(incrustados) && incrustados.length) {
+            return Promise.resolve(incrustados[0]);
         }
-        return recursoImagen( entrada && entrada.featured_media );
+        return recursoImagen(entrada && entrada.featured_media);
     }
 
-    function mostrarImagen( contenedor, recurso, alternativo, claseImagen ) {
+    function mostrarImagen(contenedor, recurso, alternativo, claseImagen) {
         var imagen;
-        var ruta = urlImagen( recurso );
+        var ruta = urlImagen(recurso);
 
-        if ( ! contenedor || ! ruta ) {
+        if (!contenedor || !ruta) {
             return;
         }
-        imagen = document.createElement( 'img' );
+        imagen = document.createElement('img');
         imagen.src = ruta;
-        imagen.alt = ( recurso && ( recurso.alt_text || recurso.alt ) ) || alternativo || '';
+        imagen.alt = (recurso && (recurso.alt_text || recurso.alt)) || alternativo || '';
         imagen.loading = 'lazy';
-        if ( claseImagen ) {
+        if (claseImagen) {
             imagen.className = claseImagen;
         }
-        contenedor.replaceChildren( imagen );
+        contenedor.replaceChildren(imagen);
     }
 
-    function cargarFotografia( entrada, contenedor, claseImagen ) {
-        imagenDestacada( entrada ).then( function( imagen ) {
-            mostrarImagen( contenedor, imagen, tituloEntrada( entrada ), claseImagen );
-        } ).catch( function( error ) {
-            console.warn( 'No se pudo cargar la fotografía del poeta:', error );
-        } );
+    function cargarFotografia(entrada, contenedor, claseImagen) {
+        imagenDestacada(entrada).then(function (imagen) {
+            mostrarImagen(contenedor, imagen, tituloEntrada(entrada), claseImagen);
+        }).catch(function (error) {
+            console.warn('No se pudo cargar la fotografía del poeta:', error);
+        });
     }
 
     // Portada: sustituye únicamente las fotografías de ejemplo por registros reales.
     // Una Polaroid solo muestra la fotografía y el nombre del poeta.
-    function crearTarjetaPoeta( entrada, indice, plantilla ) {
-        var fragmento = plantilla.content.cloneNode( true );
-        var marco = fragmento.querySelector( '.posicion-polaroid' );
-        var imagen = fragmento.querySelector( '.tarjeta-polaroid__foto' );
-        var nombre = fragmento.querySelector( '.tarjeta-polaroid__nombre' );
-        var foto = fragmento.querySelector( '.tarjeta-polaroid__imagen' );
+    function crearTarjetaPoeta(entrada, indice, plantilla) {
+        var fragmento = plantilla.content.cloneNode(true);
+        var marco = fragmento.querySelector('.posicion-polaroid');
+        var imagen = fragmento.querySelector('.tarjeta-polaroid__foto');
+        var nombre = fragmento.querySelector('.tarjeta-polaroid__nombre');
+        var foto = fragmento.querySelector('.tarjeta-polaroid__imagen');
 
-        marco.dataset.poetaId = String( entrada.id );
+        marco.dataset.poetaId = String(entrada.id);
         marco.dataset.poetaUrl = entrada.link || '';
         // Seleccionable con mouse y teclado, sin usar drag & drop todavía.
-        marco.setAttribute( 'role', 'button' );
-        marco.setAttribute( 'tabindex', '0' );
-        marco.setAttribute( 'aria-pressed', 'false' );
-        marco.setAttribute( 'aria-label', 'Seleccionar poeta: ' + tituloEntrada( entrada ) );
-        nombre.textContent = tituloEntrada( entrada );
-        if ( foto ) { foto.remove(); }
-        if ( imagen ) { imagen.appendChild( crearTexto( 'i', 'bi bi-person-bounding-box', '' ) ); }
-        cargarFotografia( entrada, imagen );
+        marco.setAttribute('role', 'button');
+        marco.setAttribute('tabindex', '0');
+        marco.setAttribute('aria-pressed', 'false');
+        marco.setAttribute('aria-label', 'Seleccionar poeta: ' + tituloEntrada(entrada));
+        nombre.textContent = tituloEntrada(entrada);
+        if (foto) { foto.remove(); }
+        if (imagen) { imagen.appendChild(crearTexto('i', 'bi bi-person-bounding-box', '')); }
+        cargarFotografia(entrada, imagen);
         return fragmento;
     }
 
 
     // Selección de poeta: fondo lima, ficha en la caja y enlace a su entrada.
     // El primer poeta no se selecciona automáticamente.
-    function mostrarPoetaSeleccionado( galeria, marco, poeta ) {
-        var destino = document.getElementById( 'bandeja-poeta-contenido' );
-        var plantilla = document.getElementById( 'plantilla-ficha-poeta' );
+    function mostrarPoetaSeleccionado(galeria, marco, poeta) {
+        var destino = document.getElementById('bandeja-poeta-contenido');
+        var plantilla = document.getElementById('plantilla-ficha-poeta');
         var fragmento;
         var imagen;
         var boton;
@@ -188,443 +188,443 @@
         var nombre;
         var descripcion;
 
-        galeria.querySelectorAll( '.posicion-polaroid' ).forEach( function( elemento ) {
+        galeria.querySelectorAll('.posicion-polaroid').forEach(function (elemento) {
             var seleccionado = elemento === marco;
-            elemento.classList.toggle( 'esta-seleccionado', seleccionado );
-            elemento.setAttribute( 'aria-pressed', seleccionado ? 'true' : 'false' );
-        } );
+            elemento.classList.toggle('esta-seleccionado', seleccionado);
+            elemento.setAttribute('aria-pressed', seleccionado ? 'true' : 'false');
+        });
 
-        if ( ! destino || ! plantilla ) {
+        if (!destino || !plantilla) {
             return;
         }
 
-        fragmento = plantilla.content.cloneNode( true );
-        imagen = fragmento.querySelector( '.ficha-poeta__imagen' );
-        nombre = fragmento.querySelector( '.ficha-poeta__nombre' );
-        descripcion = fragmento.querySelector( '.ficha-poeta__descripcion' );
-        boton = fragmento.querySelector( '.ficha-poeta button' );
+        fragmento = plantilla.content.cloneNode(true);
+        imagen = fragmento.querySelector('.ficha-poeta__imagen');
+        nombre = fragmento.querySelector('.ficha-poeta__nombre');
+        descripcion = fragmento.querySelector('.ficha-poeta__descripcion');
+        boton = fragmento.querySelector('.ficha-poeta button');
 
-        if ( nombre ) {
-            nombre.textContent = tituloEntrada( poeta );
+        if (nombre) {
+            nombre.textContent = tituloEntrada(poeta);
         }
-        if ( descripcion ) {
-            descripcion.textContent = detallePoeta( poeta ) || resumenEntrada( poeta );
+        if (descripcion) {
+            descripcion.textContent = detallePoeta(poeta) || resumenEntrada(poeta);
         }
-        if ( boton ) {
-            enlace = document.createElement( 'a' );
+        if (boton) {
+            enlace = document.createElement('a');
             enlace.className = boton.className;
             enlace.href = poeta.link || '#';
             enlace.textContent = 'Explorar poeta ';
-            enlace.appendChild( crearTexto( 'i', 'bi bi-arrow-right', '' ) );
-            enlace.querySelector( 'i' ).setAttribute( 'aria-hidden', 'true' );
-            boton.replaceWith( enlace );
+            enlace.appendChild(crearTexto('i', 'bi bi-arrow-right', ''));
+            enlace.querySelector('i').setAttribute('aria-hidden', 'true');
+            boton.replaceWith(enlace);
         }
 
-        destino.replaceChildren( fragmento );
+        destino.replaceChildren(fragmento);
 
-        if ( imagen ) {
-            imagenDestacada( poeta ).then( function( medio ) {
-                var ruta = urlImagen( medio );
-                if ( ruta ) {
+        if (imagen) {
+            imagenDestacada(poeta).then(function (medio) {
+                var ruta = urlImagen(medio);
+                if (ruta) {
                     imagen.src = ruta;
-                    imagen.alt = 'Retrato de ' + tituloEntrada( poeta );
+                    imagen.alt = 'Retrato de ' + tituloEntrada(poeta);
                     imagen.loading = 'lazy';
                 } else {
                     imagen.hidden = true;
                 }
-            } ).catch( function( error ) {
+            }).catch(function (error) {
                 imagen.hidden = true;
-                console.warn( 'No se pudo cargar la fotografía seleccionada:', error );
-            } );
+                console.warn('No se pudo cargar la fotografía seleccionada:', error);
+            });
         }
     }
 
     // Un solo flujo para clic, Enter/Espacio y soltar la Polaroid.
     // El hub escucha el evento y se muestra sin botón intermedio.
-    function activarSeleccionPoetas( galeria, poetas ) {
+    function activarSeleccionPoetas(galeria, poetas) {
         var registros = new Map();
 
-        poetas.forEach( function( poeta ) {
-            registros.set( String( poeta.id ), poeta );
-        } );
+        poetas.forEach(function (poeta) {
+            registros.set(String(poeta.id), poeta);
+        });
 
-        function seleccionarPoeta( identificador, origen ) {
+        function seleccionarPoeta(identificador, origen) {
             // Evita una segunda apertura si Draggable y el clic DOM coinciden.
-            if ( document.getElementById( 'seleccion-poetas' ).hidden ) { return false; }
-            var poeta = registros.get( String( identificador ) );
-            var marco = Array.from( galeria.querySelectorAll( '.posicion-polaroid' ) )
-                .find( function( item ) { return item.dataset.poetaId === String( identificador ); } );
-            if ( !poeta || !marco ) { return false; }
-            mostrarPoetaSeleccionado( galeria, marco, poeta );
-            window.dispatchEvent( new CustomEvent( 'entreversos:seleccionar-poeta', {
+            if (document.getElementById('seleccion-poetas').hidden) { return false; }
+            var poeta = registros.get(String(identificador));
+            var marco = Array.from(galeria.querySelectorAll('.posicion-polaroid'))
+                .find(function (item) { return item.dataset.poetaId === String(identificador); });
+            if (!poeta || !marco) { return false; }
+            mostrarPoetaSeleccionado(galeria, marco, poeta);
+            window.dispatchEvent(new CustomEvent('entreversos:seleccionar-poeta', {
                 detail: { id: poeta.id, origen: origen || 'clic' }
-            } ) );
+            }));
             return true;
         }
 
-        function seleccionarDesdeTarjeta( destino, origen ) {
-            var marco = destino.closest( '.posicion-polaroid' );
-            if ( marco && galeria.contains( marco ) ) {
-                seleccionarPoeta( marco.dataset.poetaId, origen );
+        function seleccionarDesdeTarjeta(destino, origen) {
+            var marco = destino.closest('.posicion-polaroid');
+            if (marco && galeria.contains(marco)) {
+                seleccionarPoeta(marco.dataset.poetaId, origen);
             }
         }
 
         // API pública mínima para el módulo de arrastre.
         window.EntreVersosSeleccion = { seleccionarId: seleccionarPoeta };
 
-        galeria.addEventListener( 'click', function( evento ) {
+        galeria.addEventListener('click', function (evento) {
             // No se abre durante la fase final de un arrastre real.
-            if ( !evento.target.closest( '.posicion-polaroid' ) ||
-                evento.target.closest( '.posicion-polaroid' ).dataset.arrastrando === 'true' ) { return; }
-            seleccionarDesdeTarjeta( evento.target, 'clic' );
-        } );
-        galeria.addEventListener( 'keydown', function( evento ) {
-            if ( ( evento.key === 'Enter' || evento.key === ' ' ) &&
-                evento.target.classList.contains( 'posicion-polaroid' ) ) {
+            if (!evento.target.closest('.posicion-polaroid') ||
+                evento.target.closest('.posicion-polaroid').dataset.arrastrando === 'true') { return; }
+            seleccionarDesdeTarjeta(evento.target, 'clic');
+        });
+        galeria.addEventListener('keydown', function (evento) {
+            if ((evento.key === 'Enter' || evento.key === ' ') &&
+                evento.target.classList.contains('posicion-polaroid')) {
                 evento.preventDefault();
-                seleccionarDesdeTarjeta( evento.target, 'teclado' );
+                seleccionarDesdeTarjeta(evento.target, 'teclado');
             }
-        } );
+        });
     }
 
     function cargarGaleria() {
-        var galeria = document.getElementById( 'galeria-poetas' );
-        var plantilla = document.getElementById( 'plantilla-tarjeta-poeta' );
-        var cantidad = document.getElementById( 'cantidad-poetas' );
+        var galeria = document.getElementById('galeria-poetas');
+        var plantilla = document.getElementById('plantilla-tarjeta-poeta');
+        var cantidad = document.getElementById('cantidad-poetas');
 
-        if ( ! galeria || ! plantilla ) {
+        if (!galeria || !plantilla) {
             return;
         }
-        api.obtenerPoetas().then( function( poetas ) {
-            var total = Array.isArray( poetas ) ? poetas.length : 0;
+        api.obtenerPoetas().then(function (poetas) {
+            var total = Array.isArray(poetas) ? poetas.length : 0;
             var fragmento = document.createDocumentFragment();
 
-            if ( ! total ) {
-                galeria.replaceChildren( crearTexto( 'p', 'fuente-mono', 'Todavía no hay poetas publicados.' ) );
+            if (!total) {
+                galeria.replaceChildren(crearTexto('p', 'fuente-mono', 'Todavía no hay poetas publicados.'));
                 return;
             }
-            poetas.forEach( function( poeta, indice ) {
-                fragmento.appendChild( crearTarjetaPoeta( poeta, indice, plantilla ) );
-            } );
-            galeria.replaceChildren( fragmento );
-            if ( window.EntreVersosGaleria ) {
-                window.EntreVersosGaleria.inicializar( galeria );
+            poetas.forEach(function (poeta, indice) {
+                fragmento.appendChild(crearTarjetaPoeta(poeta, indice, plantilla));
+            });
+            galeria.replaceChildren(fragmento);
+            if (window.EntreVersosGaleria) {
+                window.EntreVersosGaleria.inicializar(galeria);
             } else {
-                galeria.classList.add( 'galeria-poetas--respaldo' );
+                galeria.classList.add('galeria-poetas--respaldo');
             }
-            activarSeleccionPoetas( galeria, poetas );
+            activarSeleccionPoetas(galeria, poetas);
             // Todos los nodos existen y Muuri ya conoce su geometría.
-            window.dispatchEvent( new CustomEvent( 'entreversos:galeria-lista', {
+            window.dispatchEvent(new CustomEvent('entreversos:galeria-lista', {
                 detail: { cantidad: total }
-            } ) );
-            if ( cantidad ) {
-                cantidad.textContent = String( total ).padStart( 2, '0' ) + ( total === 1 ? ' poeta en sala' : ' poetas en sala' );
+            }));
+            if (cantidad) {
+                cantidad.textContent = String(total).padStart(2, '0') + (total === 1 ? ' poeta en sala' : ' poetas en sala');
             }
-        } ).catch( function( error ) {
-            console.error( 'Error al cargar poetas desde REST:', error );
-            galeria.replaceChildren( crearTexto( 'p', 'fuente-mono', 'No fue posible cargar los poetas desde WordPress.' ) );
-        } );
+        }).catch(function (error) {
+            console.error('Error al cargar poetas desde REST:', error);
+            galeria.replaceChildren(crearTexto('p', 'fuente-mono', 'No fue posible cargar los poetas desde WordPress.'));
+        });
     }
 
-    function actualizarTexto( selector, valor, raiz ) {
-        var elemento = ( raiz || document ).querySelector( selector );
-        if ( elemento && valor != null ) {
-            elemento.textContent = String( valor );
+    function actualizarTexto(selector, valor, raiz) {
+        var elemento = (raiz || document).querySelector(selector);
+        if (elemento && valor != null) {
+            elemento.textContent = String(valor);
         }
     }
 
     // SCF entrega texto plano: una obra por línea y un año opcional.
-    function dibujarObrasPoeta( destino, textoObras ) {
-        if ( !destino ) { return; }
-        var obras = String( textoObras || '' ).split( /\r\n?|\n/ )
-            .map( function( linea ) { return linea.trim(); } ).filter( Boolean );
-        if ( !obras.length ) {
-            destino.replaceChildren( crearTexto( 'p', 'obras-poeta__vacio fuente-mono',
-                'Obras destacadas por incorporar.' ) );
+    function dibujarObrasPoeta(destino, textoObras) {
+        if (!destino) { return; }
+        var obras = String(textoObras || '').split(/\r\n?|\n/)
+            .map(function (linea) { return linea.trim(); }).filter(Boolean);
+        if (!obras.length) {
+            destino.replaceChildren(crearTexto('p', 'obras-poeta__vacio fuente-mono',
+                'Obras destacadas por incorporar.'));
             return;
         }
-        var listado = crearTexto( 'ol', 'obras-poeta', '' );
-        obras.forEach( function( linea ) {
-            var partes = linea.match( /^(.+?)\s*\((\d{4})\)$/ ) ||
-                linea.match( /^(.+?)\s*[—–-]\s*(\d{4})$/ );
-            var inverso = !partes && linea.match( /^(\d{4})\s*[—–-]\s*(.+)$/ );
+        var listado = crearTexto('ol', 'obras-poeta', '');
+        obras.forEach(function (linea) {
+            var partes = linea.match(/^(.+?)\s*\((\d{4})\)$/) ||
+                linea.match(/^(.+?)\s*[—–-]\s*(\d{4})$/);
+            var inverso = !partes && linea.match(/^(\d{4})\s*[—–-]\s*(.+)$/);
             var nombre = partes ? partes[1].trim() : inverso ? inverso[2].trim() : linea;
             var anio = partes ? partes[2] : inverso ? inverso[1] : '';
-            var li = crearTexto( 'li', 'obras-poeta__item', '' );
-            li.appendChild( crearTexto( 'span', 'obras-poeta__titulo', nombre ) );
-            if ( anio ) { li.appendChild( crearTexto( 'span', 'obras-poeta__anio fuente-mono', anio ) ); }
-            listado.appendChild( li );
-        } );
-        destino.replaceChildren( listado );
+            var li = crearTexto('li', 'obras-poeta__item', '');
+            li.appendChild(crearTexto('span', 'obras-poeta__titulo', nombre));
+            if (anio) { li.appendChild(crearTexto('span', 'obras-poeta__anio fuente-mono', anio)); }
+            listado.appendChild(li);
+        });
+        destino.replaceChildren(listado);
     }
 
-    function dibujarCitaPoeta( destino, cita ) {
-        if ( !destino ) { return; }
-        cita = String( cita || '' ).trim();
+    function dibujarCitaPoeta(destino, cita) {
+        if (!destino) { return; }
+        cita = String(cita || '').trim();
         destino.replaceChildren();
-        if ( !cita ) { return; }
-        var aside = crearTexto( 'aside', 'cita-poeta', '' );
-        aside.setAttribute( 'aria-label', 'Cita destacada del poeta' );
-        aside.appendChild( crearTexto( 'span', 'etiqueta-editorial', 'Cita destacada' ) );
-        var bloque = crearTexto( 'blockquote', 'cita-poeta__texto', '' );
-        bloque.appendChild( crearTexto( 'p', '', cita ) );
-        aside.appendChild( bloque );
-        destino.appendChild( aside );
+        if (!cita) { return; }
+        var aside = crearTexto('aside', 'cita-poeta', '');
+        aside.setAttribute('aria-label', 'Cita destacada del poeta');
+        aside.appendChild(crearTexto('span', 'etiqueta-editorial', 'Cita destacada'));
+        var bloque = crearTexto('blockquote', 'cita-poeta__texto', '');
+        bloque.appendChild(crearTexto('p', '', cita));
+        aside.appendChild(bloque);
+        destino.appendChild(aside);
     }
 
-    function dibujarDatosPoeta( destino, datos ) {
-        if ( !destino ) { return; }
+    function dibujarDatosPoeta(destino, datos) {
+        if (!destino) { return; }
         var filas = [
-            [ 'Origen', [ datos.lugar_nacimiento, datos.pais_origen ].filter( Boolean ).join( ', ' ) ],
-            [ 'Nacimiento', formatearFecha( datos.fecha_nacimiento ) ],
-            [ 'Fallecimiento', formatearFecha( datos.fecha_fallecimiento ) ]
+            ['Origen', [datos.lugar_nacimiento, datos.pais_origen].filter(Boolean).join(', ')],
+            ['Nacimiento', formatearFecha(datos.fecha_nacimiento)],
+            ['Fallecimiento', formatearFecha(datos.fecha_fallecimiento)]
         ];
         destino.replaceChildren();
-        filas.forEach( function( fila ) {
-            if ( !fila[1] ) { return; }
-            destino.appendChild( crearTexto( 'dt', '', fila[0] ) );
-            destino.appendChild( crearTexto( 'dd', '', fila[1] ) );
-        } );
+        filas.forEach(function (fila) {
+            if (!fila[1]) { return; }
+            destino.appendChild(crearTexto('dt', '', fila[0]));
+            destino.appendChild(crearTexto('dd', '', fila[1]));
+        });
         destino.hidden = !destino.children.length;
     }
 
     // Gutenberg, metadatos y obras de la ficha individual se hidratan vía REST.
     // El HTML PHP inicial actúa solo como respaldo si JS o REST falla.
-    function actualizarPoeta( raiz, entrada ) {
-        var nombre = tituloEntrada( entrada );
-        var detalles = detallePoeta( entrada );
-        var datos = metadatos( entrada );
-        var textoBiografia = raiz.querySelector( '#contenido-biografia' );
+    function actualizarPoeta(raiz, entrada) {
+        var nombre = tituloEntrada(entrada);
+        var detalles = detallePoeta(entrada);
+        var datos = metadatos(entrada);
+        var textoBiografia = raiz.querySelector('#contenido-biografia');
 
-        actualizarTexto( '.vista-poeta__titulo', nombre, raiz );
-        actualizarTexto( '.pantallas-poeta__origen', detalles, raiz );
-        dibujarObrasPoeta( raiz.querySelector( '#obras-poeta-rest' ), datos.obras_destacadas );
-        dibujarCitaPoeta( raiz.querySelector( '#cita-poeta-rest' ), datos.cita_destacada );
-        dibujarDatosPoeta( raiz.querySelector( '#datos-biograficos-poeta' ), datos );
-        if ( textoBiografia && entrada.content && entrada.content.rendered ) {
+        actualizarTexto('.vista-poeta__titulo', nombre, raiz);
+        actualizarTexto('.pantallas-poeta__origen', detalles, raiz);
+        dibujarObrasPoeta(raiz.querySelector('#obras-poeta-rest'), datos.obras_destacadas);
+        dibujarCitaPoeta(raiz.querySelector('#cita-poeta-rest'), datos.cita_destacada);
+        dibujarDatosPoeta(raiz.querySelector('#datos-biograficos-poeta'), datos);
+        if (textoBiografia && entrada.content && entrada.content.rendered) {
             textoBiografia.innerHTML = entrada.content.rendered;
         }
-        cargarFotografia( entrada, raiz.querySelector( '.pantallas-poeta__imagen' ) );
+        cargarFotografia(entrada, raiz.querySelector('.pantallas-poeta__imagen'));
     }
 
-    function crearPantallaPoema( poema, indice ) {
-        var tarjeta = document.createElement( 'section' );
-        var etiqueta = crearTexto( 'span', 'etiqueta-editorial', '0' + ( indice + 2 ) + ' / Poema' );
-        var subtitulo = crearTexto( 'h2', 'pantallas-poeta__subtitulo', tituloEntrada( poema ) );
-        var descripcion = crearTexto( 'p', 'pantallas-poeta__descripcion', resumenEntrada( poema ) );
-        var campos = metadatos( poema );
-        var datos = crearTexto( 'p', 'fuente-mono mt-auto', [ campos.obra_origen, campos.anio_publicacion ].filter( Boolean ).join( ' · ' ) );
-        var enlace = document.createElement( 'a' );
+    function crearPantallaPoema(poema, indice) {
+        var tarjeta = document.createElement('section');
+        var etiqueta = crearTexto('span', 'etiqueta-editorial', '0' + (indice + 2) + ' / Poema');
+        var subtitulo = crearTexto('h2', 'pantallas-poeta__subtitulo', tituloEntrada(poema));
+        var descripcion = crearTexto('p', 'pantallas-poeta__descripcion', resumenEntrada(poema));
+        var campos = metadatos(poema);
+        var datos = crearTexto('p', 'fuente-mono mt-auto', [campos.obra_origen, campos.anio_publicacion].filter(Boolean).join(' · '));
+        var enlace = document.createElement('a');
 
         tarjeta.className = 'pantallas-poeta__tarjeta tarjeta-editorial pantallas-poeta__obra';
-        tarjeta.dataset.poemaId = String( poema.id );
+        tarjeta.dataset.poemaId = String(poema.id);
         enlace.className = 'boton-editorial boton-editorial--primario align-self-start mt-3';
         enlace.href = poema.link || '#';
         enlace.textContent = 'Leer poema →';
-        tarjeta.appendChild( etiqueta );
-        tarjeta.appendChild( subtitulo );
-        if ( descripcion.textContent ) {
-            tarjeta.appendChild( descripcion );
+        tarjeta.appendChild(etiqueta);
+        tarjeta.appendChild(subtitulo);
+        if (descripcion.textContent) {
+            tarjeta.appendChild(descripcion);
         }
-        if ( datos.textContent ) {
-            tarjeta.appendChild( datos );
+        if (datos.textContent) {
+            tarjeta.appendChild(datos);
         }
-        tarjeta.appendChild( enlace );
+        tarjeta.appendChild(enlace);
 
         return tarjeta;
     }
 
-    function mostrarObras( raiz, poemas ) {
-        var listado = raiz.querySelector( '#contenido-obras' );
+    function mostrarObras(raiz, poemas) {
+        var listado = raiz.querySelector('#contenido-obras');
         var fragmento = document.createDocumentFragment();
 
-        if ( ! listado ) {
+        if (!listado) {
             return;
         }
-        if ( ! Array.isArray( poemas ) || ! poemas.length ) {
-            listado.replaceChildren( crearTexto( 'span', 'fuente-mono', 'Aún no hay poemas publicados para este poeta.' ) );
+        if (!Array.isArray(poemas) || !poemas.length) {
+            listado.replaceChildren(crearTexto('span', 'fuente-mono', 'Aún no hay poemas publicados para este poeta.'));
             return;
         }
-        poemas.forEach( function( poema, indice ) {
-            var enlace = document.createElement( 'a' );
+        poemas.forEach(function (poema, indice) {
+            var enlace = document.createElement('a');
             enlace.className = 'boton-editorial boton-editorial--compacto';
             enlace.href = poema.link || '#';
-            enlace.textContent = tituloEntrada( poema );
-            fragmento.appendChild( enlace );
-        } );
-        listado.replaceChildren( fragmento );
+            enlace.textContent = tituloEntrada(poema);
+            fragmento.appendChild(enlace);
+        });
+        listado.replaceChildren(fragmento);
         // La navegación a cada obra es mediante los botones del índice; Slick queda pendiente.
     }
 
     function cargarFichaPoeta() {
-        var raiz = document.querySelector( '.vista-poeta[data-poeta-id]' );
+        var raiz = document.querySelector('.vista-poeta[data-poeta-id]');
         var id;
 
-        if ( ! raiz ) {
+        if (!raiz) {
             return;
         }
-        id = Number( raiz.dataset.poetaId );
-        Promise.all( [ api.obtenerPoeta( id ), api.obtenerPoemasDePoeta( id ) ] ).then( function( resultados ) {
-            actualizarPoeta( raiz, resultados[ 0 ] );
-            mostrarObras( raiz, resultados[ 1 ] );
-        } ).catch( function( error ) {
-            console.error( 'Error al cargar la ficha del poeta:', error );
-            actualizarTexto( '#contenido-obras', 'No fue posible cargar las obras mediante REST.', raiz );
-        } );
+        id = Number(raiz.dataset.poetaId);
+        Promise.all([api.obtenerPoeta(id), api.obtenerPoemasDePoeta(id)]).then(function (resultados) {
+            actualizarPoeta(raiz, resultados[0]);
+            mostrarObras(raiz, resultados[1]);
+        }).catch(function (error) {
+            console.error('Error al cargar la ficha del poeta:', error);
+            actualizarTexto('#contenido-obras', 'No fue posible cargar las obras mediante REST.', raiz);
+        });
     }
 
-    function extraerVersos( estrofa ) {
-        var texto = String( estrofa.texto_estrofa || '' );
-        var palabras = String( estrofa.palabras_clave || '' ).replace( /\r\n?/g, '\n' ).split( '\n' );
-        var lineas = texto.replace( /\r\n?/g, '\n' ).split( '\n' );
+    function extraerVersos(estrofa) {
+        var texto = String(estrofa.texto_estrofa || '');
+        var palabras = String(estrofa.palabras_clave || '').replace(/\r\n?/g, '\n').split('\n');
+        var lineas = texto.replace(/\r\n?/g, '\n').split('\n');
 
         // Compatibilidad de lectura con las primeras entradas aún en el formato viejo.
-        if ( ! texto.trim() && Array.isArray( estrofa.versos ) ) {
-            return estrofa.versos.map( function( verso ) {
+        if (!texto.trim() && Array.isArray(estrofa.versos)) {
+            return estrofa.versos.map(function (verso) {
                 return { texto: verso.texto_verso || '', clave: verso.palabra_clave || '' };
-            } );
+            });
         }
-        return lineas.map( function( linea, indice ) {
-            return { texto: linea, clave: String( palabras[ indice ] || '' ).trim() };
-        } );
+        return lineas.map(function (linea, indice) {
+            return { texto: linea, clave: String(palabras[indice] || '').trim() };
+        });
     }
 
-    function textoConResaltado( contenedor, verso ) {
-        var texto = String( verso.texto || '' );
-        var clave = String( verso.clave || '' ).trim();
+    function textoConResaltado(contenedor, verso) {
+        var texto = String(verso.texto || '');
+        var clave = String(verso.clave || '').trim();
         var posicion;
         var destacado;
 
-        if ( ! clave || clave === '-' ) {
+        if (!clave || clave === '-') {
             contenedor.textContent = texto;
             return;
         }
-        posicion = texto.toLocaleLowerCase( 'es' ).indexOf( clave.toLocaleLowerCase( 'es' ) );
-        if ( posicion < 0 ) {
+        posicion = texto.toLocaleLowerCase('es').indexOf(clave.toLocaleLowerCase('es'));
+        if (posicion < 0) {
             contenedor.textContent = texto;
             return;
         }
-        contenedor.appendChild( document.createTextNode( texto.slice( 0, posicion ) ) );
-        destacado = document.createElement( 'mark' );
-        destacado.textContent = texto.slice( posicion, posicion + clave.length );
-        contenedor.appendChild( destacado );
-        contenedor.appendChild( document.createTextNode( texto.slice( posicion + clave.length ) ) );
+        contenedor.appendChild(document.createTextNode(texto.slice(0, posicion)));
+        destacado = document.createElement('mark');
+        destacado.textContent = texto.slice(posicion, posicion + clave.length);
+        contenedor.appendChild(destacado);
+        contenedor.appendChild(document.createTextNode(texto.slice(posicion + clave.length)));
     }
 
-    function cargarVersos( raiz, estrofa ) {
-        var listado = raiz.querySelector( '#lista-versos' );
+    function cargarVersos(raiz, estrofa) {
+        var listado = raiz.querySelector('#lista-versos');
         var fragmento = document.createDocumentFragment();
 
-        if ( ! listado ) {
+        if (!listado) {
             return;
         }
-        extraerVersos( estrofa ).forEach( function( verso, indice ) {
-            var li = document.createElement( 'li' );
-            var numero = crearTexto( 'span', 'lector-estrofas__verso-numero', String( indice + 1 ).padStart( 2, '0' ) );
-            var contenido = document.createElement( 'span' );
+        extraerVersos(estrofa).forEach(function (verso, indice) {
+            var li = document.createElement('li');
+            var numero = crearTexto('span', 'lector-estrofas__verso-numero', String(indice + 1).padStart(2, '0'));
+            var contenido = document.createElement('span');
             li.className = 'lector-estrofas__verso';
-            li.appendChild( numero );
-            textoConResaltado( contenido, verso );
-            li.appendChild( contenido );
-            fragmento.appendChild( li );
-        } );
-        listado.replaceChildren( fragmento );
+            li.appendChild(numero);
+            textoConResaltado(contenido, verso);
+            li.appendChild(contenido);
+            fragmento.appendChild(li);
+        });
+        listado.replaceChildren(fragmento);
     }
 
-    function cargarVisualEstrofa( raiz, estrofa ) {
-        var contenedor = raiz.querySelector( '#imagen-estrofa' );
-        var etiqueta = raiz.querySelector( '#estrofa-recurso figcaption' );
-        if ( ! contenedor ) {
+    function cargarVisualEstrofa(raiz, estrofa) {
+        var contenedor = raiz.querySelector('#imagen-estrofa');
+        var etiqueta = raiz.querySelector('#estrofa-recurso figcaption');
+        if (!contenedor) {
             return;
         }
-        recursoImagen( estrofa.imagen_estrofa ).then( function( recurso ) {
-            mostrarImagen( contenedor, recurso, 'Ilustración asociada a la primera estrofa' );
-        } ).catch( function( error ) {
-            console.warn( 'No se pudo recuperar la imagen de la estrofa:', error );
-        } );
-        if ( etiqueta ) {
-            var figura = etiqueta.querySelector( '.etiqueta-editorial' );
-            if ( figura ) {
+        recursoImagen(estrofa.imagen_estrofa).then(function (recurso) {
+            mostrarImagen(contenedor, recurso, 'Ilustración asociada a la primera estrofa');
+        }).catch(function (error) {
+            console.warn('No se pudo recuperar la imagen de la estrofa:', error);
+        });
+        if (etiqueta) {
+            var figura = etiqueta.querySelector('.etiqueta-editorial');
+            if (figura) {
                 figura.textContent = 'FIG. 01';
             }
         }
     }
 
-    function prepararLecturaCompleta( raiz, estrofas ) {
-        var contenedor = raiz.querySelector( '#lectura-continua-estrofas' );
+    function prepararLecturaCompleta(raiz, estrofas) {
+        var contenedor = raiz.querySelector('#lectura-continua-estrofas');
         var fragmento = document.createDocumentFragment();
 
-        if ( ! contenedor ) {
+        if (!contenedor) {
             return;
         }
-        estrofas.forEach( function( estrofa, indice ) {
-            var seccion = document.createElement( 'section' );
+        estrofas.forEach(function (estrofa, indice) {
+            var seccion = document.createElement('section');
             seccion.className = 'lectura-continua__estrofa';
-            seccion.appendChild( crearTexto( 'p', 'fuente-mono', 'Estrofa ' + String( indice + 1 ).padStart( 2, '0' ) ) );
-            extraerVersos( estrofa ).forEach( function( verso ) {
-                var parrafo = document.createElement( 'p' );
+            seccion.appendChild(crearTexto('p', 'fuente-mono', 'Estrofa ' + String(indice + 1).padStart(2, '0')));
+            extraerVersos(estrofa).forEach(function (verso) {
+                var parrafo = document.createElement('p');
                 parrafo.className = 'mb-1';
-                textoConResaltado( parrafo, verso );
-                seccion.appendChild( parrafo );
-            } );
-            fragmento.appendChild( seccion );
-        } );
-        contenedor.replaceChildren( fragmento );
+                textoConResaltado(parrafo, verso);
+                seccion.appendChild(parrafo);
+            });
+            fragmento.appendChild(seccion);
+        });
+        contenedor.replaceChildren(fragmento);
         // La vista sigue oculta: su apertura se implementará con la navegación.
     }
 
-    function actualizarPoema( raiz, poema ) {
-        var campos = metadatos( poema );
-        var estrofas = Array.isArray( campos.estrofas ) ? campos.estrofas : [];
-        var titulo = tituloEntrada( poema );
-        var datoPublicacion = [ campos.obra_origen, campos.anio_publicacion ].filter( Boolean ).join( ' · ' );
-        var destinoImagen = raiz.querySelector( '#poema-cierre .poema-cierre__imagen' );
+    function actualizarPoema(raiz, poema) {
+        var campos = metadatos(poema);
+        var estrofas = Array.isArray(campos.estrofas) ? campos.estrofas : [];
+        var titulo = tituloEntrada(poema);
+        var datoPublicacion = [campos.obra_origen, campos.anio_publicacion].filter(Boolean).join(' · ');
+        var destinoImagen = raiz.querySelector('#poema-cierre .poema-cierre__imagen');
 
-        actualizarTexto( '#titulo-poema', titulo, raiz );
-        actualizarTexto( '#titulo-lectura-continua', titulo, raiz );
-        actualizarTexto( '#titulo-cierre-poema', titulo, raiz );
-        if ( datoPublicacion ) {
-            actualizarTexto( '.lector-estrofas__cabecera .fuente-mono', datoPublicacion, raiz );
+        actualizarTexto('#titulo-poema', titulo, raiz);
+        actualizarTexto('#titulo-lectura-continua', titulo, raiz);
+        actualizarTexto('#titulo-cierre-poema', titulo, raiz);
+        if (datoPublicacion) {
+            actualizarTexto('.lector-estrofas__cabecera .fuente-mono', datoPublicacion, raiz);
         }
-        if ( estrofas.length ) {
-            actualizarTexto( '#contador-estrofas', 'Estrofa 01 / ' + String( estrofas.length ).padStart( 2, '0' ), raiz );
-            cargarVersos( raiz, estrofas[ 0 ] );
-            cargarVisualEstrofa( raiz, estrofas[ 0 ] );
-            prepararLecturaCompleta( raiz, estrofas );
+        if (estrofas.length) {
+            actualizarTexto('#contador-estrofas', 'Estrofa 01 / ' + String(estrofas.length).padStart(2, '0'), raiz);
+            cargarVersos(raiz, estrofas[0]);
+            cargarVisualEstrofa(raiz, estrofas[0]);
+            prepararLecturaCompleta(raiz, estrofas);
         } else {
-            actualizarTexto( '#lista-versos', 'Aún no hay estrofas publicadas en SCF.', raiz );
+            actualizarTexto('#lista-versos', 'Aún no hay estrofas publicadas en SCF.', raiz);
         }
-        imagenDestacada( poema ).then( function( medio ) {
-            mostrarImagen( destinoImagen, medio, 'Imagen de cierre del poema ' + titulo );
-        } ).catch( function( error ) {
-            console.warn( 'No fue posible cargar la imagen final:', error );
-        } );
+        imagenDestacada(poema).then(function (medio) {
+            mostrarImagen(destinoImagen, medio, 'Imagen de cierre del poema ' + titulo);
+        }).catch(function (error) {
+            console.warn('No fue posible cargar la imagen final:', error);
+        });
 
         var idPoeta = campos.poeta_relacionado && typeof campos.poeta_relacionado === 'object' ?
             campos.poeta_relacionado.ID || campos.poeta_relacionado.id : campos.poeta_relacionado;
-        if ( idPoeta ) {
-            api.obtenerPoeta( idPoeta ).then( function( poeta ) {
-                var nombre = tituloEntrada( poeta );
-                actualizarTexto( '.vista-poema__metadatos .fuente-mono', nombre, raiz );
-                actualizarTexto( '#lectura-continua > .fuente-mono', nombre, raiz );
-                actualizarTexto( '#poema-cierre > .fuente-mono', nombre, raiz );
-            } ).catch( function( error ) {
-                console.warn( 'No fue posible actualizar el nombre del autor:', error );
-            } );
+        if (idPoeta) {
+            api.obtenerPoeta(idPoeta).then(function (poeta) {
+                var nombre = tituloEntrada(poeta);
+                actualizarTexto('.vista-poema__metadatos .fuente-mono', nombre, raiz);
+                actualizarTexto('#lectura-continua > .fuente-mono', nombre, raiz);
+                actualizarTexto('#poema-cierre > .fuente-mono', nombre, raiz);
+            }).catch(function (error) {
+                console.warn('No fue posible actualizar el nombre del autor:', error);
+            });
         }
     }
 
     function cargarFichaPoema() {
-        var raiz = document.querySelector( '.vista-poema[data-poema-id]' );
-        if ( ! raiz ) {
+        var raiz = document.querySelector('.vista-poema[data-poema-id]');
+        if (!raiz) {
             return;
         }
-        api.obtenerPoema( Number( raiz.dataset.poemaId ) ).then( function( poema ) {
-            actualizarPoema( raiz, poema );
-        } ).catch( function( error ) {
-            console.error( 'Error al cargar las estrofas desde REST:', error );
-            actualizarTexto( '#lista-versos', 'No fue posible cargar el poema desde WordPress.', raiz );
-        } );
+        api.obtenerPoema(Number(raiz.dataset.poemaId)).then(function (poema) {
+            actualizarPoema(raiz, poema);
+        }).catch(function (error) {
+            console.error('Error al cargar las estrofas desde REST:', error);
+            actualizarTexto('#lista-versos', 'No fue posible cargar el poema desde WordPress.', raiz);
+        });
     }
 
     function iniciarCarga() {
@@ -633,9 +633,9 @@
         cargarFichaPoema();
     }
 
-    if ( document.readyState === 'loading' ) {
-        document.addEventListener( 'DOMContentLoaded', iniciarCarga );
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', iniciarCarga);
     } else {
         iniciarCarga();
     }
-}() );
+}());

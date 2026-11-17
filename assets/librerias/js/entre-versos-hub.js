@@ -87,7 +87,7 @@
         if (mes < 1 || mes > 12 || dia < 1 || dia > 31 || !anio) { return valor; }
         return String(dia).padStart(2, '0') + '/' +
             String(mes).padStart(2, '0') + '/' +
-            String(partes[2]).slice(-2);
+            String(partes[2]);
     }
     function detalle(poeta) {
         var datos = campos(poeta);
