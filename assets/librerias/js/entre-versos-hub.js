@@ -652,15 +652,17 @@
         nodo.textContent = verso.texto;
         if (!verso.clave || verso.clave === '-') { return; }
         if ($ && $.fn.mark) {
+
             $(nodo).mark(verso.clave, {
                 separateWordSearch: false,
+                diacritics: true,
                 accuracy: {
                     value: 'exactly',
                     limiters: [
                         ',', '.', ';', ':',
                         '!', '?', '¡', '¿',
                         '…', '(', ')',
-                        '«', '»', '"', "'",
+                        '"', "'", '«', '»',
                         '—', '–'
                     ]
                 }
