@@ -15,6 +15,10 @@
     var modal = null;
     var ultimoControl = null;
     var scrollEstrofasPendiente = false;
+    var bloqueoRuedaHasta = 0;
+    var ruedaEnTransicion = false;
+    var animacionEstrofa = null;
+    var DURACION_ESTROFA = 0.3; // segundos, ease-in
     var navegacionHub = hub && hub.querySelector( '.hub-poeta__navegacion' );
     // Reserva el lugar original para alinear las flechas incluso dentro del modal.
     var posicionNavegacion = navegacionHub ? document.createElement( 'div' ) : null;
@@ -61,16 +65,36 @@
         elemento.textContent = texto == null ? '' : String( texto );
         return elemento;
     }
-    function anio( fecha ) {
-        var texto = String( fecha || '' );
-        var hallado = texto.match( /\d{4}/ );
-        return hallado ? hallado[ 0 ] : '';
+    // Los campos de SCF llegan por REST en formato d/m/Y o Ymd.
+    // Se muestran como MM/DD/AA sin Date.parse ni desfase de huso horario.
+    function formatearFecha( fecha ) {
+        var valor = String( fecha || '' ).trim();
+        var partes;
+        if ( /^\d{8}$/.test( valor ) ) {
+            partes = [ valor.slice( 4, 6 ), valor.slice( 6, 8 ), valor.slice( 0, 4 ) ];
+        } else if ( /^\d{4}[-/]\d{1,2}[-/]\d{1,2}$/.test( valor ) ) {
+            var ymd = valor.split( /[-/]/ );
+            partes = [ ymd[1], ymd[2], ymd[0] ];
+        } else if ( /^\d{1,2}[-/]\d{1,2}[-/]\d{2,4}$/.test( valor ) ) {
+            var dmy = valor.split( /[-/]/ );
+            partes = [ dmy[1], dmy[0], dmy[2] ];
+        } else {
+            return valor;
+        }
+        var mes = Number( partes[0] );
+        var dia = Number( partes[1] );
+        var anio = Number( partes[2] );
+        if ( mes < 1 || mes > 12 || dia < 1 || dia > 31 || !anio ) { return valor; }
+        return String( mes ).padStart( 2, '0' ) + '/' +
+            String( dia ).padStart( 2, '0' ) + '/' +
+            String( partes[2] ).slice( -2 );
     }
     function detalle( poeta ) {
         var datos = campos( poeta );
-        var nacimiento = anio( datos.fecha_nacimiento );
-        var fallecimiento = anio( datos.fecha_fallecimiento );
-        return [ datos.pais_origen, nacimiento ? nacimiento + ( fallecimiento ? '–' + fallecimiento : '–' ) : '' ].filter( Boolean ).join( ' · ' );
+        var origen = [ datos.lugar_nacimiento, datos.pais_origen ].filter( Boolean ).join( ', ' );
+        var fechas = [ formatearFecha( datos.fecha_nacimiento ),
+            formatearFecha( datos.fecha_fallecimiento ) ].filter( Boolean ).join( ' – ' );
+        return [ origen, fechas ].filter( Boolean ).join( ' · ' );
     }
     // El textarea SCF utiliza una obra por línea y un año opcional.
     function separarObras( poeta ) {
@@ -127,8 +151,8 @@
         var origen = [ datos.lugar_nacimiento, datos.pais_origen ].filter( Boolean ).join( ', ' );
         var filas = [
             [ 'Origen', origen ],
-            [ 'Nacimiento', datos.fecha_nacimiento ],
-            [ 'Fallecimiento', datos.fecha_fallecimiento ]
+            [ 'Nacimiento', formatearFecha( datos.fecha_nacimiento ) ],
+            [ 'Fallecimiento', formatearFecha( datos.fecha_fallecimiento ) ]
         ];
         contenedor.replaceChildren();
         filas.forEach( function( fila ) {
@@ -214,6 +238,7 @@
         estado.poeta = null;
         estado.poemas = [];
         limpiarCarrusel();
+        cancelarAnimacionEstrofa();
         if ( modal && modalElemento.classList.contains( 'show' ) ) { modal.hide(); }
         hub.hidden = true;
         inicio.hidden = false;
@@ -497,6 +522,11 @@
         if ( ! Number.isInteger( numero ) || numero < 1 ) { return; }
         var token = ++estado.solicitud;
         mostrarHub();
+        if ( window.gsap && !reducirMovimiento() ) {
+            window.gsap.fromTo( hub.querySelector( '.hub-poeta__encabezado' ),
+                { autoAlpha: 0, y: 12 },
+                { autoAlpha: 1, y: 0, duration: .35, ease: 'power2.out', overwrite: true } );
+        }
         limpiarCarrusel();
         escribir( '#estado-hub-poeta', 'Cargando el archivo del poeta…' );
         if ( historial ) {
@@ -674,16 +704,85 @@
         contenedor.prepend( secuencia );
 
         secuencia.addEventListener( 'scroll', function() {
-            if ( scrollEstrofasPendiente || estado.continua ) { return; }
+            if ( scrollEstrofasPendiente || estado.continua || ruedaEnTransicion ) { return; }
             scrollEstrofasPendiente = true;
             window.requestAnimationFrame( function() {
                 scrollEstrofasPendiente = false;
                 actualizarEstrofaPorDesplazamiento();
             } );
         }, { passive: true } );
+
+        // Una pulsación de rueda = una estrofa, no desplazamiento libre.
+        // En una touchpad se absorben los eventos de inercia del mismo gesto.
+        secuencia.addEventListener( 'wheel', function( evento ) {
+            if ( estado.continua || !modalElemento.classList.contains( 'show' ) ||
+                 evento.ctrlKey || !estado.estrofas.length ) { return; }
+            evento.preventDefault();
+            var ahora = performance.now();
+            if ( Math.abs( evento.deltaY ) < 1 || ruedaEnTransicion ||
+                 ahora < bloqueoRuedaHasta ) { return; }
+            bloqueoRuedaHasta = ahora + 480;
+            avanzarUnaEstrofa( evento.deltaY > 0 ? 1 : -1 );
+        }, { passive: false } );
+
+        // Acceso equivalente con teclado; no interceptamos Tab ni Escape.
+        secuencia.addEventListener( 'keydown', function( evento ) {
+            if ( estado.continua || !modalElemento.classList.contains( 'show' ) ) { return; }
+            var direccion = { ArrowDown: 1, PageDown: 1, ArrowUp: -1, PageUp: -1 }[ evento.key ];
+            if ( !direccion ) { return; }
+            evento.preventDefault();
+            if ( !ruedaEnTransicion ) { avanzarUnaEstrofa( direccion ); }
+        } );
         return secuencia;
     }
 
+    function cancelarAnimacionEstrofa() {
+        if ( animacionEstrofa && typeof animacionEstrofa.kill === 'function' ) {
+            animacionEstrofa.kill();
+        }
+        animacionEstrofa = null;
+        ruedaEnTransicion = false;
+        var secuencia = buscar( '#modal-hub-secuencia-estrofas' );
+        if ( secuencia ) { secuencia.classList.remove( 'secuencia-estrofas--animando' ); }
+    }
+
+    // Animación de 300 ms, ease-in, controlada por GSAP sin ScrollToPlugin.
+    function avanzarUnaEstrofa( direccion ) {
+        var secuencia = buscar( '#modal-hub-secuencia-estrofas' );
+        if ( !secuencia || !estado.estrofas.length ) { return; }
+        var secciones = secuencia.querySelectorAll( '.modal-hub__seccion-estrofa' );
+        var indice = Math.max( 0, Math.min( secciones.length - 1, estado.estrofa + direccion ) );
+        if ( indice === estado.estrofa || !secciones[indice] ) { return; }
+        var destino = secciones[indice].offsetTop - secciones[0].offsetTop;
+        var inicioScroll = secuencia.scrollTop;
+        estado.estrofa = indice;
+        ruedaEnTransicion = true;
+        secuencia.classList.add( 'secuencia-estrofas--animando' );
+        var finalizar = function() {
+            secuencia.scrollTop = destino;
+            secuencia.classList.remove( 'secuencia-estrofas--animando' );
+            ruedaEnTransicion = false;
+            animacionEstrofa = null;
+        };
+        if ( reducirMovimiento() ) { finalizar(); return; }
+        if ( window.gsap ) {
+            animacionEstrofa = window.gsap.to( secuencia, {
+                scrollTop: destino, duration: DURACION_ESTROFA,
+                ease: 'power1.in', overwrite: true, onComplete: finalizar
+            } );
+            return;
+        }
+        // Respaldo independiente de CDN, con exactamente la misma duración.
+        var inicioTiempo = performance.now();
+        var paso = function( ahora ) {
+            if ( !ruedaEnTransicion ) { return; }
+            var t = Math.min( 1, ( ahora - inicioTiempo ) / 300 );
+            secuencia.scrollTop = inicioScroll + ( destino - inicioScroll ) * t * t;
+            if ( t < 1 ) { window.requestAnimationFrame( paso ); }
+            else { finalizar(); }
+        };
+        window.requestAnimationFrame( paso );
+    }
 
     // La estrofa visible se obtiene del desplazamiento natural, no de un
     // contador independiente. Así funcionan la rueda, el touch y las flechas.
@@ -758,9 +857,11 @@
             } );
         } );
 
+        cancelarAnimacionEstrofa();
         secuencia.replaceChildren( fragmento );
         secuencia.scrollTop = 0;
         estado.estrofa = 0;
+        bloqueoRuedaHasta = 0;
     }
 
     function construirLecturaCompleta( poema ) {
@@ -783,6 +884,7 @@
         } );
     }
     function alternarContinua( activa ) {
+        cancelarAnimacionEstrofa();
         estado.continua = activa;
         buscar( '#modal-hub-lectura-estrofa' ).hidden = activa;
         buscar( '#modal-hub-lectura-continua' ).hidden = ! activa;
@@ -812,6 +914,7 @@
     // Abre un CPT concreto dentro del mismo modal, sin cambiar de página.
     function seleccionarPantalla( indice, origen ) {
         if ( ! estado.poeta || ! estado.pantallas.length ) { return; }
+        cancelarAnimacionEstrofa();
         var total = estado.pantallas.length;
         var seleccionado = ( indice + total ) % total;
         var pantalla = estado.pantallas[ seleccionado ];
@@ -961,6 +1064,11 @@
         }
     }
     function iniciar() {
+        // Se emite desde la galería al hacer clic, usar Enter/Espacio o soltar.
+        window.addEventListener( 'entreversos:seleccionar-poeta', function( evento ) {
+            var id = Number( evento.detail && evento.detail.id );
+            if ( Number.isInteger( id ) && id > 0 ) { abrirPoeta( id, true ); }
+        } );
         window.addEventListener( 'resize', actualizarPosicionNavegacionModal, { passive: true } );
         var botonPausa = document.getElementById( 'hub-pausa' );
         if ( botonPausa ) { botonPausa.addEventListener( 'click', alternarPausaCarrusel ); }
@@ -987,6 +1095,7 @@
         document.getElementById( 'hub-siguiente' ).addEventListener( 'click', function() { navegarCarrusel( 1 ); } );
         document.getElementById( 'modal-hub-alternar-lectura' ).addEventListener( 'click', function() { alternarContinua( !estado.continua ); } );
         modalElemento.addEventListener( 'hidden.bs.modal', function() {
+            cancelarAnimacionEstrofa();
             devolverFlechasAlHub();
             ponerRuta( 'Obras' );
             estado.visual++;

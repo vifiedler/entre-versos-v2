@@ -44,6 +44,18 @@ function entre_versos_cargar_scripts() {
     wp_enqueue_script( 'entre-versos-gsap-flip', 'https://cdn.jsdelivr.net/npm/gsap@3.15.1/dist/Flip.min.js', array( 'entre-versos-gsap' ), '3.15.1', true );
     wp_enqueue_script( 'entre-versos-atropos', 'https://cdn.jsdelivr.net/npm/atropos@2.0.2/atropos.min.js', array(), '2.0.2', true );
 
+    // Interacciones portada: Muuri conserva las posiciones, GSAP Draggable
+    // solo modifica la capa interna; Atropos añade inclinación al pasar el cursor.
+    if ( is_front_page() ) {
+        wp_enqueue_script(
+            'entre-versos-interacciones',
+            get_theme_file_uri( '/assets/librerias/js/entre-versos-interacciones.js' ),
+            array( 'entre-versos-galeria', 'entre-versos-gsap', 'entre-versos-gsap-draggable', 'entre-versos-atropos' ),
+            filemtime( get_theme_file_path( '/assets/librerias/js/entre-versos-interacciones.js' ) ),
+            true
+        );
+    }
+
     // Carga de contenido REST, organizada como en Sinapsis: cliente + presentación.
     // Las pantallas REST se cargan aquí; lectura continua y audio tienen sus controladores propios.
     if ( is_front_page() || is_singular( 'ant_poeta' ) || is_singular( 'ant_poema' ) ) {
@@ -70,7 +82,7 @@ function entre_versos_cargar_scripts() {
         wp_enqueue_script(
             'entre-versos-contenido',
             get_theme_file_uri( '/assets/librerias/js/entre-versos-contenido.js' ),
-            is_front_page() ? array( 'entre-versos-rest', 'entre-versos-galeria' ) : array( 'entre-versos-rest' ),
+            is_front_page() ? array( 'entre-versos-rest', 'entre-versos-interacciones' ) : array( 'entre-versos-rest' ),
             filemtime( get_theme_file_path( '/assets/librerias/js/entre-versos-contenido.js' ) ),
             true
         );
@@ -80,7 +92,7 @@ function entre_versos_cargar_scripts() {
             wp_enqueue_script(
                 'entre-versos-hub',
                 get_theme_file_uri( '/assets/librerias/js/entre-versos-hub.js' ),
-                array( 'entre-versos-contenido', 'entre-versos-slick', 'entre-versos-mark', 'entre-versos-bootstrap' ),
+                array( 'entre-versos-contenido', 'entre-versos-slick', 'entre-versos-mark', 'entre-versos-bootstrap', 'entre-versos-gsap' ),
                 filemtime( get_theme_file_path( '/assets/librerias/js/entre-versos-hub.js' ) ),
                 true
             );

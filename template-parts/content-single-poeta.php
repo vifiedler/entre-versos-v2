@@ -45,6 +45,21 @@ foreach ( preg_split( '/\r\n|\r|\n/u', $obras_texto ) as $linea ) {
     $obras[] = array( 'titulo' => $titulo_obra, 'anio' => $anio_obra );
 }
 
+// SSR como respaldo, sustitución con REST en entre-versos-contenido.js.
+// Formato de la interfaz: MM/DD/AA, sin crear fechas artificiales.
+$formatear_fecha = static function ( $fecha ) {
+    $fecha = trim( (string) $fecha );
+    if ( '' === $fecha ) { return ''; }
+    foreach ( array( '!d/m/Y', '!Y-m-d', '!Ymd', '!m/d/y' ) as $formato ) {
+        $objeto = DateTimeImmutable::createFromFormat( $formato, $fecha );
+        $errores = DateTimeImmutable::getLastErrors();
+        if ( $objeto && ( false === $errores || ( 0 === $errores['warning_count'] && 0 === $errores['error_count'] ) ) ) {
+            return $objeto->format( 'm/d/y' );
+        }
+    }
+    return $fecha;
+};
+
 $origen = implode( ', ', array_filter( array( $lugar, $pais ) ) );
 ?>
 <article id="poeta-<?php the_ID(); ?>" <?php post_class( 'vista-poeta' ); ?> data-poeta-id="<?php echo esc_attr( $id_poeta ); ?>">
@@ -61,6 +76,7 @@ $origen = implode( ', ', array_filter( array( $lugar, $pais ) ) );
                     <span class="fuente-mono">Obras</span>
                 </div>
                 <h2 id="titulo-contexto-poeta" class="pantallas-poeta__subtitulo">Vida y obra</h2>
+                <div id="obras-poeta-rest">
                 <?php if ( $obras ) : ?>
                     <ol class="obras-poeta" aria-label="Obras destacadas de <?php echo esc_attr( $nombre ); ?>">
                         <?php foreach ( $obras as $obra ) : ?>
@@ -75,6 +91,8 @@ $origen = implode( ', ', array_filter( array( $lugar, $pais ) ) );
                 <?php else : ?>
                     <p class="obras-poeta__vacio fuente-mono">Obras destacadas por incorporar.</p>
                 <?php endif; ?>
+                </div>
+                <div id="cita-poeta-rest">
                 <?php if ( $cita ) : ?>
                     <aside class="cita-poeta" aria-label="Cita destacada del poeta">
                         <span class="etiqueta-editorial">Cita destacada</span>
@@ -83,6 +101,7 @@ $origen = implode( ', ', array_filter( array( $lugar, $pais ) ) );
                         </blockquote>
                     </aside>
                 <?php endif; ?>
+                </div>
             </section>
 
             <section class="pantallas-poeta__tarjeta tarjeta-editorial pantallas-poeta__biografia" aria-labelledby="titulo-biografia-poeta">
@@ -105,19 +124,17 @@ $origen = implode( ', ', array_filter( array( $lugar, $pais ) ) );
                     </div>
                     <div class="col-12 col-lg-8">
                         <h2 id="titulo-biografia-poeta" class="pantallas-poeta__subtitulo mt-0">Biografía</h2>
-                        <?php if ( $origen || $nacimiento || $fallecimiento ) : ?>
-                            <dl class="datos-biograficos fuente-mono" aria-label="Datos biográficos">
+                            <dl id="datos-biograficos-poeta" class="datos-biograficos fuente-mono" aria-label="Datos biográficos">
                                 <?php if ( $origen ) : ?>
                                     <dt>Origen</dt><dd><?php echo esc_html( $origen ); ?></dd>
                                 <?php endif; ?>
                                 <?php if ( $nacimiento ) : ?>
-                                    <dt>Nacimiento</dt><dd><?php echo esc_html( $nacimiento ); ?></dd>
+                                    <dt>Nacimiento</dt><dd data-fecha-poeta="fecha_nacimiento"><?php echo esc_html( $formatear_fecha( $nacimiento ) ); ?></dd>
                                 <?php endif; ?>
                                 <?php if ( $fallecimiento ) : ?>
-                                    <dt>Fallecimiento</dt><dd><?php echo esc_html( $fallecimiento ); ?></dd>
+                                    <dt>Fallecimiento</dt><dd data-fecha-poeta="fecha_fallecimiento"><?php echo esc_html( $formatear_fecha( $fallecimiento ) ); ?></dd>
                                 <?php endif; ?>
                             </dl>
-                        <?php endif; ?>
                         <div id="contenido-biografia" class="pantallas-poeta__biografia-completa">
                             <?php if ( trim( get_the_content() ) ) : ?>
                                 <?php the_content(); ?>

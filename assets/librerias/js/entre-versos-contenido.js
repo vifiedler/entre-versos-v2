@@ -39,24 +39,38 @@
         return entrada && entrada.acf && typeof entrada.acf === 'object' ? entrada.acf : {};
     }
 
-    function anioDeFecha( fecha ) {
+    // SCF devuelve d/m/Y; WordPress también puede guardar Ymd o Y-m-d.
+    // Mostrar siempre MM/DD/AA, sin confiar en Date.parse (dependiente de locale).
+    function formatearFecha( fecha ) {
         var valor = String( fecha || '' ).trim();
-        var encontrado;
-
+        var partes;
         if ( /^\d{8}$/.test( valor ) ) {
-            return valor.slice( 0, 4 );
+            partes = [ valor.slice( 4, 6 ), valor.slice( 6, 8 ), valor.slice( 0, 4 ) ];
+        } else if ( /^\d{4}[-/]\d{1,2}[-/]\d{1,2}$/.test( valor ) ) {
+            var orden = valor.split( /[-/]/ );
+            partes = [ orden[1], orden[2], orden[0] ];
+        } else if ( /^\d{1,2}[-/]\d{1,2}[-/]\d{2,4}$/.test( valor ) ) {
+            // Return format del campo SCF: día/mes/año.
+            var componentes = valor.split( /[-/]/ );
+            partes = [ componentes[1], componentes[0], componentes[2] ];
+        } else {
+            return valor; // No inventamos fechas si la entrada no es válida.
         }
-        encontrado = valor.match( /\b\d{4}\b/ );
-        return encontrado ? encontrado[ 0 ] : '';
+        var mes = Number( partes[0] );
+        var dia = Number( partes[1] );
+        var anio = Number( partes[2] );
+        if ( mes < 1 || mes > 12 || dia < 1 || dia > 31 || !anio ) { return valor; }
+        return String( mes ).padStart( 2, '0' ) + '/' +
+            String( dia ).padStart( 2, '0' ) + '/' +
+            String( partes[2] ).slice( -2 );
     }
 
     function detallePoeta( entrada ) {
-        var campos = metadatos( entrada );
-        var origen = String( campos.pais_origen || campos.lugar_nacimiento || '' ).trim();
-        var nacido = anioDeFecha( campos.fecha_nacimiento );
-        var fallecido = anioDeFecha( campos.fecha_fallecimiento );
-        var fechas = nacido ? nacido + ( fallecido ? '–' + fallecido : '–' ) : '';
-
+        var datos = metadatos( entrada );
+        var origen = [ datos.lugar_nacimiento, datos.pais_origen ].filter( Boolean ).join( ', ' );
+        var nacido = formatearFecha( datos.fecha_nacimiento );
+        var fallecido = formatearFecha( datos.fecha_fallecimiento );
+        var fechas = [ nacido, fallecido ].filter( Boolean ).join( ' – ' );
         return [ origen, fechas ].filter( Boolean ).join( ' · ' );
     }
 
@@ -225,6 +239,8 @@
         }
     }
 
+    // Un solo flujo para clic, Enter/Espacio y soltar la Polaroid.
+    // El hub escucha el evento y se muestra sin botón intermedio.
     function activarSeleccionPoetas( galeria, poetas ) {
         var registros = new Map();
 
@@ -232,27 +248,41 @@
             registros.set( String( poeta.id ), poeta );
         } );
 
-        function seleccionarDesdeTarjeta( destino ) {
-            var marco = destino.closest( '.posicion-polaroid' );
-            var poeta;
+        function seleccionarPoeta( identificador, origen ) {
+            // Evita una segunda apertura si Draggable y el clic DOM coinciden.
+            if ( document.getElementById( 'seleccion-poetas' ).hidden ) { return false; }
+            var poeta = registros.get( String( identificador ) );
+            var marco = Array.from( galeria.querySelectorAll( '.posicion-polaroid' ) )
+                .find( function( item ) { return item.dataset.poetaId === String( identificador ); } );
+            if ( !poeta || !marco ) { return false; }
+            mostrarPoetaSeleccionado( galeria, marco, poeta );
+            window.dispatchEvent( new CustomEvent( 'entreversos:seleccionar-poeta', {
+                detail: { id: poeta.id, origen: origen || 'clic' }
+            } ) );
+            return true;
+        }
 
-            if ( ! marco || ! galeria.contains( marco ) ) {
-                return;
-            }
-            poeta = registros.get( marco.dataset.poetaId );
-            if ( poeta ) {
-                mostrarPoetaSeleccionado( galeria, marco, poeta );
+        function seleccionarDesdeTarjeta( destino, origen ) {
+            var marco = destino.closest( '.posicion-polaroid' );
+            if ( marco && galeria.contains( marco ) ) {
+                seleccionarPoeta( marco.dataset.poetaId, origen );
             }
         }
 
+        // API pública mínima para el módulo de arrastre.
+        window.EntreVersosSeleccion = { seleccionarId: seleccionarPoeta };
+
         galeria.addEventListener( 'click', function( evento ) {
-            seleccionarDesdeTarjeta( evento.target );
+            // No se abre durante la fase final de un arrastre real.
+            if ( !evento.target.closest( '.posicion-polaroid' ) ||
+                evento.target.closest( '.posicion-polaroid' ).dataset.arrastrando === 'true' ) { return; }
+            seleccionarDesdeTarjeta( evento.target, 'clic' );
         } );
         galeria.addEventListener( 'keydown', function( evento ) {
             if ( ( evento.key === 'Enter' || evento.key === ' ' ) &&
                 evento.target.classList.contains( 'posicion-polaroid' ) ) {
                 evento.preventDefault();
-                seleccionarDesdeTarjeta( evento.target );
+                seleccionarDesdeTarjeta( evento.target, 'teclado' );
             }
         } );
     }
@@ -283,6 +313,10 @@
                 galeria.classList.add( 'galeria-poetas--respaldo' );
             }
             activarSeleccionPoetas( galeria, poetas );
+            // Todos los nodos existen y Muuri ya conoce su geometría.
+            window.dispatchEvent( new CustomEvent( 'entreversos:galeria-lista', {
+                detail: { cantidad: total }
+            } ) );
             if ( cantidad ) {
                 cantidad.textContent = String( total ).padStart( 2, '0' ) + ( total === 1 ? ' poeta en sala' : ' poetas en sala' );
             }
@@ -299,16 +333,74 @@
         }
     }
 
-    // Se muestra la biografía completa de Gutenberg desde la carga inicial.
+    // SCF entrega texto plano: una obra por línea y un año opcional.
+    function dibujarObrasPoeta( destino, textoObras ) {
+        if ( !destino ) { return; }
+        var obras = String( textoObras || '' ).split( /\r\n?|\n/ )
+            .map( function( linea ) { return linea.trim(); } ).filter( Boolean );
+        if ( !obras.length ) {
+            destino.replaceChildren( crearTexto( 'p', 'obras-poeta__vacio fuente-mono',
+                'Obras destacadas por incorporar.' ) );
+            return;
+        }
+        var listado = crearTexto( 'ol', 'obras-poeta', '' );
+        obras.forEach( function( linea ) {
+            var partes = linea.match( /^(.+?)\s*\((\d{4})\)$/ ) ||
+                linea.match( /^(.+?)\s*[—–-]\s*(\d{4})$/ );
+            var inverso = !partes && linea.match( /^(\d{4})\s*[—–-]\s*(.+)$/ );
+            var nombre = partes ? partes[1].trim() : inverso ? inverso[2].trim() : linea;
+            var anio = partes ? partes[2] : inverso ? inverso[1] : '';
+            var li = crearTexto( 'li', 'obras-poeta__item', '' );
+            li.appendChild( crearTexto( 'span', 'obras-poeta__titulo', nombre ) );
+            if ( anio ) { li.appendChild( crearTexto( 'span', 'obras-poeta__anio fuente-mono', anio ) ); }
+            listado.appendChild( li );
+        } );
+        destino.replaceChildren( listado );
+    }
+
+    function dibujarCitaPoeta( destino, cita ) {
+        if ( !destino ) { return; }
+        cita = String( cita || '' ).trim();
+        destino.replaceChildren();
+        if ( !cita ) { return; }
+        var aside = crearTexto( 'aside', 'cita-poeta', '' );
+        aside.setAttribute( 'aria-label', 'Cita destacada del poeta' );
+        aside.appendChild( crearTexto( 'span', 'etiqueta-editorial', 'Cita destacada' ) );
+        var bloque = crearTexto( 'blockquote', 'cita-poeta__texto', '' );
+        bloque.appendChild( crearTexto( 'p', '', cita ) );
+        aside.appendChild( bloque );
+        destino.appendChild( aside );
+    }
+
+    function dibujarDatosPoeta( destino, datos ) {
+        if ( !destino ) { return; }
+        var filas = [
+            [ 'Origen', [ datos.lugar_nacimiento, datos.pais_origen ].filter( Boolean ).join( ', ' ) ],
+            [ 'Nacimiento', formatearFecha( datos.fecha_nacimiento ) ],
+            [ 'Fallecimiento', formatearFecha( datos.fecha_fallecimiento ) ]
+        ];
+        destino.replaceChildren();
+        filas.forEach( function( fila ) {
+            if ( !fila[1] ) { return; }
+            destino.appendChild( crearTexto( 'dt', '', fila[0] ) );
+            destino.appendChild( crearTexto( 'dd', '', fila[1] ) );
+        } );
+        destino.hidden = !destino.children.length;
+    }
+
+    // Gutenberg, metadatos y obras de la ficha individual se hidratan vía REST.
+    // El HTML PHP inicial actúa solo como respaldo si JS o REST falla.
     function actualizarPoeta( raiz, entrada ) {
         var nombre = tituloEntrada( entrada );
-        var descripcion = resumenEntrada( entrada );
         var detalles = detallePoeta( entrada );
+        var datos = metadatos( entrada );
         var textoBiografia = raiz.querySelector( '#contenido-biografia' );
 
         actualizarTexto( '.vista-poeta__titulo', nombre, raiz );
-        actualizarTexto( '.pantallas-poeta__contexto .pantallas-poeta__descripcion', descripcion, raiz );
         actualizarTexto( '.pantallas-poeta__origen', detalles, raiz );
+        dibujarObrasPoeta( raiz.querySelector( '#obras-poeta-rest' ), datos.obras_destacadas );
+        dibujarCitaPoeta( raiz.querySelector( '#cita-poeta-rest' ), datos.cita_destacada );
+        dibujarDatosPoeta( raiz.querySelector( '#datos-biograficos-poeta' ), datos );
         if ( textoBiografia && entrada.content && entrada.content.rendered ) {
             textoBiografia.innerHTML = entrada.content.rendered;
         }

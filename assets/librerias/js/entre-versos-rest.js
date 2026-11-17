@@ -10,7 +10,8 @@
     var config = window.entreVersosRestConfig || {};
     var medios = {};
 
-    function solicitarJson( url, parametros ) {
+    // Devuelve contenido y metadatos de paginación sin perder el parseo JSON.
+    function solicitarPagina( url, parametros ) {
         var consulta = new URLSearchParams( parametros || {} );
         var destino = url + ( consulta.toString() ? ( url.indexOf( '?' ) === -1 ? '?' : '&' ) + consulta.toString() : '' );
 
@@ -28,16 +29,43 @@
                 throw new Error( 'La respuesta de WordPress no contiene JSON.' );
             }
 
-            return respuesta.json();
+            return respuesta.json().then( function( contenido ) {
+                return {
+                    contenido: contenido,
+                    paginas: Math.max( 1, Number( respuesta.headers.get( 'X-WP-TotalPages' ) ) || 1 )
+                };
+            } );
         } );
     }
 
+    function solicitarJson( url, parametros ) {
+        return solicitarPagina( url, parametros ).then( function( resultado ) {
+            return resultado.contenido;
+        } );
+    }
+
+    // WordPress limita per_page a 100. Recuperamos todas las páginas
+    // tanto de poetas como de poemas relacionados, sin hacer consultas SQL.
+    function obtenerColeccionCompleta( url, parametros ) {
+        var opciones = Object.assign( {}, parametros, { per_page: 100 } );
+        return solicitarPagina( url, Object.assign( {}, opciones, { page: 1 } ) )
+            .then( function( primera ) {
+                if ( !Array.isArray( primera.contenido ) ) { return []; }
+                if ( primera.paginas <= 1 ) { return primera.contenido; }
+                var siguientes = [];
+                for ( var pagina = 2; pagina <= primera.paginas; pagina++ ) {
+                    siguientes.push( solicitarJson( url,
+                        Object.assign( {}, opciones, { page: pagina } ) ) );
+                }
+                return Promise.all( siguientes ).then( function( resultados ) {
+                    return primera.contenido.concat.apply( primera.contenido, resultados );
+                } );
+            } );
+    }
+
     function obtenerPoetas() {
-        return solicitarJson( config.poetasUrl, {
-            per_page: 100,
-            _embed: 1,
-            orderby: 'title',
-            order: 'asc'
+        return obtenerColeccionCompleta( config.poetasUrl, {
+            _embed: 1, orderby: 'title', order: 'asc'
         } );
     }
 
@@ -46,12 +74,8 @@
     }
 
     function obtenerPoemasDePoeta( id ) {
-        return solicitarJson( config.poemasUrl, {
-            poeta_id: id,
-            per_page: 100,
-            _embed: 1,
-            orderby: 'date',
-            order: 'asc'
+        return obtenerColeccionCompleta( config.poemasUrl, {
+            poeta_id: id, _embed: 1, orderby: 'date', order: 'asc'
         } );
     }
 

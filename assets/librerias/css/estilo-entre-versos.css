@@ -2568,3 +2568,27 @@ body.single-ant_poeta .pantallas-poeta__biografia-completa > *:last-child { marg
     .obras-poeta__titulo { font-size: .9rem; }
     .modal-hub__bio-contexto .cita-poeta { margin-top: .7rem; }
 }
+
+/* ===============================================================
+   INTERACCIONES DEL INICIO Y LECTOR: sin modificar la diagramación.
+   GSAP Draggable transforma el envoltorio interior, no el item Muuri.
+   Atropos rota la capa 3D, no el contenedor que posiciona Muuri.
+   =============================================================== */
+.galeria-poetas .polaroid-muuri__contenido { touch-action: auto; will-change: transform; }
+.galeria-poetas .posicion-polaroid.esta-arrastrando { z-index: 30; }
+.galeria-poetas .posicion-polaroid.esta-arrastrando .polaroid-muuri__contenido { cursor: grabbing; }
+.bandeja-poeta--objetivo {
+    outline: 3px dashed var(--color-lima);
+    outline-offset: 4px;
+    box-shadow: 0 0 0 4px var(--color-tinta);
+}
+/* La navegación de rueda anima con GSAP el scrollTop durante 300 ms;
+   se desactiva temporalmente el scroll-snap para evitar saltos dobles. */
+.modal-hub__secuencia-estrofas.secuencia-estrofas--animando {
+    scroll-snap-type: none !important;
+    scroll-behavior: auto !important;
+}
+@media (prefers-reduced-motion: reduce) {
+    .galeria-poetas .polaroid-muuri__contenido { will-change: auto; }
+    .bandeja-poeta--objetivo { outline-offset: 2px; }
+}
