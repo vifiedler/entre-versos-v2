@@ -54,7 +54,6 @@
         return ( contenedor.textContent || '' ).trim();
     }
     function titulo( entrada ) { return textoPlano( entrada && entrada.title && entrada.title.rendered ); }
-    function resumen( entrada ) { return textoPlano( entrada && entrada.excerpt && entrada.excerpt.rendered ); }
     function campos( entrada ) { return entrada && entrada.acf && typeof entrada.acf === 'object' ? entrada.acf : {}; }
     function elementoTexto( etiqueta, clase, texto ) {
         var elemento = document.createElement( etiqueta );
@@ -73,6 +72,73 @@
         var fallecimiento = anio( datos.fecha_fallecimiento );
         return [ datos.pais_origen, nacimiento ? nacimiento + ( fallecimiento ? '–' + fallecimiento : '–' ) : '' ].filter( Boolean ).join( ' · ' );
     }
+    // El textarea SCF utiliza una obra por línea y un año opcional.
+    function separarObras( poeta ) {
+        var valor = campos( poeta ).obras_destacadas;
+        if ( typeof valor !== 'string' ) { return []; }
+        return valor.split( /\r\n?|\n/ ).map( function( linea ) {
+            linea = linea.trim();
+            if ( ! linea ) { return null; }
+            var coincidencia = linea.match( /^(.+?)\s*\((\d{4})\)$/u ) ||
+                linea.match( /^(.+?)\s*[—–-]\s*(\d{4})$/u );
+            if ( coincidencia ) { return { titulo: coincidencia[ 1 ].trim(), anio: coincidencia[ 2 ] }; }
+            coincidencia = linea.match( /^(\d{4})\s*[—–-]\s*(.+)$/u );
+            return coincidencia
+                ? { titulo: coincidencia[ 2 ].trim(), anio: coincidencia[ 1 ] }
+                : { titulo: linea, anio: '' };
+        } ).filter( Boolean );
+    }
+
+    function poblarObras( contenedor, poeta ) {
+        if ( ! contenedor ) { return; }
+        var obras = separarObras( poeta );
+        contenedor.replaceChildren();
+        if ( ! obras.length ) {
+            contenedor.appendChild( elementoTexto( 'p', 'obras-poeta__vacio fuente-mono', 'Obras destacadas por incorporar.' ) );
+            return;
+        }
+        var lista = elementoTexto( 'ol', 'obras-poeta', '' );
+        obras.forEach( function( obra ) {
+            var item = elementoTexto( 'li', 'obras-poeta__item', '' );
+            item.appendChild( elementoTexto( 'span', 'obras-poeta__titulo', obra.titulo ) );
+            if ( obra.anio ) {
+                item.appendChild( elementoTexto( 'span', 'obras-poeta__anio fuente-mono', obra.anio ) );
+            }
+            lista.appendChild( item );
+        } );
+        contenedor.appendChild( lista );
+    }
+
+    function poblarCita( contenedor, poeta ) {
+        if ( ! contenedor ) { return; }
+        var cita = String( campos( poeta ).cita_destacada || '' ).trim();
+        contenedor.replaceChildren();
+        contenedor.hidden = ! cita;
+        if ( ! cita ) { return; }
+        contenedor.appendChild( elementoTexto( 'span', 'etiqueta-editorial', 'Cita destacada' ) );
+        var bloque = elementoTexto( 'blockquote', 'cita-poeta__texto', '' );
+        bloque.appendChild( elementoTexto( 'p', '', cita ) );
+        contenedor.appendChild( bloque );
+    }
+
+    function poblarDatosBiograficos( contenedor, poeta ) {
+        if ( ! contenedor ) { return; }
+        var datos = campos( poeta );
+        var origen = [ datos.lugar_nacimiento, datos.pais_origen ].filter( Boolean ).join( ', ' );
+        var filas = [
+            [ 'Origen', origen ],
+            [ 'Nacimiento', datos.fecha_nacimiento ],
+            [ 'Fallecimiento', datos.fecha_fallecimiento ]
+        ];
+        contenedor.replaceChildren();
+        filas.forEach( function( fila ) {
+            if ( ! fila[ 1 ] ) { return; }
+            contenedor.appendChild( elementoTexto( 'dt', '', fila[ 0 ] ) );
+            contenedor.appendChild( elementoTexto( 'dd', '', fila[ 1 ] ) );
+        } );
+        contenedor.hidden = ! contenedor.childElementCount;
+    }
+
     function fuenteImagen( medio ) {
         if ( ! medio ) { return ''; }
         if ( typeof medio === 'string' ) { return /^https?:\/\//.test( medio ) ? medio : ''; }
@@ -170,9 +236,14 @@
 
         var columnas = elementoTexto( 'div', 'hub-poeta__bio-columnas', '' );
         var contexto = elementoTexto( 'section', 'hub-poeta__bio-contexto', '' );
-        contexto.appendChild( elementoTexto( 'span', 'etiqueta-editorial', 'Vida y contexto' ) );
-        contexto.appendChild( elementoTexto( 'p', 'hub-poeta__bio-extracto', resumen( poeta ) ) );
-        contexto.appendChild( elementoTexto( 'small', 'fuente-mono', detalle( poeta ) ) );
+        contexto.appendChild( elementoTexto( 'span', 'etiqueta-editorial', 'Vida y obra' ) );
+        var obras = elementoTexto( 'div', 'hub-poeta__bio-obras', '' );
+        poblarObras( obras, poeta );
+        contexto.appendChild( obras );
+        var cita = elementoTexto( 'aside', 'cita-poeta hub-poeta__bio-cita', '' );
+        cita.setAttribute( 'aria-label', 'Cita destacada' );
+        poblarCita( cita, poeta );
+        contexto.appendChild( cita );
 
         var dossier = elementoTexto( 'section', 'hub-poeta__bio-dossier', '' );
         dossier.appendChild( elementoTexto( 'span', 'etiqueta-editorial', 'Expediente biográfico' ) );
@@ -183,13 +254,17 @@
         retrato.appendChild( foto );
         retrato.appendChild( elementoTexto( 'figcaption', 'fuente-mono', 'Retrato del poeta' ) );
 
+        var informacion = elementoTexto( 'div', 'hub-poeta__bio-informacion', '' );
+        var metadatos = elementoTexto( 'dl', 'datos-biograficos fuente-mono', '' );
+        poblarDatosBiograficos( metadatos, poeta );
         var textoBiografico = elementoTexto( 'div', 'hub-poeta__bio-texto', '' );
-        // Contenido editorial de Gutenberg obtenido mediante WordPress REST API.
+        // HTML Gutenberg ya filtrado por WordPress en la respuesta REST.
         textoBiografico.innerHTML = poeta.content && poeta.content.rendered || '';
         if ( ! textoBiografico.textContent.trim() ) {
-            textoBiografico.textContent = resumen( poeta ) || 'Biografía pendiente de publicación.';
+            textoBiografico.textContent = 'Biografía pendiente de publicación.';
         }
-        cuerpo.append( retrato, textoBiografico );
+        informacion.append( metadatos, textoBiografico );
+        cuerpo.append( retrato, informacion );
         dossier.appendChild( cuerpo );
         columnas.append( contexto, dossier );
         vista.append( cabecera, columnas );
@@ -519,14 +594,14 @@
     function abrirBiografia() {
         var poeta = estado.poeta;
         if ( ! poeta ) { return; }
-        escribir( '#modal-hub-resumen-biografia', resumen( poeta ) );
-        escribir( '#modal-hub-detalle-biografia', detalle( poeta ) );
-        escribir( '#modal-hub-datos-biografia', detalle( poeta ) );
+        poblarObras( buscar( '#modal-hub-obras-biografia' ), poeta );
+        poblarCita( buscar( '#modal-hub-cita-biografia' ), poeta );
+        poblarDatosBiograficos( buscar( '#modal-hub-datos-biografia' ), poeta );
         escribir( '#modal-hub-pie-biografia', 'Retrato de ' + titulo( poeta ) );
         var texto = buscar( '#modal-hub-texto-biografia' );
         // El HTML proviene del contenido Gutenberg filtrado por WordPress en REST API.
         texto.innerHTML = poeta.content && poeta.content.rendered || '';
-        if ( ! texto.textContent.trim() ) { texto.textContent = resumen( poeta ) || 'Biografía pendiente de publicación.'; }
+        if ( ! texto.textContent.trim() ) { texto.textContent = 'Biografía pendiente de publicación.'; }
         mostrarModal( 'bio', poeta );
         imagenEntrada( poeta ).then( function( medio ) {
             if ( estado.poeta && estado.poeta.id === poeta.id ) {
