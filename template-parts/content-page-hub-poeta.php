@@ -41,7 +41,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 </section>
 
 <!-- Bootstrap administra el foco y la capa oscurecida. El contenido se desplaza dentro del modal. -->
-<div id="modal-hub-contenido" class="modal fade modal-hub" tabindex="-1" aria-labelledby="modal-hub-titulo" aria-hidden="true">
+<div id="modal-hub-contenido" class="modal fade modal-hub" role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-hub-titulo" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
         <div class="modal-content tarjeta-editorial">
             <div class="modal-header modal-hub__cabecera">
