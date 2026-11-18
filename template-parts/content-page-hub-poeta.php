@@ -41,13 +41,13 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 </section>
 
 <!-- Bootstrap administra el foco y la capa oscurecida. El contenido se desplaza dentro del modal. -->
-<div id="modal-hub-contenido" class="modal fade modal-hub" role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-hub-titulo" aria-hidden="true">
+<div id="modal-hub-contenido" class="modal fade modal-hub" role="dialog" tabindex="-1" aria-labelledby="modal-hub-titulo" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
         <div class="modal-content tarjeta-editorial">
             <div class="modal-header modal-hub__cabecera">
                 <div class="min-width-0">
                     <span id="modal-hub-categoria" class="etiqueta-editorial">Archivo</span>
-                    <h2 id="modal-hub-titulo" class="modal-hub__titulo mb-0"></h2>
+                    <h2 id="modal-hub-titulo" class="modal-hub__titulo mb-0">Archivo del poeta</h2>
                 </div>
                 <div class="modal-hub__acciones">
                     <button id="modal-hub-alternar-lectura" type="button" class="boton-editorial boton-editorial--compacto" aria-pressed="false" hidden>Lectura continua</button>
@@ -62,10 +62,10 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
                         <section class="modal-hub__bio-contexto tarjeta-editorial" aria-labelledby="modal-hub-vida-titulo">
                             <span class="etiqueta-editorial">Trayectoria literaria</span>
                             <h3 id="modal-hub-vida-titulo">Vida y obra</h3>
-                            <div id="modal-hub-obras-biografia" aria-label="Obras destacadas"></div>
+                            <div id="modal-hub-obras-biografia"></div>
                             <aside id="modal-hub-cita-biografia" class="cita-poeta" aria-label="Cita destacada" hidden></aside>
                         </section>
-                        <section class="modal-hub__bio-expediente tarjeta-editorial" aria-labelledby="modal-hub-expediente-titulo">
+                        <div class="modal-hub__bio-expediente tarjeta-editorial">
                             <span id="modal-hub-expediente-titulo" class="etiqueta-editorial">Expediente biográfico</span>
                             <div class="modal-hub__bio-expediente-cuerpo">
                                 <figure class="modal-hub__retrato mb-0">
@@ -77,7 +77,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
                                     <div id="modal-hub-texto-biografia" class="modal-hub__texto"></div>
                                 </div>
                             </div>
-                        </section>
+                        </div>
                     </div>
                 </div>
                 <div id="modal-hub-poema" class="modal-hub__poema" hidden>
@@ -96,7 +96,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
                         <div id="modal-hub-estrofas-completas"></div>
                         <figure class="modal-hub__cierre mb-0">
                             <p class="etiqueta-editorial">Final del poema</p>
-                            <h3 id="modal-hub-cierre-titulo"></h3>
+                            <h3 id="modal-hub-cierre-titulo">Final del poema</h3>
                             <p id="modal-hub-cierre-autor" class="fuente-mono"></p>
                             <div id="modal-hub-imagen-cierre" class="modal-hub__imagen modal-hub__imagen--cierre"></div>
                         </figure>
