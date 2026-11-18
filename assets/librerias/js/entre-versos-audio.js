@@ -113,7 +113,7 @@
             height: 1,
             videoId: idPendiente,
             playerVars: {
-                autoplay: 0,
+                autoplay: 1,
                 controls: 0,
                 playsinline: 1,
                 loop: 1,
